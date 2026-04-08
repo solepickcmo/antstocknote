@@ -1,0 +1,67 @@
+.calendar-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  background: var(--glass-bg);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+
+.calendar-header {
+  text-align: center;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding-bottom: 1rem;
+}
+
+.calendar-cell {
+  aspect-ratio: 1;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.calendar-cell:hover:not(.empty) {
+  border-color: var(--border);
+  transform: translateY(-2px);
+}
+
+.calendar-cell.profit-bg {
+  background: var(--profit-bg);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.calendar-cell.loss-bg {
+  background: var(--loss-bg);
+  border-color: rgba(244, 63, 94, 0.2);
+}
+
+.calendar-cell.empty {
+  background: transparent;
+  cursor: default;
+}
+
+.day-number {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.day-pnl {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+  margin-top: auto;
+}

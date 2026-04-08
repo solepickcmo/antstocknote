@@ -1,0 +1,41 @@
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  background: var(--bg-input);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.tag-chip.strategy {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary);
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+.tag-chip.emotion {
+  background: rgba(244, 63, 94, 0.1);
+  color: var(--loss);
+  border-color: rgba(244, 63, 94, 0.2);
+}
+
+.tag-chip.clickable {
+  cursor: pointer;
+}
+
+.tag-chip.clickable:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.2);
+}
+
+.tag-chip.selected {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+}

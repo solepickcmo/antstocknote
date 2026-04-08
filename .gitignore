@@ -1,0 +1,19 @@
+node_modules/
+dist/
+build/
+.env
+.DS_Store
+coverage/
+*.log
+
+# SQLite database
+*.db
+*.db-journal
+
+# Frontend
+frontend/dist/
+frontend/node_modules/
+
+# Backend
+backend/dist/
+backend/node_modules/

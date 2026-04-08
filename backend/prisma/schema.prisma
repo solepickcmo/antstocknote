@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id                     String    @id @default(uuid())
+  email                  String    @unique
+  password_hash          String?   // 소셜 로그인인 경우 NULL 허용 
+  nickname               String
+  public_profile_enabled Boolean   @default(false)
+  community_joined_at    DateTime?
+  created_at             DateTime  @default(now())
+  updated_at             DateTime  @default(now())
+
+  accounts Account[]
+  tags     Tag[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model Account {
+  id         BigInt   @id @default(autoincrement())
+  user_id    String
+  name       String
+  broker     String?
+  currency   String   @default("KRW")
+  is_deleted Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  user   User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  trades Trade[]
+
+  @@index([user_id])
+  @@map("accounts")
+}
+
+model Trade {
+  id           BigInt    @id @default(autoincrement())
+  account_id   BigInt
+  ticker       String
+  name         String
+  type         String    // "buy" | "sell"
+  price        Float
+  quantity     Float
+  fee          Float     @default(0)
+  pnl          Float?
+  traded_at    DateTime
+  strategy_tag String?
+  emotion_tag  String?
+  memo         String?
+  is_open      Boolean   @default(true)
+  is_public    Boolean   @default(false)
+  created_at   DateTime  @default(now())
+
+  account Account @relation(fields: [account_id], references: [id], onDelete: Cascade)
+  note    Note?
+
+  @@index([account_id])
+  @@index([traded_at(sort: Desc)])
+  @@index([ticker])
+  @@index([strategy_tag])
+  @@index([is_open])
+  @@index([is_public])
+  @@map("trades")
+}
+
+model Note {
+  id           BigInt   @id @default(autoincrement())
+  trade_id     BigInt   @unique
+  mistake_type String?
+  content      String?
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now())
+
+  trade Trade @relation(fields: [trade_id], references: [id], onDelete: Cascade)
+
+  @@map("notes")
+}
+
+model Tag {
+  id      BigInt  @id @default(autoincrement())
+  user_id String
+  name    String
+  type    String  // "strategy" | "emotion"
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, name, type])
+  @@map("tags")
+}

@@ -1,0 +1,119 @@
+.history-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.filters-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-lg);
+}
+
+.search-input {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  width: 300px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+  border-color: var(--primary);
+}
+
+.filter-chips {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  transition: transform 0.2s ease;
+}
+
+.history-item:hover {
+  transform: translateY(-2px);
+}
+
+.trade-main {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  width: 30%;
+}
+
+.trade-type {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.trade-type.buy {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary);
+}
+
+.trade-type.sell {
+  background: var(--loss-bg);
+  color: var(--loss);
+}
+
+.trade-info h3 {
+  font-size: 1.125rem;
+  margin-bottom: 0.25rem;
+}
+
+.ticker {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-left: 0.5rem;
+}
+
+.trade-date {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.trade-details {
+  display: flex;
+  gap: 3rem;
+  flex: 1;
+}
+
+.detail-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.detail-col .label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.trade-actions {
+  width: 15%;
+  display: flex;
+  justify-content: flex-end;
+}

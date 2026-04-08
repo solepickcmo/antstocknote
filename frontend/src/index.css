@@ -1,0 +1,96 @@
+:root {
+  /* Rich Dark Theme Palette */
+  --bg-main: #0B0F19; /* Very dark blue-gray */
+  --bg-card: #151A28;
+  --bg-input: #1F2937;
+  --primary: #6366F1; /* Indigo */
+  --primary-hover: #4F46E5;
+  --text-main: #F9FAFB;
+  --text-muted: #9CA3AF;
+  
+  --profit: #10B981; /* Emerald */
+  --profit-bg: rgba(16, 185, 129, 0.15);
+  --loss: #F43F5E; /* Rose */
+  --loss-bg: rgba(244, 63, 94, 0.15);
+  
+  --border: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(21, 26, 40, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.05);
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  
+  --shadow-glow: 0 4px 14px 0 rgba(99, 102, 241, 0.39);
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Base Layouts */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+input, textarea {
+  font-family: inherit;
+}
+
+/* Utilities */
+.profit-text { color: var(--profit); }
+.loss-text { color: var(--loss); }
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}

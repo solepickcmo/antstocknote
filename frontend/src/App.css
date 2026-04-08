@@ -1,0 +1,10 @@
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 250px; /* Width of navbar */
+  min-height: 100vh;
+}

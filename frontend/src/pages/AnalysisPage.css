@@ -1,0 +1,159 @@
+.analysis-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-bottom: 3rem;
+}
+
+.analysis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.analysis-card {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.analysis-card.full-width {
+  grid-column: 1 / -1;
+}
+
+.analysis-card h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.empty-msg {
+  color: var(--text-muted);
+  text-align: center;
+  padding: 2rem 0;
+  font-size: 0.9rem;
+}
+
+/* Tooltip theme for Recharts */
+.dark-tooltip {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Table styling for strategies */
+.stat-table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.stat-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.stat-table th, .stat-table td {
+  padding: 0.75rem;
+  text-align: right;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.stat-table th:first-child, .stat-table td:first-child {
+  text-align: left;
+}
+
+.stat-table th {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Legend styling */
+.emotion-legend {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.emotion-legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-label {
+  flex: 1;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.legend-val {
+  font-family: monospace;
+}
+
+/* Mistake items */
+.mistake-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.mistake-item {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  min-width: 150px;
+}
+
+.mistake-rank {
+  font-size: 0.75rem;
+  color: var(--danger-color);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.mistake-name {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.mistake-count {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+  .analysis-grid {
+    grid-template-columns: 1fr;
+  }
+}
