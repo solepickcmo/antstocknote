@@ -1,5 +1,6 @@
-.navbar {
   width: 250px;
+  min-width: 250px;
+  flex-shrink: 0;
   background-color: var(--bg-card); /* Changed from glass panel to solid */
   border-right: 1px solid var(--glass-border);
   display: flex;
@@ -28,6 +29,7 @@ The image showed a light background for sidebar (#F3F2EE roughly). I will adapt 
   border-radius: var(--radius-sm);
   font-weight: 700;
   font-size: 1rem;
+  white-space: nowrap;
 }
 
 .nav-group {
@@ -55,6 +57,7 @@ The image showed a light background for sidebar (#F3F2EE roughly). I will adapt 
   transition: all 0.2s;
   cursor: pointer;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .nav-item:hover:not(.disabled) {

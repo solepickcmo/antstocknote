@@ -115,7 +115,7 @@ export const IsometricTown: React.FC = () => {
 
   return (
     <div className="isometric-container glass-panel">
-      <h2>개미의 집 타운</h2>
+      <h2>개미노트 타운</h2>
       <p className="text-muted text-sm mb-4">매매 기록이 쌓일수록 나의 마을이 성장합니다.</p>
       <canvas 
         ref={canvasRef} 

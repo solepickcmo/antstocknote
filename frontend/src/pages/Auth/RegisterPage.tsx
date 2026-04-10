@@ -38,7 +38,11 @@ const RegisterPage: React.FC = () => {
         navigate('/');
       }
     } catch (err: any) {
-      setError(err.message || '회원가입에 실패했습니다.');
+      if (err.message?.includes('User already registered') || err.message?.includes('already exists')) {
+        setError('이미 가입된 이메일입니다.');
+      } else {
+        setError(err.message || '회원가입에 실패했습니다.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -47,7 +51,7 @@ const RegisterPage: React.FC = () => {
   return (
     <div className="auth-container">
       <div className="auth-card glass-panel">
-        <h1 className="auth-title">개미의 집 시작하기</h1>
+        <h1 className="auth-title">개미노트 시작하기</h1>
         <p className="auth-subtitle">계정을 생성하고 매매일지를 작성해보세요</p>
         
         {error && <div className="auth-error">{error}</div>}

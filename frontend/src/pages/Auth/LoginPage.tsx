@@ -72,7 +72,7 @@ const LoginPage: React.FC = () => {
   return (
     <div className="auth-container">
       <div className="auth-card glass-panel">
-        <h1 className="auth-title">개미의 집</h1>
+        <h1 className="auth-title">개미노트</h1>
         <p className="auth-subtitle">로그인하여 수익을 기록하세요</p>
         
         {error && <div className="auth-error">{error}</div>}
@@ -136,9 +136,9 @@ const LoginPage: React.FC = () => {
                   style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'rgba(255,255,255,0.05)', color: 'var(--text-main)', marginBottom: '1rem' }}
                 />
               </div>
-              <div className="modal-actions">
-                <button type="button" className="btn btn-secondary" onClick={() => setIsForgotOpen(false)}>닫기</button>
-                <button type="submit" className="btn btn-primary" disabled={isForgotLoading}>
+              <div className="modal-actions" style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>
+                <button type="button" className="btn btn-secondary" onClick={() => setIsForgotOpen(false)} style={{ flex: 1 }}>닫기</button>
+                <button type="submit" className="btn btn-primary" disabled={isForgotLoading} style={{ flex: 2 }}>
                   {isForgotLoading ? '전송중...' : '이메일 전송'}
                 </button>
               </div>

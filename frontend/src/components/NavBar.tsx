@@ -19,7 +19,7 @@ export const NavBar: React.FC = () => {
   return (
     <nav className="navbar">
       <div className="nav-brand">
-        <div className="nav-brand-logo">개미의 집</div>
+        <div className="nav-brand-logo">개미노트</div>
       </div>
       
       <div className="nav-group">
@@ -58,7 +58,7 @@ export const NavBar: React.FC = () => {
         <h3 className="nav-group-title">커뮤니티</h3>
         <div className="nav-item disabled">
           <Users size={18} />
-          <span>개미의 집</span>
+          <span>개미노트</span>
         </div>
       </div>
 

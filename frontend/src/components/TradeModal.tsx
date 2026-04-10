@@ -68,6 +68,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
   const [showStockDropdown, setShowStockDropdown] = useState(false);
   const [activeInput, setActiveInput] = useState<'ticker' | 'name' | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -85,13 +86,20 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
       setShowStockDropdown(false);
       return;
     }
-    try {
-      const response = await apiClient.get(`/stocks/search?q=${encodeURIComponent(query)}`);
-      setStockResults(response.data);
-      setShowStockDropdown(true);
-    } catch (err) {
-      console.error('Failed to search stocks', err);
+
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
     }
+
+    searchTimeoutRef.current = setTimeout(async () => {
+      try {
+        const response = await apiClient.get(`/stocks/search?q=${encodeURIComponent(query)}`);
+        setStockResults(response.data);
+        setShowStockDropdown(true);
+      } catch (err) {
+        console.error('Failed to search stocks', err);
+      }
+    }, 300);
   };
 
   if (!isOpen) return null;

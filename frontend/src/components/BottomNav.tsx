@@ -12,11 +12,31 @@ export const BottomNav: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
   const navigate = useNavigate();
   const logout = useAuthStore(state => state.logout);
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = React.useState(false);
+  const [withdrawConfirmText, setWithdrawConfirmText] = React.useState('');
+  const [isWithdrawing, setIsWithdrawing] = React.useState(false);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
     setIsSettingsOpen(false);
+  };
+
+  const handleWithdraw = async () => {
+    if (withdrawConfirmText !== '탈퇴합니다') return;
+    
+    setIsWithdrawing(true);
+    try {
+      await apiClient.delete('/auth/withdraw');
+      alert('회원 탈퇴가 완료되었습니다. 그동안 이용해주셔서 감사합니다.');
+      logout();
+      navigate('/login');
+    } catch (err: any) {
+      alert(err.response?.data?.error || '회원 탈퇴 처리 중 오류가 발생했습니다.');
+    } finally {
+      setIsWithdrawing(false);
+      setIsWithdrawModalOpen(false);
+    }
   };
 
   return (
@@ -53,12 +73,49 @@ export const BottomNav: React.FC = () => {
           <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); useLayoutStore.getState().setMobileMode(false); }}>
             <Monitor size={18} /> PC 화면으로 보기
           </button>
+          <button className="sheet-btn text-danger" onClick={() => { setIsSettingsOpen(false); setIsWithdrawModalOpen(true); }}>
+            <LogOut size={18} /> 회원 탈퇴
+          </button>
           <button className="sheet-btn text-danger" onClick={handleLogout}>
             <LogOut size={18} /> 로그아웃
           </button>
           <button className="sheet-btn secondary" onClick={() => setIsSettingsOpen(false)}>
             닫기
           </button>
+        </div>
+      </div>
+    )}
+    {isWithdrawModalOpen && (
+      <div className="bottom-settings-sheet" style={{ zIndex: 3000 }}>
+        <div className="sheet-backdrop" onClick={() => setIsWithdrawModalOpen(false)} />
+        <div className="sheet-content glass-panel" style={{ padding: '2rem' }}>
+          <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: '#ff4d4f' }}>정말 탈퇴하시겠습니까?</h2>
+          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem', lineHeight: '1.5' }}>
+            탈퇴 시 모든 매매 기록, 매매 기록 등 작성하신 모든 데이터가 영구히 삭제되며 복구할 수 없습니다.
+          </p>
+          <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 600 }}>
+            확인을 위해 아래에 "탈퇴합니다"를 입력해주세요.
+          </p>
+          <input 
+            type="text" 
+            value={withdrawConfirmText}
+            onChange={(e) => setWithdrawConfirmText(e.target.value)}
+            placeholder="탈퇴합니다"
+            style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'rgba(255,255,255,0.05)', color: 'var(--text-main)', marginBottom: '1.5rem' }}
+          />
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <button className="sheet-btn secondary" onClick={() => setIsWithdrawModalOpen(false)} style={{ flex: 1 }}>
+              취소
+            </button>
+            <button 
+              className="sheet-btn" 
+              onClick={handleWithdraw} 
+              disabled={withdrawConfirmText !== '탈퇴합니다' || isWithdrawing}
+              style={{ flex: 2, background: withdrawConfirmText === '탈퇴합니다' ? '#ff4d4f' : 'var(--bg-input)', color: '#white' }}
+            >
+              {isWithdrawing ? '탈퇴 처리 중...' : '계정 영구 삭제'}
+            </button>
+          </div>
         </div>
       </div>
     )}
