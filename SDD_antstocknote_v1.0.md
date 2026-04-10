@@ -365,6 +365,8 @@ CREATE TABLE users (
     nickname               VARCHAR(50)   NOT NULL,
     public_profile_enabled BOOLEAN       NOT NULL DEFAULT FALSE,
     community_joined_at    TIMESTAMP     NULL,
+    reset_token            VARCHAR(255)  NULL,
+    reset_token_expires_at TIMESTAMP     NULL,
     created_at             TIMESTAMP     NOT NULL DEFAULT NOW(),
     updated_at             TIMESTAMP     NOT NULL DEFAULT NOW()
 );
@@ -535,6 +537,20 @@ CREATE INDEX idx_posts_created_at ON posts(created_at DESC);
 | 요청 Body | `{ "email": "string", "password": "string" }` |
 | 응답 200 | `{ "accessToken": "jwt", "refreshToken": "jwt", "expiresIn": 3600 }` |
 | 오류 401 | ERR_INVALID_CREDENTIALS — 인증 실패 |
+
+#### POST /auth/forgot-password — 비밀번호 찾기 (이메일 발송)
+
+| 항목 | 내용 |
+|---|---|
+| 요청 Body | `{ "email": "string" }` |
+| 응답 200 | `{ "message": "성공적으로 메일이 전송되었습니다." }` |
+
+#### POST /auth/reset-password — 새 비밀번호 설정
+
+| 항목 | 내용 |
+|---|---|
+| 요청 Body | `{ "token": "string", "newPassword": "string" }` |
+| 응답 200 | `{ "message": "비밀번호가 성공적으로 변경되었습니다." }` |
 
 ### 8.3 (삭제됨) 계좌 API
 

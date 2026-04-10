@@ -1,12 +1,20 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Calendar, History, BarChart2, Users, Settings, PieChart, PlusSquare, Smartphone } from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, Calendar, History, BarChart2, Users, Settings, PieChart, PlusSquare, Smartphone, LogOut } from 'lucide-react';
 import { useTradeStore } from '../store/tradeStore';
 import { useLayoutStore } from '../store/layoutStore';
+import { useAuthStore } from '../store/authStore';
 import './NavBar.css';
 
 export const NavBar: React.FC = () => {
   const setModalOpen = useTradeStore(state => state.setModalOpen);
+  const navigate = useNavigate();
+  const logout = useAuthStore(state => state.logout);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <nav className="navbar">
@@ -60,9 +68,13 @@ export const NavBar: React.FC = () => {
           <Settings size={18} />
           <span>설정 / 도구</span>
         </div>
-        <div className="nav-item action-btn" onClick={() => useLayoutStore.getState().toggleMobileMode()} style={{ marginTop: '1rem' }}>
+        <div className="nav-item action-btn" onClick={() => useLayoutStore.getState().toggleMobileMode()} style={{ marginTop: '0.5rem' }}>
           <Smartphone size={18} />
           <span>모바일 뷰 전환</span>
+        </div>
+        <div className="nav-item" onClick={handleLogout} style={{ marginTop: '0.5rem', color: '#ff4d4f', cursor: 'pointer' }}>
+          <LogOut size={18} />
+          <span>로그아웃</span>
         </div>
       </div>
     </nav>

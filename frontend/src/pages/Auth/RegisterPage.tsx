@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
-import { apiClient } from '../../api/client';
+import { supabase } from '../../api/supabase';
 import './AuthPage.css';
 
 const RegisterPage: React.FC = () => {
@@ -20,21 +20,26 @@ const RegisterPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await apiClient.post('/auth/register', { email: email.trim(), password, nickname });
-      const { accessToken, refreshToken, userId } = response.data;
+      const { data, error: signupError } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          data: {
+            nickname: nickname
+          }
+        }
+      });
       
-      if (accessToken) {
-        setAuth({ id: userId, email, nickname }, accessToken, refreshToken || '');
+      if (signupError) throw signupError;
+      
+      // onAuthStateChange will handle redirection if email verification is off
+      if (!data.session) {
+        alert('회원가입이 완료되었습니다. 이메일 인증을 확인해 주세요.');
+      } else {
         navigate('/');
       }
     } catch (err: any) {
-      let errorMsg = '회원가입에 실패했습니다.';
-      if (err.response?.data?.message) {
-        errorMsg = err.response.data.message;
-      } else if (err.message) {
-        errorMsg = `[시스템/네트워크 오류] ${err.message}`;
-      }
-      setError(errorMsg);
+      setError(err.message || '회원가입에 실패했습니다.');
     } finally {
       setIsLoading(false);
     }

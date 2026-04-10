@@ -12,8 +12,7 @@ datasource db {
 model User {
   id                     String    @id @default(uuid())
   email                  String    @unique
-  password_hash          String?   // 소셜 로그인인 경우 NULL 허용 
-  nickname               String
+  nickname               String    // auth.users 연동 트리거 사용
   public_profile_enabled Boolean   @default(false)
   community_joined_at    DateTime?
   created_at             DateTime  @default(now())

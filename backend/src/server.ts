@@ -28,7 +28,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-import authRoutes from './routes/auth.routes';
 import tradeRoutes from './routes/trade.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import noteRoutes from './routes/note.routes';
@@ -36,7 +35,6 @@ import tagRoutes from './routes/tag.routes';
 import analysisRoutes from './routes/analysis.routes';
 import stockRoutes from './routes/stock.routes';
 
-app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/trades', tradeRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/notes', noteRoutes);

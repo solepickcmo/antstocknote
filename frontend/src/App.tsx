@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { NavBar } from './components/NavBar';
 import { DashboardPage } from './pages/DashboardPage';
@@ -8,6 +8,7 @@ import { HoldingsPage } from './pages/HoldingsPage';
 import { AnalysisPage } from './pages/AnalysisPage';
 import LoginPage from './pages/Auth/LoginPage';
 import RegisterPage from './pages/Auth/RegisterPage';
+import { ResetPasswordPage } from './pages/Auth/ResetPasswordPage';
 import { useAuthStore } from './store/authStore';
 import { useTradeStore } from './store/tradeStore';
 import { useLayoutStore } from './store/layoutStore';
@@ -55,12 +56,52 @@ const AuthLayout: React.FC = () => {
 };
 
 const App: React.FC = () => {
+  const setAuth = useAuthStore(state => state.setAuth);
+  const setInitialized = useAuthStore(state => state.setInitialized);
+  const isInitialized = useAuthStore(state => state.isInitialized);
+
+  useEffect(() => {
+    // Initial session loading
+    import('./api/supabase').then(({ supabase }) => {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) {
+          setAuth(
+            { id: session.user.id, email: session.user.email!, nickname: session.user.user_metadata?.nickname || '사용자' },
+            session.access_token
+          );
+        } else {
+          setAuth(null, null);
+        }
+        setInitialized(true);
+      });
+
+      // Listen for auth changes
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (session?.user) {
+          setAuth(
+            { id: session.user.id, email: session.user.email!, nickname: session.user.user_metadata?.nickname || '사용자' },
+            session.access_token
+          );
+        } else {
+          setAuth(null, null);
+        }
+      });
+
+      return () => {
+        subscription.unsubscribe();
+      };
+    });
+  }, [setAuth, setInitialized]);
+
+  if (!isInitialized) return null; // 로딩 처리
+
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Route>
         
         <Route element={<ProtectedLayout />}>

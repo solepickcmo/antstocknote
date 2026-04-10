@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyToken } from '../utils/jwt';
+import { supabase } from '../utils/supabase';
 
 export interface AuthRequest extends Request {
   user?: { id: string };
 }
 
-export const authenticateJWT = (req: AuthRequest, res: Response, next: NextFunction): void => {
+export const authenticateJWT = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   const authHeader = req.headers.authorization;
 
   if (authHeader && authHeader.startsWith('Bearer ')) {
@@ -17,8 +17,13 @@ export const authenticateJWT = (req: AuthRequest, res: Response, next: NextFunct
     }
 
     try {
-      const decoded = verifyToken(token);
-      req.user = decoded;
+      const { data: { user }, error } = await supabase.auth.getUser(token);
+      
+      if (error || !user) {
+        throw new Error('Invalid Token');
+      }
+
+      req.user = { id: user.id };
       next();
     } catch (error) {
       res.status(401).json({ error: 'ERR_INVALID_CREDENTIALS', message: '유효하지 않은 토큰입니다.' });
