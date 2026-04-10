@@ -15,23 +15,15 @@ const app = express();
 import prisma from './prisma';
 const port = process.env.PORT || 4000;
 
-const allowedOrigins = [
-  'https://www.antstocknote.com',
-  'https://antstocknote.com',
-  'http://localhost:5173',
-  'http://localhost:5174'
-];
-
 app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
+  origin: [
+    'https://www.antstocknote.com',
+    'https://antstocknote.com',
+    'http://localhost:5173',
+    'http://localhost:5174'
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
