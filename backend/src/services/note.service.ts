@@ -1,15 +1,13 @@
 import prisma from '../prisma';
 
-
 export class NoteService {
-  async createOrUpdateNote(userId: string, tradeId: bigint, mistakeType: string, content: string) {
+  async createOrUpdateNote(userId: string, tradeId: number, mistakeType: string, content: string) {
     // verify ownership of trade
     const trade = await prisma.trade.findUnique({
-      where: { id: tradeId },
-      include: { account: true }
+      where: { id: tradeId }
     });
 
-    if (!trade || trade.account.user_id !== userId || trade.account.is_deleted) {
+    if (!trade || trade.user_id !== userId) {
       throw new Error('ERR_INVALID_TRADE');
     }
 
@@ -20,13 +18,12 @@ export class NoteService {
     });
   }
 
-  async getNote(userId: string, tradeId: bigint) {
+  async getNote(userId: string, tradeId: number) {
     const trade = await prisma.trade.findUnique({
-      where: { id: tradeId },
-      include: { account: true }
+      where: { id: tradeId }
     });
 
-    if (!trade || trade.account.user_id !== userId || trade.account.is_deleted) {
+    if (!trade || trade.user_id !== userId) {
       throw new Error('ERR_INVALID_TRADE');
     }
 

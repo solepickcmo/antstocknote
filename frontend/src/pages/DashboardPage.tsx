@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { MetricCard } from '../components/MetricCard';
-import { IsometricTown } from '../components/IsometricTown';
+import { AnalysisPage } from './AnalysisPage';
 import { useTradeStore } from '../store/tradeStore';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import './DashboardPage.css';
@@ -20,25 +20,25 @@ export const DashboardPage: React.FC = () => {
   const trades = useTradeStore(state => state.trades);
 
   useEffect(() => {
-    fetchTrades('1');
+    fetchTrades();
   }, [fetchTrades]);
 
   // 간이 자산 계산기
   const initialCapital = 10000000;
-  const totalPnl = trades.reduce((sum, trade) => sum + (Number(trade.pnl) || 0), 0);
-  const currentAsset = initialCapital + totalPnl;
+  const totalPnl = Math.floor(trades.reduce((sum, trade) => sum + (Number(trade.pnl) || 0), 0));
+  const currentAsset = Math.floor(initialCapital + totalPnl);
 
   return (
     <div className="dashboard-page animate-fade-in">
       <header className="page-header">
         <h1>대시보드</h1>
-        <p className="text-muted">내 계좌의 요약 정보를 확인하세요.</p>
+        <p className="text-muted">내 매매 내역의 요약 정보를 확인하세요.</p>
       </header>
 
       <section className="metrics-grid">
         <MetricCard title="총 자산" value={`₩ ${currentAsset.toLocaleString()}`} subtitle="초기자금 1,000만원" />
         <MetricCard title="누적 수익금" value={`₩ ${totalPnl > 0 ? '+' : ''}${totalPnl.toLocaleString()}`} trend={totalPnl >= 0 ? 'up' : 'down'} />
-        <MetricCard title="전체 기록 수" value={`${trades.length}건`} subtitle="마을 규모" />
+        <MetricCard title="전체 매매 건수" value={`${trades.length}건`} />
       </section>
 
       <section className="chart-section glass-panel">
@@ -67,8 +67,8 @@ export const DashboardPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="town-section" style={{ marginTop: '2rem' }}>
-        <IsometricTown />
+      <section className="analysis-section" style={{ marginTop: '2rem' }}>
+        <AnalysisPage />
       </section>
     </div>
   );

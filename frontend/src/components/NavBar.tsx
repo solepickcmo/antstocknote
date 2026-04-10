@@ -1,43 +1,69 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Calendar, History, PlusSquare, Settings, BarChart2 } from 'lucide-react';
+import { LayoutDashboard, Calendar, History, BarChart2, Users, Settings, PieChart, PlusSquare, Smartphone } from 'lucide-react';
 import { useTradeStore } from '../store/tradeStore';
+import { useLayoutStore } from '../store/layoutStore';
 import './NavBar.css';
 
 export const NavBar: React.FC = () => {
   const setModalOpen = useTradeStore(state => state.setModalOpen);
+
   return (
-    <nav className="glass-panel navbar">
+    <nav className="navbar">
       <div className="nav-brand">
-        <h2>🐜 개미의 집</h2>
+        <div className="nav-brand-logo">개미의 집</div>
       </div>
-      <div className="nav-links">
-        <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-          <LayoutDashboard size={20} />
-          <span>대시보드</span>
-        </NavLink>
-        <NavLink to="/calendar" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-          <Calendar size={20} />
-          <span>캘린더</span>
-        </NavLink>
-        <NavLink to="/history" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-          <History size={20} />
-          <span>매매기록</span>
-        </NavLink>
-        <NavLink to="/analysis" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-          <BarChart2 size={20} />
-          <span>분석</span>
-        </NavLink>
-        <div className="nav-item action-btn" onClick={() => setModalOpen(true)}>
-          <PlusSquare size={20} />
+      
+      <div className="nav-group">
+        <div className="nav-item action-btn" onClick={() => setModalOpen(true)} style={{ color: 'var(--primary)', marginBottom: '0.5rem' }}>
+          <PlusSquare size={18} />
           <span>기록하기</span>
         </div>
+        <h3 className="nav-group-title">메인</h3>
+        <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+          <LayoutDashboard size={18} />
+          <span>대시보드</span>
+        </NavLink>
+        <NavLink to="/history" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+          <History size={18} />
+          <span>매매 내역</span>
+        </NavLink>
+        <NavLink to="/calendar" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+          <Calendar size={18} />
+          <span>수익 캘린더</span>
+        </NavLink>
       </div>
-      <div className="nav-footer">
-        <button className="nav-item">
-          <Settings size={20} />
-          <span>설정</span>
-        </button>
+
+      <div className="nav-group">
+        <h3 className="nav-group-title">분석</h3>
+        <NavLink to="/holdings" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+          <PieChart size={18} />
+          <span>보유 종목</span>
+        </NavLink>
+        <NavLink to="/analysis" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+          <BarChart2 size={18} />
+          <span>매매 복기</span>
+        </NavLink>
+      </div>
+
+      <div className="nav-group">
+        <h3 className="nav-group-title">커뮤니티</h3>
+        <div className="nav-item disabled">
+          <Users size={18} />
+          <span>개미의 집</span>
+        </div>
+      </div>
+
+      <div className="nav-group" style={{marginTop: 'auto'}}>
+        <h3 className="nav-group-title">도구</h3>
+        <div className="nav-item disabled">
+          <Settings size={18} />
+          <span>설정 / 도구</span>
+        </div>
+        <div className="nav-item action-btn" onClick={() => useLayoutStore.getState().toggleMobileMode()} style={{ marginTop: '1rem' }}>
+          <Smartphone size={18} />
+          <span>모바일 뷰 전환</span>
+        </div>
       </div>
     </nav>
   );

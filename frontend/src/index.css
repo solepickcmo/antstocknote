@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
   /* Rich Dark Theme Palette */
   --bg-main: #0B0F19; /* Very dark blue-gray */
@@ -23,8 +25,6 @@
   
   --shadow-glow: 0 4px 14px 0 rgba(99, 102, 241, 0.39);
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 * {
   box-sizing: border-box;

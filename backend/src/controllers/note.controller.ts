@@ -4,7 +4,7 @@ import { noteService } from '../services/note.service';
 export const upsertNote = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id;
-    const tradeId = BigInt(req.params.tradeId as string);
+    const tradeId = Number(req.params.tradeId as string);
     const { mistakeType, content } = req.body;
     
     const note = await noteService.createOrUpdateNote(userId, tradeId, mistakeType, content);
@@ -18,7 +18,7 @@ export const upsertNote = async (req: Request, res: Response) => {
 export const getNote = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id;
-    const tradeId = BigInt(req.params.tradeId as string);
+    const tradeId = Number(req.params.tradeId as string);
     
     const note = await noteService.getNote(userId, tradeId);
     if (!note) return res.status(404).json({ error: 'Note not found' });

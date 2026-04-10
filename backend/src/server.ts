@@ -19,20 +19,20 @@ app.use(cors());
 app.use(express.json());
 
 import authRoutes from './routes/auth.routes';
-import accountRoutes from './routes/account.routes';
 import tradeRoutes from './routes/trade.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import noteRoutes from './routes/note.routes';
 import tagRoutes from './routes/tag.routes';
 import analysisRoutes from './routes/analysis.routes';
+import stockRoutes from './routes/stock.routes';
 
 app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/accounts', accountRoutes);
 app.use('/api/v1/trades', tradeRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/notes', noteRoutes);
 app.use('/api/v1/tags', tagRoutes);
 app.use('/api/v1/analysis', analysisRoutes);
+app.use('/api/v1/stocks', stockRoutes);
 
 // BigInt JSON 직렬화 전역 설정
 (BigInt.prototype as any).toJSON = function () {

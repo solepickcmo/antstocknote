@@ -1,12 +1,8 @@
 import prisma from '../prisma';
 
-
 export class DashboardService {
-  async getSummary(userId: string, accountId: string) {
-    const account = await prisma.account.findUnique({ where: { id: BigInt(accountId) } });
-    if (!account || account.user_id !== userId || account.is_deleted) throw new Error('ERR_INVALID_ACCOUNT');
-    
-    // v_strategy_stats logic via queryRaw
+  async getSummary(userId: string) {
+    // 전략별 통계 (이전의 dashboard용 raw query)
     const strategyStats: any[] = await prisma.$queryRaw`
       SELECT 
           strategy_tag as "tag",
@@ -14,15 +10,13 @@ export class DashboardService {
           SUM(CASE WHEN pnl > 0 THEN 1 ELSE 0 END) as "wins",
           AVG(pnl) as "avgPnl"
       FROM trades
-      WHERE account_id = ${BigInt(accountId)} AND type = 'sell'::"string"
+      WHERE user_id = ${userId} AND type = 'sell'
       GROUP BY strategy_tag
     `;
 
-    // get total assets logic (mocked logic or sum logic based on PnL)
-    // To properly calculate total assets, you need initial capital + total PnL
-    // For MVP, we'll return the total sum of PnL across all time.
+    // get total assets logic 
     const totalPnlQuery: any[] = await prisma.$queryRaw`
-      SELECT SUM(pnl) as "totalPnl" FROM trades WHERE account_id = ${BigInt(accountId)} AND type = 'sell'::"string"
+      SELECT SUM(pnl) as "totalPnl" FROM trades WHERE user_id = ${userId} AND type = 'sell'
     `;
     const totalPnl = Number(totalPnlQuery[0]?.totalPnl || 0);
 

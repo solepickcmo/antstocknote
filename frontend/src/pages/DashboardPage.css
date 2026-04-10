@@ -20,6 +20,23 @@
   gap: 1.5rem;
 }
 
+.app-wrapper.mobile-mode .metrics-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.app-wrapper.mobile-mode .metric-card {
+  padding: 1rem;
+}
+
+.app-wrapper.mobile-mode .metric-card h3 {
+  font-size: 0.75rem;
+}
+
+.app-wrapper.mobile-mode .metric-card .metric-value {
+  font-size: 1.25rem;
+}
+
 .chart-section {
   padding: 1.5rem;
   border-radius: var(--radius-lg);

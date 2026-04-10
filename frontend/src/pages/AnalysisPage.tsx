@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { apiClient } from '../api/client';
+import { NoteModal } from '../components/NoteModal';
 import './AnalysisPage.css';
 
 interface StrategyStat {
@@ -10,45 +10,53 @@ interface StrategyStat {
   avgPnl: number;
 }
 
-interface EmotionStat {
-  tag: string;
-  total: number;
-  avgPnl: number;
-}
-
 interface MistakeStat {
   type: string;
   count: number;
 }
 
-const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b', '#10b981'];
+interface Note {
+  id: string;
+  tradeId: string;
+  content: string;
+  createdAt: string;
+  stockName: string;
+  ticker: string;
+  tradeDate: string;
+  strategyTag: string;
+}
+
+// 겹치지 않는 색상 부여 (전략은 주로 푸른/초록/보라계열, 실수는 붉은/노란계열)
+const STRATEGY_COLORS = ['#2563eb', '#3b82f6', '#10b981', '#14b8a6', '#8b5cf6', '#6366f1'];
+const MISTAKE_COLORS  = ['#dc2626', '#ef4444', '#ea580c', '#f59e0b', '#eab308', '#d97706'];
 
 export const AnalysisPage: React.FC = () => {
-  const accountId = '1'; // MVP Hardcoded
   const [strategies, setStrategies] = useState<StrategyStat[]>([]);
-  const [emotions, setEmotions] = useState<EmotionStat[]>([]);
   const [mistakes, setMistakes] = useState<MistakeStat[]>([]);
+  const [notes, setNotes] = useState<Note[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
+  const [visibleNotesCount, setVisibleNotesCount] = useState(2);
+
+  const fetchAnalysis = async () => {
+    try {
+      setIsLoading(true);
+      const [stratRes, mistRes, notesRes] = await Promise.all([
+        apiClient.get('/analysis/strategy'),
+        apiClient.get('/analysis/mistakes'),
+        apiClient.get('/analysis/notes')
+      ]);
+      setStrategies(stratRes.data.strategies);
+      setMistakes(mistRes.data.mistakes);
+      setNotes(notesRes.data.notes);
+    } catch (err) {
+      console.error('Failed to fetch analysis stats', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchAnalysis = async () => {
-      try {
-        setIsLoading(true);
-        const [stratRes, emoRes, mistRes] = await Promise.all([
-          apiClient.get('/analysis/strategy', { params: { accountId } }),
-          apiClient.get('/analysis/emotion', { params: { accountId } }),
-          apiClient.get('/analysis/mistakes', { params: { accountId } })
-        ]);
-        setStrategies(stratRes.data.strategies);
-        setEmotions(stratRes.data.emotions || emoRes.data.emotions);
-        setMistakes(mistRes.data.mistakes);
-      } catch (err) {
-        console.error('Failed to fetch analysis stats', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
     fetchAnalysis();
   }, []);
 
@@ -56,89 +64,133 @@ export const AnalysisPage: React.FC = () => {
     return <div className="p-8 text-center animate-pulse">데이터를 집계 중입니다...</div>;
   }
 
+  // 상단 데시보드 계산
+  const totalTrades = strategies.reduce((acc, s) => acc + s.total, 0);
+  const totalWins = strategies.reduce((acc, s) => acc + Math.round(s.total * (s.winRate / 100)), 0);
+  const overallWinRate = totalTrades > 0 ? ((totalWins / totalTrades) * 100).toFixed(1) : '0.0';
+  
+  const totalPnlSum = strategies.reduce((acc, s) => acc + (s.avgPnl * s.total), 0);
+  const overallAvgPnl = totalTrades > 0 ? Math.round(totalPnlSum / totalTrades) : 0;
+
+  // 최대값 계산 (바 길이 렌더링용)
+  const maxMistakeCount = mistakes.length > 0 ? Math.max(...mistakes.map(m => m.count)) : 1;
+
+  const visibleNotes = notes.slice(0, visibleNotesCount);
+
   return (
     <div className="analysis-page animate-fade-in">
-      <header className="page-header">
-        <h1>통계 및 분석</h1>
-        <p className="text-muted">내 매매 패턴과 감정 상태를 객관적으로 복기해보세요.</p>
+      <header className="page-header analysis-header">
+        <h1>매매 복기 / 분석</h1>
       </header>
 
+      {/* 요약 데시보드 */}
+      <div className="summary-cards">
+        <div className="summary-card glass-panel">
+          <h3>전체 승률</h3>
+          <p className="summary-val">{overallWinRate}%</p>
+        </div>
+        <div className="summary-card glass-panel">
+          <h3>평균수익률</h3>
+          <p className={`summary-val ${overallAvgPnl > 0 ? 'profit' : overallAvgPnl < 0 ? 'loss' : ''}`}>
+            {overallAvgPnl > 0 ? '+' : ''}{overallAvgPnl.toLocaleString()}
+          </p>
+        </div>
+        <div className="summary-card glass-panel">
+          <h3>오답 노트</h3>
+          <p className="summary-val">{notes.length}건</p>
+        </div>
+      </div>
+
       <div className="analysis-grid">
-        {/* 전략별 승률 */}
-        <section className="analysis-card glass-panel">
-          <h2>전략별 성과</h2>
-          {strategies.length > 0 ? (
-            <div className="chart-wrapper">
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={strategies} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                  <XAxis dataKey="tag" stroke="var(--text-secondary)" />
-                  <YAxis stroke="var(--text-secondary)" />
-                  <Tooltip wrapperClassName="dark-tooltip" />
-                  <Bar dataKey="winRate" name="승률 (%)" fill="var(--accent-primary)" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-              <div className="stat-table">
-                <table>
-                  <thead><tr><th>전략</th><th>매매 수</th><th>승률</th><th>평균 수익</th></tr></thead>
-                  <tbody>
-                    {strategies.map(s => (
-                      <tr key={s.tag}>
-                        <td>{s.tag}</td>
-                        <td>{s.total}건</td>
-                        <td className={s.winRate >= 50 ? 'profit-text' : 'loss-text'}>{s.winRate}%</td>
-                        <td>{s.avgPnl > 0 ? '+' : ''}{s.avgPnl.toLocaleString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          ) : <p className="empty-msg">기록된 전략 태그 데이터가 없습니다.</p>}
-        </section>
-
-        {/* 감정별 분포 */}
-        <section className="analysis-card glass-panel">
-          <h2>자주 느끼는 감정 (비중)</h2>
-          {emotions.length > 0 ? (
-            <div className="chart-wrapper">
-              <ResponsiveContainer width="100%" height={250}>
-                <PieChart>
-                  <Pie data={emotions} dataKey="total" nameKey="tag" cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5}>
-                    {emotions.map((_, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
-                  </Pie>
-                  <Tooltip wrapperClassName="dark-tooltip" />
-                </PieChart>
-              </ResponsiveContainer>
-              <ul className="emotion-legend">
-                {emotions.map((e, idx) => (
-                  <li key={e.tag}>
-                    <span className="color-dot" style={{ backgroundColor: COLORS[idx % COLORS.length] }}></span>
-                    <span className="legend-label">{e.tag}</span>
-                    <span className="legend-val">{e.total}건 (Avg: {e.avgPnl > 0 ? '+' : ''}{e.avgPnl.toLocaleString()})</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : <p className="empty-msg">기록된 감정 태그 데이터가 없습니다.</p>}
-        </section>
-
-        {/* 오답 분량 */}
-        <section className="analysis-card glass-panel full-width">
-          <h2>자주 하는 실수 (오답 노트)</h2>
-          {mistakes.length > 0 ? (
-            <div className="mistake-tags">
-              {mistakes.map((m, idx) => (
-                <div key={m.type} className="mistake-item">
-                  <span className="mistake-rank">Top {idx + 1}</span>
-                  <span className="mistake-name">{m.type}</span>
-                  <span className="mistake-count">{m.count}회</span>
+        {/* 좌측: 통계 (전략별 승률 / 실수 유형 분석) */}
+        <div className="analysis-col">
+          <section className="stats-section">
+            <h2>전략별 승률</h2>
+            <div className="bar-list">
+              {strategies.map((s, idx) => (
+                <div className="bar-row" key={s.tag}>
+                  <span className="bar-label">{s.tag}</span>
+                  <div className="bar-track">
+                    <div 
+                      className="bar-fill" 
+                      style={{ 
+                        width: `${s.winRate}%`, 
+                        backgroundColor: STRATEGY_COLORS[idx % STRATEGY_COLORS.length] 
+                      }}
+                    ></div>
+                  </div>
+                  <span className="bar-value">{s.winRate}%</span>
                 </div>
               ))}
+              {strategies.length === 0 && <p className="empty-msg text-sm">데이터가 없습니다.</p>}
             </div>
-          ) : <p className="empty-msg">기록된 오답 노트 데이터가 없습니다.</p>}
-        </section>
+          </section>
+
+          <section className="stats-section">
+            <h2>실수 유형 분석</h2>
+            <div className="bar-list">
+              {mistakes.map((m, idx) => (
+                <div className="bar-row" key={m.type}>
+                  <span className="bar-label">{m.type}</span>
+                  <div className="bar-track">
+                    <div 
+                      className="bar-fill" 
+                      style={{ 
+                        width: `${(m.count / maxMistakeCount) * 100}%`, 
+                        backgroundColor: MISTAKE_COLORS[idx % MISTAKE_COLORS.length] 
+                      }}
+                    ></div>
+                  </div>
+                  <span className="bar-value">{m.count}건</span>
+                </div>
+              ))}
+              {mistakes.length === 0 && <p className="empty-msg text-sm">데이터가 없습니다.</p>}
+            </div>
+          </section>
+        </div>
+
+        {/* 우측: 오답 노트 */}
+        <div className="analysis-col">
+          <section className="notes-section">
+            <div className="notes-header">
+              <h2>오답 노트</h2>
+              <button className="btn-add-note" onClick={() => setIsNoteModalOpen(true)}>작성하기</button>
+            </div>
+            
+            <div className="notes-list">
+              {visibleNotes.map(n => (
+                <div className="note-card glass-panel" key={n.id}>
+                  <div className="note-header">
+                    <span className="note-badge">{n.strategyTag || '태그 없음'}</span>
+                    <span className="note-meta">
+                      {n.stockName} · {new Date(n.tradeDate).toLocaleDateString(undefined, { month: '2-digit', day: '2-digit' })}
+                    </span>
+                  </div>
+                  <p className="note-content">{n.content}</p>
+                </div>
+              ))}
+              {notes.length === 0 && <p className="empty-msg">기록된 오답 노트가 없습니다.</p>}
+            </div>
+
+            {notes.length > visibleNotesCount && (
+              <div className="more-btn-container">
+                <button 
+                  className="btn-more" 
+                  onClick={() => setVisibleNotesCount(prev => prev + 2)}
+                >
+                  <span className="more-icon">↓</span>
+                </button>
+              </div>
+            )}
+          </section>
+        </div>
       </div>
+
+      <NoteModal 
+        isOpen={isNoteModalOpen} 
+        onClose={() => setIsNoteModalOpen(false)} 
+        onSuccess={() => fetchAnalysis()} 
+      />
     </div>
   );
 };

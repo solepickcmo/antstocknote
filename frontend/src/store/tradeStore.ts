@@ -3,7 +3,6 @@ import { apiClient } from '../api/client';
 
 export interface Trade {
   id: string;
-  account_id: string;
   ticker: string;
   name: string;
   type: 'buy' | 'sell';
@@ -23,7 +22,7 @@ interface TradeState {
   error: string | null;
   isModalOpen: boolean;
   setModalOpen: (isOpen: boolean) => void;
-  fetchTrades: (accountId: string) => Promise<void>;
+  fetchTrades: () => Promise<void>;
   createTrade: (tradeData: any) => Promise<void>;
 }
 
@@ -33,12 +32,10 @@ export const useTradeStore = create<TradeState>((set, get) => ({
   error: null,
   isModalOpen: false,
   setModalOpen: (isOpen: boolean) => set({ isModalOpen: isOpen }),
-  fetchTrades: async (accountId: string) => {
+  fetchTrades: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.get('/trades', {
-        params: { accountId },
-      });
+      const response = await apiClient.get('/trades');
       set({ trades: response.data.trades || [], isLoading: false });
     } catch (error: any) {
       set({ error: error.response?.data?.message || '매매 내역을 불러오는데 실패했습니다.', isLoading: false });

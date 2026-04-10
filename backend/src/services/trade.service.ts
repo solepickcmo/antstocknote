@@ -1,16 +1,9 @@
 import prisma from '../prisma';
 
-
 export class TradeService {
   async createTrade(userId: string, data: any) {
-    const { accountId, ticker, name, type, price, quantity, fee, tradedAt, strategyTag, emotionTag, memo, isPublic } = data;
+    const { ticker, name, type, price, quantity, fee, tradedAt, strategyTag, emotionTag, memo, isPublic } = data;
     
-    // 1. Validate Account
-    const account = await prisma.account.findUnique({ where: { id: BigInt(accountId) } });
-    if (!account || account.user_id !== userId || account.is_deleted) {
-      throw new Error('ERR_INVALID_ACCOUNT');
-    }
-
     // 2. Public profile disabled check
     if (isPublic) {
       const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -25,7 +18,7 @@ export class TradeService {
     // BR-001, BR-003: PnL Calculation
     if (type === 'sell') {
       const buyTrades = await prisma.trade.findMany({
-        where: { account_id: BigInt(accountId), ticker, type: 'buy' }
+        where: { user_id: userId, ticker, type: 'buy' }
       });
       
       let totalQty = 0;
@@ -41,7 +34,7 @@ export class TradeService {
 
     const trade = await prisma.trade.create({
       data: {
-        account_id: BigInt(accountId),
+        user_id: userId,
         ticker,
         name,
         type,
@@ -60,7 +53,7 @@ export class TradeService {
 
     if (type === 'sell') {
       const allTrades = await prisma.trade.findMany({
-        where: { account_id: BigInt(accountId), ticker }
+        where: { user_id: userId, ticker }
       });
       
       let currentTotalQty = 0;
@@ -74,7 +67,7 @@ export class TradeService {
 
       if (currentTotalQty <= 0.00000001) {
         await prisma.trade.updateMany({
-          where: { account_id: BigInt(accountId), ticker, is_open: true },
+          where: { user_id: userId, ticker, is_open: true },
           data: { is_open: false }
         });
         computedIsOpen = false;
@@ -84,14 +77,11 @@ export class TradeService {
     return { ...trade, is_open: computedIsOpen };
   }
 
-  async getTrades(userId: string, accountId: string, filters: any) {
+  async getTrades(userId: string, filters: any) {
     const page = Number(filters.page || 0);
     const size = Number(filters.size || 20);
     
-    const account = await prisma.account.findUnique({ where: { id: BigInt(accountId) } });
-    if (!account || account.user_id !== userId || account.is_deleted) throw new Error('ERR_INVALID_ACCOUNT');
-
-    let whereClause: any = { account_id: BigInt(accountId) };
+    let whereClause: any = { user_id: userId };
     if (filters.ticker) whereClause.ticker = filters.ticker;
     if (filters.strategyTag) whereClause.strategy_tag = filters.strategyTag;
     if (filters.emotionTag) whereClause.emotion_tag = filters.emotionTag;
@@ -116,10 +106,7 @@ export class TradeService {
     return { total, page, trades };
   }
 
-  async getCalendar(userId: string, accountId: string, year: number, month: number) {
-    const account = await prisma.account.findUnique({ where: { id: BigInt(accountId) } });
-    if (!account || account.user_id !== userId || account.is_deleted) throw new Error('ERR_INVALID_ACCOUNT');
-
+  async getCalendar(userId: string, year: number, month: number) {
     const startDate = `${year}-${String(month).padStart(2, '0')}-01 00:00:00`;
     const nextMonth = month === 12 ? 1 : month + 1;
     const nextYear = month === 12 ? year + 1 : year;
@@ -128,7 +115,7 @@ export class TradeService {
     const dailyPnL: any[] = await prisma.$queryRaw`
       SELECT DATE(traded_at) as "date", SUM(pnl) as "daily_pnl"
       FROM trades
-      WHERE account_id = ${BigInt(accountId)} AND type = 'sell'::"string" AND traded_at >= ${new Date(startDate)} AND traded_at < ${new Date(endDate)}
+      WHERE user_id = ${userId} AND type = 'sell' AND traded_at >= ${new Date(startDate)} AND traded_at < ${new Date(endDate)}
       GROUP BY DATE(traded_at)
     `;
 

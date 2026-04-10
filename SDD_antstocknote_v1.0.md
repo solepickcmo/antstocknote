@@ -18,6 +18,8 @@
 | 버전 | 날짜 | 작성자 | 변경 내용 |
 |---|---|---|---|
 | 1.0.0 | 2026-04-08 | — | 최초 작성 — IEEE 1016-2009 기반 초안 |
+| 1.1.0 | 2026-04-09 | — | 계좌 개념 제거 및 유저 중심의 매매 구조로 설계 변경 |
+| 1.2.0 | 2026-04-10 | — | 종목 검색 자동완성, 매매 유형(Buy/Sell) 동적 태그 지원, 매매 복기 대시보드 리팩토링 및 오답노트 작성·연동 API 설계 반영 |
 
 ---
 
@@ -207,13 +209,12 @@ IEEE 1016-2009는 이해관계자(Stakeholder)와 그들의 관심사(Concern)�
 | AnalysisController | Presentation | 전략별 승률·PnL 집계 요청 처리 | AnalysisService |
 | CommunityGateway | Presentation | 커뮤니티 전용 API 엔드포인트 (공개 데이터만) | TradeService, UserService |
 | AuthService | Application | 회원가입, 로그인, 토큰 관리 | UserRepository, JwtProvider |
-| TradeService | Application | 매매 저장, PnL 계산, 보유 여부 갱신 | TradeRepository, AccountRepository |
+| TradeService | Application | 매매 저장, PnL 계산, 보유 여부 갱신 | TradeRepository |
 | AnalysisService | Application | 태그별 집계, 오답 노트 CRUD | TradeRepository, NoteRepository |
 | TagService | Application | 사용자 정의 태그 관리 | TagRepository |
 | Trade (Domain) | Domain | PnL 계산 비즈니스 규칙, is_open 상태 전이 | 없음 (순수 도메인) |
 | UserRepository | Infrastructure | users 테이블 CRUD | DB Connection |
 | TradeRepository | Infrastructure | trades 테이블 CRUD + 집계 쿼리 | DB Connection |
-| AccountRepository | Infrastructure | accounts 테이블 CRUD | DB Connection |
 | NoteRepository | Infrastructure | notes 테이블 CRUD | DB Connection |
 | TagRepository | Infrastructure | tags 테이블 CRUD | DB Connection |
 | JwtProvider | Infrastructure | JWT 생성·검증 | 없음 |
@@ -244,33 +245,33 @@ IEEE 1016-2009는 이해관계자(Stakeholder)와 그들의 관심사(Concern)�
 ### 6.1 핵심 도메인 클래스 모델
 
 ```
-┌──────────┐        ┌──────────┐       ┌──────────┐
-│  User    │1      N│ Account  │1     N│  Trade   │
-│──────────│────────│──────────│───────│──────────│
-│+id:UUID  │        │+id:Long  │       │+id:Long  │
-│+email    │        │+userId   │       │+accountId│
-│+nickname │        │+name     │       │+ticker   │
-│+pubEnabled│       │+broker   │       │+type     │
-│+commAt   │        │+currency │       │+price    │
-└──────────┘        └──────────┘       │+quantity │
-                                       │+fee      │
-     ┌──────────┐                      │+pnl      │
-     │   Tag    │  N:M (via tag field) │+tradedAt │
-     │──────────│──────────────────────│+strategyTag│
-     │+id:Long  │                      │+emotionTag │
-     │+userId   │                      │+memo     │
-     │+name     │                      │+isOpen   │
-     │+type     │                      │+isPublic │
-     └──────────┘                      └────┬─────┘
-                                            │ 1
-                                       ┌────▼─────┐
-                                       │   Note   │
-                                       │──────────│
-                                       │+id:Long  │
-                                       │+tradeId  │
-                                       │+mistakeType│
-                                       │+content  │
-                                       └──────────┘
+┌──────────┐                     ┌──────────┐
+│  User    │1                   N│  Trade   │
+│──────────│─────────────────────│──────────│
+│+id:UUID  │                     │+id:Long  │
+│+email    │                     │+userId   │
+│+nickname │                     │+ticker   │
+│+pubEnabled│                    │+type     │
+│+commAt   │                     │+price    │
+└──────────┘                     │+quantity │
+                                 │+fee      │
+     ┌──────────┐                │+pnl      │
+     │   Tag    │      N:M       │+tradedAt │
+     │──────────│────────────────│+strategyTag│
+     │+id:Long  │                │+emotionTag│
+     │+userId   │                │+memo     │
+     │+name     │                │+isOpen   │
+     │+type     │                │+isPublic │
+     └──────────┘                └────┬─────┘
+                                      │ 1
+                                 ┌────▼─────┐
+                                 │   Note   │
+                                 │──────────│
+                                 │+id:Long  │
+                                 │+tradeId  │
+                                 │+mistakeType│
+                                 │+content  │
+                                 └──────────┘
 ```
 
 ### 6.2 Trade 도메인 비즈니스 규칙
@@ -281,52 +282,50 @@ IEEE 1016-2009는 이해관계자(Stakeholder)와 그들의 관심사(Concern)�
 | BR-002 | 특정 ticker의 총 보유 수량이 0이 되면 해당 ticker의 모든 OPEN trades의 is_open = FALSE로 일괄 전환한다. | Trade(SELL) 저장 후 |
 | BR-003 | type = BUY인 경우 pnl 컬럼은 NULL로 저장한다. | Trade 저장 시 |
 | BR-004 | is_public = TRUE 설정은 users.public_profile_enabled = TRUE인 경우에만 허용한다. | Trade 수정 시 |
-| BR-005 | account_id가 soft-delete된 계좌를 참조하는 경우 trade 입력을 거부한다. | Trade 저장 전 |
+| BR-005 | (폐기됨) 계좌 개념 삭제 | - |
 
 ### 6.3 주요 유스케이스 처리 흐름
 
 #### UC-Trade-Create: 매매 기록 입력
 
 ```
-Client → TradeController: POST /api/trades  {accountId, ticker, type, price, qty, ...}
+Client → TradeController: POST /api/trades  {ticker, type, price, qty, ...}
 TradeController → AuthFilter: JWT 검증
 AuthFilter → TradeController: user_id 반환
 TradeController → TradeService: createTrade(userId, dto)
-TradeService → AccountRepository: findById(accountId) → 계좌 소유권 확인
 TradeService → Trade(Domain): PnL 계산 (type=SELL인 경우)
 TradeService → Trade(Domain): is_open 상태 결정
-TradeService → TradeRepository: save(trade)
+TradeService → TradeRepository: save(trade) (user_id 포함)
 TradeRepository → DB: INSERT INTO trades ...
 TradeService → TradeController: TradeResponse
 TradeController → Client: 201 Created { tradeId, pnl, isOpen }
 ```
 
-#### UC-Calendar-Get: 수익 캘린더 조회
+#### UC-Calendar-Get: 매매 내역이 포함된 수익 캘린더 조회
 
 ```
-Client → TradeController: GET /api/calendar?accountId=&year=&month=
-TradeController → TradeService: getCalendar(userId, accountId, year, month)
-TradeService → TradeRepository: sumPnlByDay(accountId, year, month)
-  → SQL: SELECT DATE(traded_at), SUM(pnl) FROM trades
-         WHERE account_id=? AND traded_at BETWEEN ? AND ?
-         AND type='sell' GROUP BY DATE(traded_at)
-TradeRepository → TradeService: List<{date, totalPnl}>
+Client → TradeController: GET /api/calendar?year=&month=
+TradeController → TradeService: getCalendar(userId, year, month)
+TradeService → TradeRepository: 해당 월의 모든 trades 데이터, 일별 pnl 집계 동시 조회
+  → SQL: SELECT * FROM trades WHERE user_id=? AND traded_at BETWEEN ? AND ? ORDER BY traded_at DESC
+TradeService → TradeService: 일별 pnl을 바탕으로 요약 4대 지표(총 손익, 수익일 수, 손실일 수, 일평균) 산출 및 날짜별 매매 리스트 그룹화
 TradeService → TradeController: CalendarResponse
-TradeController → Client: 200 OK { days: [{date, pnl, sign}] }
+TradeController → Client: 200 OK { summary: {...}, days: [{ date, pnl, sign, trades: [...] }] }
+Client(View): 캘린더 요약 4대 카드 출력, 날짜 렌더링. 클릭 시 선택된 trades 리스트 화면 하단 상세 노출.
 ```
 
 #### UC-Analysis-Strategy: 전략별 승률 분석
 
 ```
-Client → AnalysisController: GET /api/analysis/strategy?accountId=
-AnalysisController → AnalysisService: getStrategyStats(userId, accountId)
-AnalysisService → TradeRepository: groupByStrategyTag(accountId)
+Client → AnalysisController: GET /api/analysis/strategy
+AnalysisController → AnalysisService: getStrategyStats(userId)
+AnalysisService → TradeRepository: groupByStrategyTag(userId)
   → SQL: SELECT strategy_tag,
            COUNT(*) AS total,
            SUM(CASE WHEN pnl > 0 THEN 1 ELSE 0 END) AS wins,
            AVG(pnl) AS avg_pnl
          FROM trades
-         WHERE account_id=? AND type='sell'
+         WHERE user_id=? AND type='sell'
          GROUP BY strategy_tag
 AnalysisService → AnalysisController: List<StrategyStatDto>
 AnalysisController → Client: 200 OK { strategies: [...] }
@@ -373,21 +372,9 @@ CREATE TABLE users (
 CREATE INDEX idx_users_email ON users(email);
 ```
 
-#### accounts
+#### 7.1.2 (삭제됨) accounts
 
-```sql
-CREATE TABLE accounts (
-    id          BIGSERIAL     PRIMARY KEY,
-    user_id     UUID          NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    name        VARCHAR(100)  NOT NULL,
-    broker      VARCHAR(100)  NULL,
-    currency    VARCHAR(10)   NOT NULL DEFAULT 'KRW',
-    is_deleted  BOOLEAN       NOT NULL DEFAULT FALSE,  -- Soft Delete
-    created_at  TIMESTAMP     NOT NULL DEFAULT NOW()
-);
-
-CREATE INDEX idx_accounts_user_id ON accounts(user_id);
-```
+*(계좌 개념 삭제, trades 테이블이 users 테이블을 직접 참조하도록 수정 2026-04-09)*
 
 #### trades ★ 핵심 테이블
 
@@ -396,7 +383,7 @@ CREATE TYPE trade_type AS ENUM ('buy', 'sell');
 
 CREATE TABLE trades (
     id            BIGSERIAL       PRIMARY KEY,
-    account_id    BIGINT          NOT NULL REFERENCES accounts(id),
+    user_id       UUID            NOT NULL REFERENCES users(id),
     ticker        VARCHAR(20)     NOT NULL,
     name          VARCHAR(100)    NOT NULL,
     type          trade_type      NOT NULL,
@@ -414,7 +401,7 @@ CREATE TABLE trades (
 );
 
 -- 조회·집계 성능을 위한 인덱스
-CREATE INDEX idx_trades_account_id     ON trades(account_id);
+CREATE INDEX idx_trades_user_id        ON trades(user_id);
 CREATE INDEX idx_trades_traded_at      ON trades(traded_at DESC);
 CREATE INDEX idx_trades_ticker         ON trades(ticker);
 CREATE INDEX idx_trades_strategy_tag   ON trades(strategy_tag);
@@ -459,7 +446,7 @@ CREATE INDEX idx_tags_user_id ON tags(user_id);
 -- 전략별 통계 뷰 (별도 테이블 없이 실시간 집계)
 CREATE VIEW v_strategy_stats AS
 SELECT
-    t.account_id,
+    t.user_id,
     t.strategy_tag,
     COUNT(*)                                              AS total_trades,
     SUM(CASE WHEN t.pnl > 0 THEN 1 ELSE 0 END)          AS win_count,
@@ -468,17 +455,17 @@ SELECT
     ROUND(AVG(t.pnl), 2)                                 AS avg_pnl
 FROM trades t
 WHERE t.type = 'sell'
-GROUP BY t.account_id, t.strategy_tag;
+GROUP BY t.user_id, t.strategy_tag;
 
 -- 날짜별 PnL 캘린더 뷰
 CREATE VIEW v_daily_pnl AS
 SELECT
-    account_id,
+    user_id,
     DATE(traded_at)  AS trade_date,
     SUM(pnl)         AS daily_pnl
 FROM trades
 WHERE type = 'sell'
-GROUP BY account_id, DATE(traded_at);
+GROUP BY user_id, DATE(traded_at);
 ```
 
 ### 7.3 커뮤니티 DB 스키마
@@ -549,14 +536,9 @@ CREATE INDEX idx_posts_created_at ON posts(created_at DESC);
 | 응답 200 | `{ "accessToken": "jwt", "refreshToken": "jwt", "expiresIn": 3600 }` |
 | 오류 401 | ERR_INVALID_CREDENTIALS — 인증 실패 |
 
-### 8.3 계좌 API
+### 8.3 (삭제됨) 계좌 API
 
-| 메서드 | 경로 | 설명 | 응답 |
-|---|---|---|---|
-| POST | /accounts | 계좌 생성 | 201 `{ accountId, name, broker, currency }` |
-| GET | /accounts | 내 계좌 목록 조회 | 200 `{ accounts: [...] }` |
-| PATCH | /accounts/{id} | 계좌 수정 | 200 `{ accountId, name }` |
-| DELETE | /accounts/{id} | 계좌 삭제 (soft) | 204 No Content |
+계좌 개념은 전면 삭제됨 (2026-04-09)
 
 ### 8.4 매매 API
 
@@ -564,41 +546,39 @@ CREATE INDEX idx_posts_created_at ON posts(created_at DESC);
 
 | 항목 | 내용 |
 |---|---|
-| 요청 Body | `{ "accountId": Long, "ticker": "string", "name": "string", "type": "buy\|sell", "price": Decimal, "quantity": Decimal, "fee": Decimal, "tradedAt": DateTime, "strategyTag": "string?", "emotionTag": "string?", "memo": "string?", "isPublic": Boolean }` |
+| 요청 Body | `{ "ticker": "string", "name": "string", "type": "buy\|sell", "price": Decimal, "quantity": Decimal, "fee": Decimal, "tradedAt": DateTime, "strategyTag": "string?", "emotionTag": "string?", "memo": "string?", "isPublic": Boolean }` |
 | 응답 201 | `{ "tradeId": Long, "pnl": Decimal\|null, "isOpen": Boolean }` |
-| 오류 400 | ERR_INVALID_ACCOUNT — 계좌 미보유 또는 삭제됨 |
 | 오류 403 | ERR_PUBLIC_NOT_ALLOWED — public_profile_enabled = FALSE인데 isPublic = TRUE 시도 |
 
 #### GET /trades — 매매 히스토리 목록
 
 | 항목 | 내용 |
 |---|---|
-| 쿼리 파라미터 | accountId, ticker, strategyTag, emotionTag, isOpen, dateFrom, dateTo, keyword, page, size |
+| 쿼리 파라미터 | ticker, strategyTag, emotionTag, isOpen, dateFrom, dateTo, keyword, page, size |
 | 응답 200 | `{ "total": Int, "page": Int, "trades": [{ tradeId, ticker, name, type, price, quantity, pnl, tradedAt, strategyTag, emotionTag, isOpen }] }` |
 
 #### GET /calendar — 수익 캘린더
 
 | 항목 | 내용 |
 |---|---|
-| 쿼리 파라미터 | accountId (필수), year (YYYY), month (1~12) |
-| 응답 200 | `{ "year": Int, "month": Int, "days": [{ "date": "YYYY-MM-DD", "pnl": Decimal, "sign": "profit\|loss\|zero" }] }` |
+| 쿼리 파라미터 | year (YYYY), month (1~12) |
+| 응답 200 | `{ "year": Int, "month": Int, "days": [{ "date": "YYYY-MM-DD", "pnl": Decimal, "sign": "profit\|loss\|zero", "trades": [{ "name": "string", "type": "buy\|sell", "pnl": Decimal }] }] }` |
 
 ### 8.5 분석 API
 
 | 메서드 | 경로 | 설명 | 응답 요약 |
 |---|---|---|---|
-| GET | /analysis/strategy | 전략 태그별 승률·평균 PnL | `{ strategies: [{ tag, total, winRate, avgPnl }] }` |
-| GET | /analysis/emotion | 감정 태그별 평균 PnL | `{ emotions: [{ tag, total, avgPnl }] }` |
-| GET | /analysis/mistakes | 실수 유형별 집계 | `{ mistakes: [{ type, count }] }` |
+| GET | /analysis/strategy | 전략 태그별 총 매매수, 승률, 평균수익률 | `{ strategies: [{ tag, total, winRate, avgPnl }] }` |
+| GET | /analysis/emotion | 감정 태그별 총 매매수, 평균수익률 | `{ emotions: [{ tag, total, avgPnl }] }` |
+| GET | /analysis/mistakes | 손실 거래의 전략 태그별 집계 | `{ mistakes: [{ type, count }] }` |
+| GET | /analysis/notes | 내 오답노트 및 매매 메타데이터(종목명, 태그 등) 통합 목록 | `{ notes: [{ id, tradeId, content, strategyTag, stockName, ticker, tradeDate }] }` |
 
 ### 8.6 오답 노트 API
 
 | 메서드 | 경로 | 설명 | 응답 |
 |---|---|---|---|
-| POST | /trades/{id}/note | 오답 노트 생성 | 201 `{ noteId, mistakeType, content }` |
-| GET | /trades/{id}/note | 오답 노트 조회 | 200 `{ noteId, mistakeType, content, createdAt }` |
-| PATCH | /trades/{id}/note | 오답 노트 수정 | 200 `{ noteId }` |
-| DELETE | /trades/{id}/note | 오답 노트 삭제 | 204 No Content |
+| POST | /notes/{tradeId} | 오답 노트 작성/수정 (Upsert) | 200 `{ id, trade_id, mistake_type, content }` |
+| GET | /notes/{tradeId} | 오답 노트 단건 상세 조회 | 200 `{ id, trade_id, mistake_type, content, updated_at }` |
 
 ### 8.7 커뮤니티 게이트웨이 API (메인 서비스 → 커뮤니티 서비스 제공)
 

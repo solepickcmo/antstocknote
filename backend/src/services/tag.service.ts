@@ -37,7 +37,7 @@ export class TagService {
 
   async deleteTag(userId: string, tagId: string) {
     const tag = await prisma.tag.findUnique({
-      where: { id: BigInt(tagId) }
+      where: { id: Number(tagId) }
     });
 
     if (!tag) {
@@ -49,7 +49,7 @@ export class TagService {
     }
 
     await prisma.tag.delete({
-      where: { id: BigInt(tagId) }
+      where: { id: Number(tagId) }
     });
   }
 }

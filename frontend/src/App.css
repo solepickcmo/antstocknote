@@ -5,6 +5,46 @@
 
 .main-content {
   flex: 1;
-  margin-left: 250px; /* Width of navbar */
   min-height: 100vh;
+}
+
+/* Mobile Mode Simulated View */
+.app-wrapper.mobile-mode {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #0A0A0A; /* Dark backdrop for monitor */
+}
+
+.app-wrapper.mobile-mode .app-layout {
+  width: 375px;
+  height: 812px; /* Typical iPhone X height */
+  min-height: auto;
+  background-color: var(--bg-main);
+  border-radius: 40px;
+  border: 8px solid #333;
+  box-shadow: 0 0 50px rgba(0,0,0,0.5);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-wrapper.mobile-mode .main-content {
+  margin-left: 0;
+  min-height: auto;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 70px; /* space for bottom nav */
+}
+
+.app-wrapper.mobile-mode .main-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.app-wrapper.mobile-mode .main-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
 }
