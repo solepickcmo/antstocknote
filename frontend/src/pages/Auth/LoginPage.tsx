@@ -19,7 +19,7 @@ const LoginPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await apiClient.post('/auth/login', { email, password });
+      const response = await apiClient.post('/auth/login', { email: email.trim(), password });
       const { accessToken, refreshToken } = response.data;
       
       if (accessToken) {

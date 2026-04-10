@@ -20,7 +20,7 @@ const RegisterPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await apiClient.post('/auth/register', { email, password, nickname });
+      const response = await apiClient.post('/auth/register', { email: email.trim(), password, nickname });
       const { accessToken, refreshToken, userId } = response.data;
       
       if (accessToken) {
