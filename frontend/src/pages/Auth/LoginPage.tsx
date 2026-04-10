@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../api/supabase';
+import { useAuthStore } from '../../store/authStore';
 import './AuthPage.css';
 
 const LoginPage: React.FC = () => {
@@ -14,6 +15,7 @@ const LoginPage: React.FC = () => {
   const [isForgotLoading, setIsForgotLoading] = useState(false);
   
   const navigate = useNavigate();
+  const setAuth = useAuthStore(state => state.setAuth);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +23,7 @@ const LoginPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const { error: authError } = await supabase.auth.signInWithPassword({
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password,
       });
@@ -30,7 +32,13 @@ const LoginPage: React.FC = () => {
         throw authError;
       }
       
-      // onAuthStateChange in App.tsx will handle the routing and store update
+      if (data.session?.user) {
+        setAuth(
+          { id: data.session.user.id, email: data.session.user.email!, nickname: data.session.user.user_metadata?.nickname || '사용자' },
+          data.session.access_token
+        );
+      }
+      
       navigate('/');
     } catch (err: any) {
       setError(err.message || '로그인에 실패했습니다.');

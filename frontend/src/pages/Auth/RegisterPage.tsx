@@ -24,7 +24,8 @@ const RegisterPage: React.FC = () => {
         options: {
           data: {
             nickname: nickname
-          }
+          },
+          emailRedirectTo: `${window.location.origin}/dashboard`
         }
       });
       
