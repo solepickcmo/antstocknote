@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../../store/authStore';
 import { supabase } from '../../api/supabase';
 import './AuthPage.css';
 
@@ -15,7 +14,6 @@ const LoginPage: React.FC = () => {
   const [isForgotLoading, setIsForgotLoading] = useState(false);
   
   const navigate = useNavigate();
-  const setAuth = useAuthStore(state => state.setAuth);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
