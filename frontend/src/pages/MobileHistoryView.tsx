@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { TagChip } from '../components/TagChip';
 import { useTradeStore } from '../store/tradeStore';
 import './HistoryPage.css';
 
