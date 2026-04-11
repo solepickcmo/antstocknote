@@ -165,7 +165,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
       });
       onClose(); // Close on success
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || '매매 내역 저장에 실패했습니다.');
+      setError(err.response?.data?.error || err.response?.data?.message || err.message || '매매 내역 저장에 실패했습니다.');
     } finally {
       setIsSubmitting(false);
     }
@@ -180,7 +180,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
               <h2>매매 내역</h2>
               <div className="header-actions">
                 <button type="button" className="btn-cancel-top" onClick={onClose} disabled={isSubmitting}>취소</button>
-                <button type="button" className="btn-save-top" onClick={handleSubmit} disabled={isSubmitting}>저장</button>
+                <button type="submit" form="tradeForm" className="btn-save-top" disabled={isSubmitting}>저장</button>
               </div>
             </>
           ) : (
@@ -193,7 +193,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
         
         {error && <div className="modal-error">{error}</div>}
         
-        <form onSubmit={handleSubmit} className="trade-form">
+        <form id="tradeForm" onSubmit={handleSubmit} className="trade-form">
           {isMobileMode && (
             <div className="segment-control">
               <button type="button" className={`segment-btn buy ${formData.type === 'buy' ? 'active' : ''}`} onClick={() => setFormData(prev => ({...prev, type: 'buy', strategyTag: '', emotionTag: ''}))}>매수 BUY</button>
