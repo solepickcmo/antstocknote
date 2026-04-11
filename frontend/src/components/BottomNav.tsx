@@ -6,6 +6,7 @@ import { useTradeStore } from '../store/tradeStore';
 import { useAuthStore } from '../store/authStore';
 import { useLayoutStore } from '../store/layoutStore';
 import './BottomNav.css';
+import { apiClient } from '../api/client';
 
 export const BottomNav: React.FC = () => {
   const setModalOpen = useTradeStore(state => state.setModalOpen);

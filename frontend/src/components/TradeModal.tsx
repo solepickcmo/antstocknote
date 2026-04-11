@@ -68,7 +68,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
   const [showStockDropdown, setShowStockDropdown] = useState(false);
   const [activeInput, setActiveInput] = useState<'ticker' | 'name' | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
