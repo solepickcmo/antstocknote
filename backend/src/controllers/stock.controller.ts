@@ -16,6 +16,10 @@ let stocks: Stock[] | null = null;
 const parseCSVLine = (text: string) => {
   const result: string[] = [];
   let current = '';
+  // Remove BOM if present at the very beginning of the first line
+  if (text.charCodeAt(0) === 0xFEFF) {
+    text = text.slice(1);
+  }
   let inQuotes = false;
   for (let i = 0; i < text.length; i++) {
     const char = text[i];
@@ -37,16 +41,32 @@ const parseCSVLine = (text: string) => {
 
 const loadStocks = () => {
   if (stocks) return stocks;
-  const filePath = path.join(__dirname, '../../all_stock_master.csv');
   
-  if (!fs.existsSync(filePath)) {
-    console.error('CSV file not found:', filePath);
+  const possiblePaths = [
+    path.join(process.cwd(), 'all_stock_master.csv'),
+    path.join(process.cwd(), 'backend', 'all_stock_master.csv'),
+    path.join(__dirname, '../../all_stock_master.csv'),
+    path.join(__dirname, '../../../all_stock_master.csv')
+  ];
+
+  let filePath = '';
+  for (const p of possiblePaths) {
+    if (fs.existsSync(p)) {
+      filePath = p;
+      break;
+    }
+  }
+
+  if (!filePath) {
+    console.error('CSV file not found in any of the search paths:', possiblePaths);
     return [];
   }
 
-  const fileContent = fs.readFileSync(filePath, 'utf-8');
-  const lines = fileContent.split(/\r?\n/);
-  stocks = [];
+  try {
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const lines = fileContent.split(/\r?\n/);
+    stocks = [];
+    
   
   // Skip header
   for (let i = 1; i < lines.length; i++) {
@@ -71,6 +91,10 @@ const loadStocks = () => {
     }
   }
   return stocks;
+  } catch (err) {
+    console.error('Error reading or parsing CSV file:', err);
+    return [];
+  }
 };
 
 export const searchStocks = async (req: Request, res: Response) => {
