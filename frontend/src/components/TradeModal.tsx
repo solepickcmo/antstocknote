@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTradeStore } from '../store/tradeStore';
-import { useLayoutStore } from '../store/layoutStore';
 import { apiClient } from '../api/client';
 import './TradeModal.css';
 
@@ -45,7 +44,6 @@ interface TradeModalProps {
 
 export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
   const createTrade = useTradeStore((state) => state.createTrade);
-  const isMobileMode = useLayoutStore((state) => state.isMobileMode);
   
   const [formData, setFormData] = useState({
     ticker: '',
@@ -174,32 +172,21 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-container glass-panel" onClick={e => e.stopPropagation()}>
-        <div className={isMobileMode ? "modal-header-mobile" : "modal-header"}>
-          {isMobileMode ? (
-            <>
-              <h2>매매 내역</h2>
-              <div className="header-actions">
-                <button type="button" className="btn-cancel-top" onClick={onClose} disabled={isSubmitting}>취소</button>
-                <button type="submit" form="tradeForm" className="btn-save-top" disabled={isSubmitting}>저장</button>
-              </div>
-            </>
-          ) : (
-            <>
-              <h2>새 매매 내역</h2>
-              <button type="button" className="close-btn" onClick={onClose}>&times;</button>
-            </>
-          )}
+        <div className="modal-header-mobile">
+          <h2>매매 내역</h2>
+          <div className="header-actions">
+            <button type="button" className="btn-cancel-top" onClick={onClose} disabled={isSubmitting}>취소</button>
+            <button type="submit" form="tradeForm" className="btn-save-top" disabled={isSubmitting}>저장</button>
+          </div>
         </div>
         
         {error && <div className="modal-error">{error}</div>}
         
         <form id="tradeForm" onSubmit={handleSubmit} className="trade-form">
-          {isMobileMode && (
-            <div className="segment-control">
-              <button type="button" className={`segment-btn buy ${formData.type === 'buy' ? 'active' : ''}`} onClick={() => setFormData(prev => ({...prev, type: 'buy', strategyTag: '', emotionTag: ''}))}>매수 BUY</button>
-              <button type="button" className={`segment-btn sell ${formData.type === 'sell' ? 'active' : ''}`} onClick={() => setFormData(prev => ({...prev, type: 'sell', strategyTag: '', emotionTag: ''}))}>매도 SELL</button>
-            </div>
-          )}
+          <div className="segment-control">
+            <button type="button" className={`segment-btn buy ${formData.type === 'buy' ? 'active' : ''}`} onClick={() => setFormData(prev => ({...prev, type: 'buy', strategyTag: '', emotionTag: ''}))}>매수 BUY</button>
+            <button type="button" className={`segment-btn sell ${formData.type === 'sell' ? 'active' : ''}`} onClick={() => setFormData(prev => ({...prev, type: 'sell', strategyTag: '', emotionTag: ''}))}>매도 SELL</button>
+          </div>
           <div className="form-row" ref={dropdownRef}>
             <div className="form-group autocomplete-container">
               <label>종목코드</label>
@@ -241,22 +228,6 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
             </div>
           </div>
           
-          {!isMobileMode && (
-            <div className="form-row">
-              <div className="form-group">
-                <label>유형</label>
-                <select name="type" value={formData.type} onChange={handleChange} className={formData.type}>
-                  <option value="buy">매수 (Buy)</option>
-                  <option value="sell">매도 (Sell)</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label>체결 일시</label>
-                <input type="datetime-local" name="tradedAt" value={formData.tradedAt} onChange={handleChange} required />
-              </div>
-            </div>
-          )}
-          
           <div className="form-row">
             <div className="form-group">
               <label>단가 (Price)</label>
@@ -268,109 +239,56 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {isMobileMode ? (
-            <>
-              <div className="form-row-single">
-                <div className="form-group">
-                  <label>총 체결금액</label>
-                  <input type="text" readOnly value={(Number(formData.price) * Number(formData.quantity)).toLocaleString()} className="readonly-input highlight" />
-                </div>
-              </div>
-              <div className="form-row-single">
-                <div className="form-group">
-                  <label>체결 일시</label>
-                  <input type="datetime-local" name="tradedAt" value={formData.tradedAt} onChange={handleChange} required />
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="form-row">
-              <div className="form-group">
-                <label>총 체결금액</label>
-                <input type="text" readOnly value={(Number(formData.price) * Number(formData.quantity)).toLocaleString()} className="readonly-input highlight" />
-              </div>
+          <div className="form-row-single">
+            <div className="form-group">
+              <label>총 체결금액</label>
+              <input type="text" readOnly value={(Number(formData.price) * Number(formData.quantity)).toLocaleString()} className="readonly-input highlight" />
             </div>
-          )}
+          </div>
+          <div className="form-row-single">
+            <div className="form-group">
+              <label>체결 일시</label>
+              <input type="datetime-local" name="tradedAt" value={formData.tradedAt} onChange={handleChange} required />
+            </div>
+          </div>
           
           
-          {isMobileMode ? (
-            <>
-              <div className="form-group block-group">
-                <label>전략 태그</label>
-                <div className="tag-selector">
-                  {(formData.type === 'buy' ? BUY_STRATEGY_TAGS : SELL_STRATEGY_TAGS).map((tag) => {
-                    const tagShort = tag.value.split('-')[0].trim();
-                    return (
-                      <button type="button" key={tag.value} className={`sel-chip ${formData.strategyTag === tag.value ? 'active' : ''}`} onClick={() => setFormData(f => ({...f, strategyTag: f.strategyTag === tag.value ? '' : tag.value}))}>
-                         {tagShort}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+          <div className="form-group block-group">
+            <label>전략 태그</label>
+            <div className="tag-selector">
+              {(formData.type === 'buy' ? BUY_STRATEGY_TAGS : SELL_STRATEGY_TAGS).map((tag) => {
+                const tagShort = tag.value.split('-')[0].trim();
+                return (
+                  <button type="button" key={tag.value} className={`sel-chip ${formData.strategyTag === tag.value ? 'active' : ''}`} onClick={() => setFormData(f => ({...f, strategyTag: f.strategyTag === tag.value ? '' : tag.value}))}>
+                     {tagShort}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
-              <div className="form-group block-group">
-                <label>감정 태그</label>
-                <div className="tag-selector">
-                  {(formData.type === 'buy' ? BUY_EMOTION_TAGS : SELL_EMOTION_TAGS).map((tag) => (
-                    <button type="button" key={tag} className={`sel-chip ${formData.emotionTag === tag ? 'active' : ''}`} onClick={() => setFormData(f => ({...f, emotionTag: f.emotionTag === tag ? '' : tag}))}>
-                       {tag}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="form-row">
-              <div className="form-group">
-                <label>전략 태그 (선택)</label>
-                <select name="strategyTag" value={formData.strategyTag} onChange={handleChange}>
-                  <option value="">선택안함</option>
-                  {formData.type === 'buy' 
-                    ? BUY_STRATEGY_TAGS.map(tag => <option key={tag.value} value={tag.value}>{tag.label}</option>)
-                    : SELL_STRATEGY_TAGS.map(tag => <option key={tag.value} value={tag.value}>{tag.label}</option>)
-                  }
-                </select>
-              </div>
-              <div className="form-group">
-                <label>감정 태그 (선택)</label>
-                <select name="emotionTag" value={formData.emotionTag} onChange={handleChange}>
-                  <option value="">선택안함</option>
-                  {formData.type === 'buy'
-                    ? BUY_EMOTION_TAGS.map(tag => <option key={tag} value={tag}>{tag}</option>)
-                    : SELL_EMOTION_TAGS.map(tag => <option key={tag} value={tag}>{tag}</option>)
-                  }
-                </select>
-              </div>
+          <div className="form-group block-group">
+            <label>감정 태그</label>
+            <div className="tag-selector">
+              {(formData.type === 'buy' ? BUY_EMOTION_TAGS : SELL_EMOTION_TAGS).map((tag) => (
+                <button type="button" key={tag} className={`sel-chip ${formData.emotionTag === tag ? 'active' : ''}`} onClick={() => setFormData(f => ({...f, emotionTag: f.emotionTag === tag ? '' : tag}))}>
+                   {tag}
+                </button>
+              ))}
             </div>
-          )}
+          </div>
 
           <div className="form-group">
             <label>자유 메모 (선택)</label>
             <textarea name="memo" value={formData.memo} onChange={handleChange} placeholder="매매에 대한 생각이나 근거를 기록하세요." rows={3}></textarea>
           </div>
           
-          {isMobileMode ? (
-            <div className="checkbox-group tooltip-wrapper mobile-toggle-wrapper">
-               <span style={{fontWeight: 600}}>커뮤니티 공개</span>
-               <label className="switch">
-                  <input type="checkbox" name="isPublic" checked={formData.isPublic} onChange={handleChange} disabled />
-                  <span className="slider round"></span>
-               </label>
-            </div>
-          ) : (
-            <div className="checkbox-group tooltip-wrapper">
-              <input type="checkbox" id="isPublic" name="isPublic" checked={formData.isPublic} onChange={handleChange} disabled />
-              <label htmlFor="isPublic" style={{ color: 'var(--text-muted)' }}>커뮤니티에 공개하기 (현재 비활성화됨)</label>
-            </div>
-          )}
-          
-          {/* 하단 모달 액션 (상단 헤더 버튼으로 이동한 경우 모바일은 숨김) */}
-          <div className="modal-actions" style={{display: isMobileMode ? 'none' : 'flex'}}>
-            <button type="button" className="btn-cancel" onClick={onClose} disabled={isSubmitting}>취소</button>
-            <button type="submit" className="btn-submit" disabled={isSubmitting}>
-              {isSubmitting ? '저장 중...' : '매매 내역 저장'}
-            </button>
+          <div className="checkbox-group tooltip-wrapper mobile-toggle-wrapper">
+             <span style={{fontWeight: 600}}>커뮤니티 공개</span>
+             <label className="switch">
+                <input type="checkbox" name="isPublic" checked={formData.isPublic} onChange={handleChange} disabled />
+                <span className="slider round"></span>
+             </label>
           </div>
         </form>
       </div>

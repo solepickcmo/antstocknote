@@ -20,6 +20,7 @@
 | 1.0.0 | 2026-04-08 | — | 최초 작성 — IEEE 1016-2009 기반 초안 |
 | 1.1.0 | 2026-04-09 | — | 계좌 개념 제거 및 유저 중심의 매매 구조로 설계 변경 |
 | 1.2.0 | 2026-04-10 | — | 종목 검색 자동완성, 매매 유형(Buy/Sell) 동적 태그 지원, 매매 복기 대시보드 리팩토링 및 오답노트 작성·연동 API 설계 반영 |
+| 1.3.0 | 2026-04-11 | — | DB 기반 빠른 종목 검색을 위해 pg_trgm GIN 인덱스를 적용한 `stock_master` 개체 추가 및 프론트엔드 모바일 UI 통합 반영 |
 
 ---
 
@@ -440,6 +441,23 @@ CREATE TABLE tags (
 );
 
 CREATE INDEX idx_tags_user_id ON tags(user_id);
+```
+
+#### stock_master (종목 마스터 DB)
+
+```sql
+-- PostgreSQL의 GIN 인덱스와 pg_trgm 확장 기능을 사용하여
+-- ILIKE '%keyword%' 형태의 쿼리를 최적화합니다.
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+CREATE TABLE stock_master (
+    id            SERIAL         PRIMARY KEY,
+    ticker        VARCHAR(20)    NOT NULL UNIQUE,
+    name          VARCHAR(100)   NOT NULL,
+    market        VARCHAR(20)    NOT NULL
+);
+
+CREATE INDEX idx_stock_name ON stock_master USING gin(name gin_trgm_ops);
 ```
 
 #### 분석용 DB View
