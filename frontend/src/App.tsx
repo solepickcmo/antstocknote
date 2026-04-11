@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { NavBar } from './components/NavBar';
 import { DashboardPage } from './pages/DashboardPage';
 import { CalendarPage } from './pages/CalendarPage';
@@ -96,24 +97,26 @@ const App: React.FC = () => {
   if (!isInitialized) return null; // 로딩 처리
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<AuthLayout />}>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-        </Route>
-        
-        <Route element={<ProtectedLayout />}>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/calendar" element={<CalendarPage />} />
-          <Route path="/history" element={<HistoryPage />} />
-          <Route path="/holdings" element={<HoldingsPage />} />
-          <Route path="/analysis" element={<AnalysisPage />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<AuthLayout />}>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+          </Route>
+          
+          <Route element={<ProtectedLayout />}>
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/history" element={<HistoryPage />} />
+            <Route path="/holdings" element={<HoldingsPage />} />
+            <Route path="/analysis" element={<AnalysisPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 };
 
