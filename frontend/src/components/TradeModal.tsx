@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTradeStore } from '../store/tradeStore';
 import { apiClient } from '../api/client';
+import { loadStockMasterCSV, StockData } from '../utils/csv';
 import './TradeModal.css';
 
 const BUY_STRATEGY_TAGS = [
@@ -91,13 +92,22 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
 
     searchTimeoutRef.current = setTimeout(async () => {
       try {
-        const response = await apiClient.get(`/stocks/search?q=${encodeURIComponent(query)}`);
-        setStockResults(response.data);
+        const stocks = await loadStockMasterCSV();
+        const lowerQuery = query.toLowerCase();
+        
+        // Local filtering
+        const filtered = stocks.filter(s => 
+          s.symbol.toLowerCase().includes(lowerQuery) || 
+          s.nameKo.toLowerCase().includes(lowerQuery) || 
+          s.nameEn.toLowerCase().includes(lowerQuery)
+        ).slice(0, 20); // Limit to top 20 results
+        
+        setStockResults(filtered);
         setShowStockDropdown(true);
       } catch (err) {
-        console.error('Failed to search stocks', err);
+        console.error('Failed to search stocks locally', err);
       }
-    }, 300);
+    }, 150); // Reduced delay since it's local
   };
 
   if (!isOpen) return null;
