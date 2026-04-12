@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTradeStore } from '../store/tradeStore';
-import { apiClient } from '../api/client';
-import { loadStockMasterCSV, StockData } from '../utils/csv';
+import { loadStockMasterCSV } from '../utils/csv';
 import './TradeModal.css';
 
 const BUY_STRATEGY_TAGS = [
