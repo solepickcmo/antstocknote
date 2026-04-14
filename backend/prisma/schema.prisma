@@ -34,10 +34,10 @@ model Trade {
   ticker       String
   name         String
   type         String    // "buy" | "sell"
-  price        Float
-  quantity     Float
-  fee          Float     @default(0)
-  pnl          Float?
+  price        Decimal   @db.Decimal(18, 2)
+  quantity     Decimal   @db.Decimal(18, 8)
+  fee          Decimal   @db.Decimal(18, 2) @default(0)
+  pnl          Decimal?  @db.Decimal(18, 2)
   traded_at    DateTime
   strategy_tag String?
   emotion_tag  String?

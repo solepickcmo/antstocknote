@@ -8,7 +8,11 @@ export const createTrade = async (req: Request, res: Response) => {
     // BigInt 직렬화 처리
     res.status(201).json({
       ...trade,
-      id: trade.id.toString()
+      id: trade.id.toString(),
+      price: Number(trade.price),
+      quantity: Number(trade.quantity),
+      fee: Number(trade.fee),
+      pnl: trade.pnl ? Number(trade.pnl) : null
     });
   } catch (error: any) {
     if (error.message === 'ERR_PUBLIC_NOT_ALLOWED') {
@@ -28,7 +32,11 @@ export const getTrades = async (req: Request, res: Response) => {
       ...result,
       trades: result.trades.map(t => ({
         ...t,
-        id: t.id.toString()
+        id: t.id.toString(),
+        price: Number(t.price),
+        quantity: Number(t.quantity),
+        fee: Number(t.fee),
+        pnl: t.pnl ? Number(t.pnl) : null
       }))
     });
   } catch (error: any) {
