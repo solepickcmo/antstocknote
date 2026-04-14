@@ -27,7 +27,7 @@ interface TradeState {
   createTrade: (tradeData: any) => Promise<void>;
 }
 
-export const useTradeStore = create<TradeState>((set, get) => ({
+export const useTradeStore = create<TradeState>((set) => ({
   trades: [],
   isLoading: false,
   error: null,

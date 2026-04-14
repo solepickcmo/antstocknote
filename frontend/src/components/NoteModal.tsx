@@ -55,7 +55,12 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.error || '오답 노트 저장에 실패했습니다.');
+      // 에러가 객체인 경우도 반드시 문자열로 변환 (React Error #31 방지)
+      const rawMsg = err.response?.data?.message
+        || err.response?.data?.error
+        || err.message
+        || '오답 노트 저장에 실패했습니다.';
+      setError(typeof rawMsg === 'string' ? rawMsg : JSON.stringify(rawMsg));
     } finally {
       setIsSubmitting(false);
     }
