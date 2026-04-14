@@ -172,7 +172,12 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
       });
       onClose(); // Close on success
     } catch (err: any) {
-      setError(err.response?.data?.error || err.response?.data?.message || err.message || '매매 내역 저장에 실패했습니다.');
+      // 에러 메시지가 객체({code, message} 형태)일 수 있어 항상 문자열로 변환
+      const rawMsg = err.response?.data?.message
+        || err.response?.data?.error
+        || err.message
+        || '매매 내역 저장에 실패했습니다.';
+      setError(typeof rawMsg === 'string' ? rawMsg : JSON.stringify(rawMsg));
     } finally {
       setIsSubmitting(false);
     }
