@@ -1,20 +1,41 @@
 import { create } from 'zustand';
-import { apiClient } from '../api/client';
+import { supabase } from '../api/supabase';
+
+// ─────────────────────────────────────────────
+// 타입 정의
+// ─────────────────────────────────────────────
 
 export interface Trade {
   id: string;
+  user_id: string;
   ticker: string;
   name: string;
   type: 'buy' | 'sell';
-  price: number;        // 백엔드에서 숫자로 반환됨
-  quantity: number;     // 백엔드에서 숫자로 반환됨
-  fee: number;          // 백엔드에서 숫자로 반환됨
-  pnl: number | null;   // 백엔드에서 숫자 또는 null로 반환됨
+  price: number;
+  quantity: number;
+  fee: number;
+  pnl: number | null;     // 매수 시 null, 매도 시 계산값
   traded_at: string;
   strategy_tag: string | null;
   emotion_tag: string | null;
+  memo: string | null;
   is_open: boolean;
   is_public: boolean;
+}
+
+// 매매 생성 시 전달받는 데이터 형태
+export interface CreateTradeInput {
+  ticker: string;
+  name: string;
+  type: 'buy' | 'sell';
+  price: number;
+  quantity: number;
+  fee: number;
+  tradedAt: string;
+  strategyTag?: string | null;
+  emotionTag?: string | null;
+  memo?: string | null;
+  isPublic?: boolean;
 }
 
 interface TradeState {
@@ -24,44 +45,133 @@ interface TradeState {
   isModalOpen: boolean;
   setModalOpen: (isOpen: boolean) => void;
   fetchTrades: () => Promise<void>;
-  createTrade: (tradeData: any) => Promise<void>;
+  createTrade: (input: CreateTradeInput) => Promise<void>;
 }
 
-export const useTradeStore = create<TradeState>((set) => ({
+// ─────────────────────────────────────────────
+// PnL 계산 유틸 (이동평균법)
+// SDD BR-001 기준: PnL = (매도가 - 평균매수가) × 수량 - 수수료
+// ─────────────────────────────────────────────
+
+function calcPnlForSell(
+  ticker: string,
+  sellPrice: number,
+  sellQuantity: number,
+  sellFee: number,
+  existingTrades: Trade[]
+): number {
+  // 해당 종목의 매수 거래만 필터링하여 이동평균 계산
+  const buyTrades = existingTrades.filter(
+    (t) => t.ticker === ticker && t.type === 'buy'
+  );
+
+  const totalBuyQty = buyTrades.reduce((sum, t) => sum + t.quantity, 0);
+  const totalBuyCost = buyTrades.reduce(
+    (sum, t) => sum + t.price * t.quantity,
+    0
+  );
+
+  const avgBuyPrice = totalBuyQty > 0 ? totalBuyCost / totalBuyQty : 0;
+  return (sellPrice - avgBuyPrice) * sellQuantity - sellFee;
+}
+
+// ─────────────────────────────────────────────
+// Zustand Store
+// ─────────────────────────────────────────────
+
+export const useTradeStore = create<TradeState>((set, get) => ({
   trades: [],
   isLoading: false,
   error: null,
   isModalOpen: false,
-  setModalOpen: (isOpen: boolean) => set({ isModalOpen: isOpen }),
+
+  setModalOpen: (isOpen) => set({ isModalOpen: isOpen }),
+
+  // 로그인된 유저의 전체 매매 내역을 Supabase에서 직접 조회
+  // RLS 정책으로 인해 auth.uid() = user_id 조건이 자동 적용됨
   fetchTrades: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiClient.get('/trades');
-      set({ trades: response.data.trades || [], isLoading: false });
-    } catch (error: any) {
-      // 에러가 객체인 경우도 반드시 문자열로 변환 (React Error #31 방지)
-      const msg = error.response?.data?.message
-        || error.response?.data?.error
-        || error.message
-        || '매매 내역을 불러오는데 실패했습니다.';
-      set({ error: typeof msg === 'string' ? msg : JSON.stringify(msg), isLoading: false });
+      const { data, error } = await supabase
+        .from('trades')
+        .select('*')
+        .order('traded_at', { ascending: false });
+
+      if (error) throw error;
+      set({ trades: (data as Trade[]) || [], isLoading: false });
+    } catch (err: any) {
+      set({
+        error: err.message || '매매 내역을 불러오는데 실패했습니다.',
+        isLoading: false,
+      });
     }
   },
-  createTrade: async (tradeData: any) => {
+
+  // 매매 기록 저장: 매도일 경우 PnL을 이동평균법으로 계산 후 저장
+  // 수량이 0이 되는 경우 is_open을 FALSE로 업데이트 (BR-002)
+  createTrade: async (input) => {
     set({ isLoading: true, error: null });
     try {
-      // 저장 후 목록을 새로 불러와 서버 데이터와 항상 동기화
-      await apiClient.post('/trades', tradeData);
-      const listResponse = await apiClient.get('/trades');
-      set({ trades: listResponse.data.trades || [], isLoading: false });
-    } catch (error: any) {
-      // 에러가 객체인 경우도 반드시 문자열로 변환 (React Error #31 방지)
-      const msg = error.response?.data?.message
-        || error.response?.data?.error
-        || error.message
-        || '매매 내역 추가에 실패했습니다.';
-      set({ error: typeof msg === 'string' ? msg : JSON.stringify(msg), isLoading: false });
-      throw error;
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error('로그인이 필요합니다.');
+
+      const existingTrades = get().trades;
+
+      // 매도 시 이동평균법으로 PnL 계산
+      const pnl =
+        input.type === 'sell'
+          ? calcPnlForSell(
+              input.ticker,
+              input.price,
+              input.quantity,
+              input.fee,
+              existingTrades
+            )
+          : null;
+
+      // 저장 후 잔여 수량 계산 (is_open 결정)
+      const totalBuyQty = existingTrades
+        .filter((t) => t.ticker === input.ticker && t.type === 'buy')
+        .reduce((sum, t) => sum + t.quantity, 0);
+      const totalSellQty = existingTrades
+        .filter((t) => t.ticker === input.ticker && t.type === 'sell')
+        .reduce((sum, t) => sum + t.quantity, 0);
+
+      // 현재 매도 후 잔여 수량이 0이면 is_open = false
+      const remainingQty =
+        input.type === 'sell'
+          ? totalBuyQty - totalSellQty - input.quantity
+          : totalBuyQty + input.quantity - totalSellQty;
+
+      const isOpen = remainingQty > 0.000001;
+
+      const { error } = await supabase.from('trades').insert({
+        user_id: user.id,
+        ticker: input.ticker,
+        name: input.name,
+        type: input.type,
+        price: input.price,
+        quantity: input.quantity,
+        fee: input.fee,
+        pnl,
+        traded_at: input.tradedAt,
+        strategy_tag: input.strategyTag ?? null,
+        emotion_tag: input.emotionTag ?? null,
+        memo: input.memo ?? null,
+        is_open: isOpen,
+        is_public: input.isPublic ?? false,
+      });
+
+      if (error) throw error;
+
+      // 저장 완료 후 목록 새로고침
+      await get().fetchTrades();
+    } catch (err: any) {
+      const msg = err.message || '매매 내역 추가에 실패했습니다.';
+      set({ error: msg, isLoading: false });
+      throw err;
     }
-  }
+  },
 }));

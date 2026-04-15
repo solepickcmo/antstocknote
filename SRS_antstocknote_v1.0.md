@@ -23,6 +23,7 @@
 | 1.4.0 | 2026-04-11 | — | 기록하기 폼 모바일 UI 단일화, 종목명 검색용 `stock_master` 테이블 도입 및 GIN 인덱스 적용 |
 | 1.5.0 | 2026-04-11 | — | 종목 검색 자동완성을 백엔드 DB 통신에서 프론트엔드 내장 CSV 로컬 파싱 방식으로 롤백 (통신 지연 및 연결 실패 완벽 대응) |
 | 1.6.0 | 2026-04-15 | — | 종목 검색 드롭다운 UI 입력 필드별 최적화(종목코드 시 티커만, 종목명 시 이름만 노출) 및 백엔드 404 에러 로깅 강화 반영 |
+| 1.7.0 | 2026-04-15 | — | 인프라 구조를 Railway+Supabase에서 Supabase 단독으로 변경, DDL 및 RLS 정책 추가 |
 
 ---
 
@@ -84,7 +85,7 @@
 
 ### 2.1 제품 관점 (Product Perspective)
 
-본 시스템은 독립 실행형(stand-alone) 모바일/웹 애플리케이션으로, 외부 증권사 API 연동 없이 사용자가 직접 매매 내역을 입력하는 방식을 채택한다. 시스템은 메인 서비스와 커뮤니티 서비스로 논리적으로 분리되며, 두 서비스는 UUID 기반의 단방향 API 통신으로만 연결된다.
+본 시스템은 Supabase BaaS 기반의 서버리스 아키텍처로 구현하며, 모든 비즈니스 로직은 Supabase SDK 및 PostgreSQL 트리거/함수로 처리한다. 메인 서비스와 커뮤니티 서비스는 논리적으로 분리되며, 두 서비스는 UUID 기반의 단방향 통신으로 연결된다.
 
 ### 2.2 제품 기능 요약 (Product Functions)
 
@@ -107,9 +108,9 @@
 ### 2.4 제약 사항 (Constraints)
 
 - MVP 단계에서 외부 증권사/거래소 API 자동 연동은 범위 외로 제외한다.
+- 백엔드 인프라를 별도로 구축하지 않으며, 데이터베이스는 Supabase(PostgreSQL) 단독 구조로 설계하여 운영한다.
 - 커뮤니티 기능은 메인 DB에 FK 제약을 생성하지 않는 방식으로 분리 구현해야 한다.
 - 개인정보(이름, 이메일)는 커뮤니티 DB에 직접 저장하지 않는다.
-- 데이터베이스는 관계형 DB(PostgreSQL 또는 MySQL 계열)를 기준으로 설계한다.
 
 ### 2.5 가정 및 의존성 (Assumptions and Dependencies)
 
@@ -143,7 +144,7 @@
 | FR-020 | 사용자는 매수/매도 구분(type), 종목 코드(ticker), 종목명(name), 체결가(price), 수량(quantity), 수수료(fee), 체결일시(traded_at)를 입력할 수 있어야 한다. | P1 |
 | FR-021 | 사용자는 매매 건에 전략 태그(strategy_tag) 및 감정 태그(emotion_tag)를 복수 지정할 수 있어야 한다. | P1 |
 | FR-022 | 매매 건에 자유 메모(memo, 최대 1,000자)를 입력할 수 있어야 한다. | P1 |
-| FR-023 | 시스템은 매수/매도 매칭 시 PnL(수익/손실)을 자동 계산하여 저장해야 한다. | P1 |
+| FR-023 | 시스템은 매수/매도 매칭 시 PnL(수익/손실)을 자동 계산하여 저장해야 한다. (이동평균법을 기준으로 계산하며, 수량이 0이 될 시 is_open을 FALSE로 자동 전환하는 DB 트리거를 구현한다) | P1 |
 | FR-024 | 사용자는 특정 매매 건을 커뮤니티에 공개(is_public = TRUE)로 설정할 수 있어야 한다. | P2 |
 | FR-025 | 보유 중인 종목은 is_open = TRUE로 표시되며, 전량 매도 시 자동으로 FALSE로 변경되어야 한다. | P1 |
 | FR-026 | 종목 입력 시 프론트엔드에 내장된 CSV 파일(all_stock_master.csv)을 직접 로드하고 파싱하여 초고속으로 검색 자동완성(Auto-Complete) 기능을 제공한다. **사용자 편의를 위해 종목코드 입력 시에는 드롭다운에 티커만, 종목명 입력 시에는 종목명만 노출하여 가독성을 극대화한다.** KRX 종목은 티커 좌측 0패딩 규칙을 따른다. | P1 |
@@ -256,6 +257,41 @@
 
 메인 서비스는 4개의 핵심 테이블로 구성된다. 분석·캘린더·통계 데이터는 별도 테이블 없이 trades 및 notes 테이블 집계로 처리한다.
 
+#### 5.1.0 데이터베이스 상세 설계 (SQL DDL)
+
+개발 편의를 위해 핵심 테이블 생성 및 인덱스, RLS 정책용 DDL 코드를 제공한다.
+
+```sql
+-- 1. 종목 마스터 (GIN 인덱스 적용)
+CREATE TABLE stock_master (
+    id SERIAL PRIMARY KEY,
+    ticker VARCHAR(20) NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL,
+    market VARCHAR(20) NOT NULL
+);
+CREATE INDEX idx_stock_name_trgm ON stock_master USING gin (name gin_trgm_ops); -- FR-026/5.1.6 대응
+
+-- 2. 매매 기록 테이블 (RLS 정책 포함)
+CREATE TABLE trades (
+    id BIGSERIAL PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE, -- Supabase Auth 연동
+    ticker VARCHAR(20) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    type VARCHAR(10) CHECK (type IN ('buy', 'sell')) NOT NULL,
+    price DECIMAL(18,4) NOT NULL,
+    quantity DECIMAL(18,8) NOT NULL,
+    pnl DECIMAL(18,4), -- 매도 시 트리거를 통한 PnL 계산 로직 필요
+    is_open BOOLEAN DEFAULT TRUE,
+    is_public BOOLEAN DEFAULT FALSE,
+    traded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- RLS 설정: 본인의 데이터만 조회/수정 가능
+ALTER TABLE trades ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can manage their own trades" ON trades
+    FOR ALL USING (auth.uid() = user_id);
+```
+
 #### 5.1.1 users
 
 | 컬럼명 | 타입 | 제약조건 | 설명 |
@@ -320,7 +356,12 @@
 
 > **검색 인덱스 구조**: 초고속 검색 자동완성을 위해 `ticker`에는 UNIQUE(B-Tree) 인덱스를, `name` 컬럼에는 `pg_trgm` 모듈 기반의 **GIN 인덱스(`gin_trgm_ops`)**를 부여하여 ILIKE 부분 일치 검색 처리 속도를 보장한다.
 
-### 5.2 커뮤니티 DB 분리 원칙
+### 5.2 보안 및 RLS(Row Level Security) 정책
+
+Supabase의 핵심 보안 모델로서 RLS 정책을 명시한다.
+- 모든 테이블은 `auth.uid() = user_id` 정책을 적용하여 본인의 데이터만 접근 가능하도록 제한한다.
+
+### 5.3 커뮤니티 DB 분리 원칙
 
 | 원칙 | 상세 내용 |
 |---|---|
