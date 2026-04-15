@@ -128,9 +128,11 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
     const { name, value, type } = e.target;
     
     if (name === 'type') {
+      // [name]: value 동적 키 방식은 TypeScript가 type 필드를 string으로 추론하므로
+      // 명시적 필드명과 타입 단언으로 처리한다.
       setFormData(prev => ({
         ...prev,
-        [name]: value,
+        type: value as 'buy' | 'sell',
         strategyTag: '',
         emotionTag: ''
       }));
