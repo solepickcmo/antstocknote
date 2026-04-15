@@ -210,7 +210,6 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
                   {stockResults.map(stock => (
                     <li key={`${stock.marketCode}-${stock.symbol}`} onClick={() => handleStockSelect(stock)}>
                       <div className="stock-info">
-                        <span className="stock-name">{getStockDisplayName(stock)}</span>
                         <span className="stock-symbol">{stock.symbol}</span>
                       </div>
                       <div className="stock-meta">
@@ -230,7 +229,6 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
                     <li key={`${stock.marketCode}-${stock.symbol}`} onClick={() => handleStockSelect(stock)}>
                       <div className="stock-info">
                         <span className="stock-name">{stock.nameKo}</span>
-                        <span className="stock-symbol">{stock.symbol}</span>
                       </div>
                       <div className="stock-meta">
                         <span className="market-badge">{stock.marketCode}</span>

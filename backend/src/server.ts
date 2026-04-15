@@ -60,6 +60,15 @@ app.get('/health', async (req, res) => {
   }
 });
 
+// 404 Catch-all handler
+app.use((req, res) => {
+  console.warn(`[404] Not Found: ${req.method} ${req.url}`);
+  res.status(404).json({
+    error: 'NOT_FOUND',
+    message: `Requested route ${req.method} ${req.url} not found on this server.`
+  });
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

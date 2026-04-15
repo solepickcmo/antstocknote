@@ -22,6 +22,7 @@
 | 1.2.0 | 2026-04-10 | — | 종목 검색 자동완성, 매매 유형(Buy/Sell) 동적 태그 지원, 매매 복기 대시보드 리팩토링 및 오답노트 작성·연동 API 설계 반영 |
 | 1.3.0 | 2026-04-11 | — | DB 기반 빠른 종목 검색을 위해 pg_trgm GIN 인덱스를 적용한 `stock_master` 개체 추가 및 프론트엔드 모바일 UI 통합 반영 |
 | 1.4.0 | 2026-04-11 | — | 종목 검색 자동완성을 백엔드 DB 통신에서 프론트엔드 내장 CSV 로컬 파싱 방식으로 롤백 (네트워크 지연/연결 실패 대응) |
+| 1.5.0 | 2026-04-15 | — | 종목 검색 드롭다운 UI 입력 필드별 가독성 최적화 로직 적용 및 백엔드 404 Catch-all 예외 처리 아키텍처 반영 |
 
 ---
 
@@ -538,6 +539,7 @@ CREATE INDEX idx_posts_created_at ON posts(created_at DESC);
 | Content-Type | application/json (요청·응답 모두) |
 | 날짜 형식 | ISO 8601 — 예: 2025-04-08T09:30:00Z |
 | 오류 응답 형식 | `{ "code": "ERR_CODE", "message": "설명", "details": {} }` |
+| 404 오류 처리 | 정의되지 않은 모든 경로는 Catch-all 핸들러를 통해 `[404] Not Found` 서버 로그를 남기며, `{ "error": "NOT_FOUND", "message": "..." }` 응답을 고정 반환함 |
 | 페이지네이션 | GET 목록 조회: ?page=0&size=20 (0-indexed) |
 
 ### 8.2 인증 API
@@ -582,8 +584,8 @@ CREATE INDEX idx_posts_created_at ON posts(created_at DESC);
 
 | 항목 | 내용 |
 |---|---|
-| 요청 Body | `{ "ticker": "string", "name": "string", "type": "buy\|sell", "price": Decimal, "quantity": Decimal, "fee": Decimal, "tradedAt": DateTime, "strategyTag": "string?", "emotionTag": "string?", "memo": "string?", "isPublic": Boolean }` |
 | 응답 201 | `{ "tradeId": Long, "pnl": Decimal\|null, "isOpen": Boolean }` |
+| 특이 사항 | **프론트엔드 UX**: `ticker` 입력 시 드롭다운에는 심볼만 노출, `name` 입력 시에는 종목명만 노출하여 가독성을 높임. 실제 선택 시에는 두 필드 데이터가 상호 보완적으로 자동 완성됨. |
 | 오류 403 | ERR_PUBLIC_NOT_ALLOWED — public_profile_enabled = FALSE인데 isPublic = TRUE 시도 |
 
 #### GET /trades — 매매 히스토리 목록
