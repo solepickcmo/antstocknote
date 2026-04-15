@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { apiClient } from '../api/client';
-import './TradeModal.css'; // Reusing TradeModal styles for consistency
+import { supabase } from '../api/supabase';
+import './TradeModal.css';
 
 interface NoteModalProps {
   isOpen: boolean;
@@ -21,17 +21,24 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
     }
   }, [isOpen]);
 
+  // Supabase에서 직접 매도 거래만 조회 (RLS 적용됨)
   const fetchTrades = async () => {
     try {
-      // Fetch recent sell trades. Assuming backend returns an array under `trades`.
-      const response = await apiClient.get('/trades?limit=50');
-      const sellTrades = response.data.trades.filter((t: any) => t.type === 'sell');
-      setTrades(sellTrades);
-      if (sellTrades.length > 0) {
-        setSelectedTradeId(String(sellTrades[0].id));
+      const { data, error } = await supabase
+        .from('trades')
+        .select('*')
+        .eq('type', 'sell')
+        .order('traded_at', { ascending: false })
+        .limit(50);
+
+      if (error) throw error;
+
+      setTrades(data || []);
+      if (data && data.length > 0) {
+        setSelectedTradeId(String(data[0].id));
       }
     } catch (err) {
-      console.error('Failed to fetch trades', err);
+      console.error('매도 거래 목록 조회 실패', err);
     }
   };
 
@@ -46,21 +53,23 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
 
     try {
       const selectedTrade = trades.find(t => String(t.id) === selectedTradeId);
-      const mistakeType = selectedTrade?.strategyTag || ''; // Use strategyTag as mistakeType
-      
-      await apiClient.post(`/notes/${selectedTradeId}`, {
-        mistakeType,
-        content
-      });
+      // strategy_tag를 mistakeType으로 활용 (SDD FR-062 기준)
+      const mistakeType = selectedTrade?.strategy_tag || '';
+
+      // notes 테이블에 upsert (trade_id에 unique 제약)
+      const { error: upsertError } = await supabase
+        .from('notes')
+        .upsert(
+          { trade_id: Number(selectedTradeId), mistake_type: mistakeType, content },
+          { onConflict: 'trade_id' }
+        );
+
+      if (upsertError) throw upsertError;
+
       onSuccess();
       onClose();
     } catch (err: any) {
-      // 에러가 객체인 경우도 반드시 문자열로 변환 (React Error #31 방지)
-      const rawMsg = err.response?.data?.message
-        || err.response?.data?.error
-        || err.message
-        || '오답 노트 저장에 실패했습니다.';
-      setError(typeof rawMsg === 'string' ? rawMsg : JSON.stringify(rawMsg));
+      setError(err.message || '오답 노트 저장에 실패했습니다.');
     } finally {
       setIsSubmitting(false);
     }
@@ -73,37 +82,37 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
           <h2>오답 노트 작성</h2>
           <button className="close-btn" onClick={onClose}>&times;</button>
         </div>
-        
+
         {error && <div className="modal-error">{error}</div>}
-        
+
         <form onSubmit={handleSubmit} className="trade-form">
           <div className="form-group full-width">
             <label>대상 매매 선택</label>
-            <select 
-              value={selectedTradeId} 
+            <select
+              value={selectedTradeId}
               onChange={e => setSelectedTradeId(e.target.value)}
               required
             >
               {trades.length === 0 && <option value="">매도 기록이 없습니다.</option>}
               {trades.map(t => (
                 <option key={t.id} value={t.id}>
-                  {new Date(t.tradedAt).toLocaleDateString()} - {t.name} ({t.ticker}) {t.pnl < 0 ? `손실` : `수익`}
+                  {new Date(t.traded_at).toLocaleDateString()} - {t.name} ({t.ticker}) {t.pnl < 0 ? '손실' : '수익'}
                 </option>
               ))}
             </select>
           </div>
-          
+
           <div className="form-group full-width">
             <label>오답 내용</label>
-            <textarea 
-              value={content} 
-              onChange={e => setContent(e.target.value)} 
-              placeholder="무엇이 아쉬웠는지, 다음에는 어떻게 다르게 행동할 것인지 적어보세요." 
+            <textarea
+              value={content}
+              onChange={e => setContent(e.target.value)}
+              placeholder="무엇이 아쉬웠는지, 다음에는 어떻게 다르게 행동할 것인지 적어보세요."
               rows={5}
               required
             ></textarea>
           </div>
-          
+
           <div className="modal-actions">
             <button type="button" className="btn-cancel" onClick={onClose} disabled={isSubmitting}>취소</button>
             <button type="submit" className="btn-submit" disabled={isSubmitting}>

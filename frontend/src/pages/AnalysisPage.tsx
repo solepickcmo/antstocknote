@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { apiClient } from '../api/client';
+import { supabase } from '../api/supabase';
 import { NoteModal } from '../components/NoteModal';
 import './AnalysisPage.css';
 
@@ -17,16 +17,19 @@ interface MistakeStat {
 
 interface Note {
   id: string;
-  tradeId: string;
+  trade_id: string;
   content: string;
-  createdAt: string;
-  stockName: string;
-  ticker: string;
-  tradeDate: string;
-  strategyTag: string;
+  created_at: string;
+  // trades 테이블 조인으로 가져오는 필드
+  trades?: {
+    name: string;
+    ticker: string;
+    traded_at: string;
+    strategy_tag: string | null;
+  };
 }
 
-// 겹치지 않는 색상 부여 (전략은 주로 푸른/초록/보라계열, 실수는 붉은/노란계열)
+// 색상 팔레트: 전략은 파랑/초록계열, 실수는 붉은/노란계열
 const STRATEGY_COLORS = ['#2563eb', '#3b82f6', '#10b981', '#14b8a6', '#8b5cf6', '#6366f1'];
 const MISTAKE_COLORS  = ['#dc2626', '#ef4444', '#ea580c', '#f59e0b', '#eab308', '#d97706'];
 
@@ -38,19 +41,65 @@ export const AnalysisPage: React.FC = () => {
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
   const [visibleNotesCount, setVisibleNotesCount] = useState(2);
 
+  // Supabase에서 직접 집계: 별도 백엔드 없이 trades 테이블을 기반으로 분석
   const fetchAnalysis = async () => {
     try {
       setIsLoading(true);
-      const [stratRes, mistRes, notesRes] = await Promise.all([
-        apiClient.get('/analysis/strategy'),
-        apiClient.get('/analysis/mistakes'),
-        apiClient.get('/analysis/notes')
-      ]);
-      setStrategies(stratRes.data.strategies);
-      setMistakes(mistRes.data.mistakes);
-      setNotes(notesRes.data.notes);
+
+      // 매도 거래 전체 조회 (RLS 자동 적용)
+      const { data: sellTrades, error: tradesErr } = await supabase
+        .from('trades')
+        .select('*')
+        .eq('type', 'sell');
+
+      if (tradesErr) throw tradesErr;
+
+      // 전략별 승률 집계 (클라이언트 사이드)
+      const strategyMap = new Map<string, { total: number; wins: number; pnlSum: number }>();
+      (sellTrades || []).forEach(t => {
+        const tag = t.strategy_tag || '태그 없음';
+        if (!strategyMap.has(tag)) {
+          strategyMap.set(tag, { total: 0, wins: 0, pnlSum: 0 });
+        }
+        const s = strategyMap.get(tag)!;
+        s.total++;
+        if ((t.pnl ?? 0) > 0) s.wins++;
+        s.pnlSum += Number(t.pnl ?? 0);
+      });
+
+      const strategyStats: StrategyStat[] = Array.from(strategyMap.entries()).map(([tag, s]) => ({
+        tag,
+        total: s.total,
+        winRate: s.total > 0 ? Math.round((s.wins / s.total) * 100) : 0,
+        avgPnl: s.total > 0 ? Math.round(s.pnlSum / s.total) : 0,
+      }));
+      setStrategies(strategyStats);
+
+      // 실수 유형: 손실 거래의 전략 태그 기준으로 집계 (SDD FR-062)
+      const mistakeMap = new Map<string, number>();
+      (sellTrades || [])
+        .filter(t => (t.pnl ?? 0) < 0)
+        .forEach(t => {
+          const tag = t.strategy_tag || '태그 없음';
+          mistakeMap.set(tag, (mistakeMap.get(tag) ?? 0) + 1);
+        });
+
+      const mistakeStats: MistakeStat[] = Array.from(mistakeMap.entries())
+        .map(([type, count]) => ({ type, count }))
+        .sort((a, b) => b.count - a.count);
+      setMistakes(mistakeStats);
+
+      // 오답 노트 조회 (trades 정보 함께 조인)
+      const { data: notesData, error: notesErr } = await supabase
+        .from('notes')
+        .select('*, trades(name, ticker, traded_at, strategy_tag)')
+        .order('created_at', { ascending: false });
+
+      if (notesErr) throw notesErr;
+      setNotes((notesData as Note[]) || []);
+
     } catch (err) {
-      console.error('Failed to fetch analysis stats', err);
+      console.error('분석 데이터 조회 실패:', err);
     } finally {
       setIsLoading(false);
     }
@@ -64,17 +113,14 @@ export const AnalysisPage: React.FC = () => {
     return <div className="p-8 text-center animate-pulse">데이터를 집계 중입니다...</div>;
   }
 
-  // 상단 데시보드 계산
+  // 상단 요약 계산
   const totalTrades = strategies.reduce((acc, s) => acc + s.total, 0);
   const totalWins = strategies.reduce((acc, s) => acc + Math.round(s.total * (s.winRate / 100)), 0);
   const overallWinRate = totalTrades > 0 ? ((totalWins / totalTrades) * 100).toFixed(1) : '0.0';
-  
   const totalPnlSum = strategies.reduce((acc, s) => acc + (s.avgPnl * s.total), 0);
   const overallAvgPnl = totalTrades > 0 ? Math.round(totalPnlSum / totalTrades) : 0;
 
-  // 최대값 계산 (바 길이 렌더링용)
   const maxMistakeCount = mistakes.length > 0 ? Math.max(...mistakes.map(m => m.count)) : 1;
-
   const visibleNotes = notes.slice(0, visibleNotesCount);
 
   return (
@@ -83,7 +129,7 @@ export const AnalysisPage: React.FC = () => {
         <h1>매매 복기 / 분석</h1>
       </header>
 
-      {/* 요약 데시보드 */}
+      {/* 요약 대시보드 */}
       <div className="summary-cards">
         <div className="summary-card glass-panel">
           <h3>전체 승률</h3>
@@ -102,7 +148,7 @@ export const AnalysisPage: React.FC = () => {
       </div>
 
       <div className="analysis-grid">
-        {/* 좌측: 통계 (전략별 승률 / 실수 유형 분석) */}
+        {/* 좌측: 전략별 승률 / 실수 유형 */}
         <div className="analysis-col">
           <section className="stats-section">
             <h2>전략별 승률</h2>
@@ -111,11 +157,11 @@ export const AnalysisPage: React.FC = () => {
                 <div className="bar-row" key={s.tag}>
                   <span className="bar-label">{s.tag}</span>
                   <div className="bar-track">
-                    <div 
-                      className="bar-fill" 
-                      style={{ 
-                        width: `${s.winRate}%`, 
-                        backgroundColor: STRATEGY_COLORS[idx % STRATEGY_COLORS.length] 
+                    <div
+                      className="bar-fill"
+                      style={{
+                        width: `${s.winRate}%`,
+                        backgroundColor: STRATEGY_COLORS[idx % STRATEGY_COLORS.length]
                       }}
                     ></div>
                   </div>
@@ -133,11 +179,11 @@ export const AnalysisPage: React.FC = () => {
                 <div className="bar-row" key={m.type}>
                   <span className="bar-label">{m.type}</span>
                   <div className="bar-track">
-                    <div 
-                      className="bar-fill" 
-                      style={{ 
-                        width: `${(m.count / maxMistakeCount) * 100}%`, 
-                        backgroundColor: MISTAKE_COLORS[idx % MISTAKE_COLORS.length] 
+                    <div
+                      className="bar-fill"
+                      style={{
+                        width: `${(m.count / maxMistakeCount) * 100}%`,
+                        backgroundColor: MISTAKE_COLORS[idx % MISTAKE_COLORS.length]
                       }}
                     ></div>
                   </div>
@@ -156,14 +202,16 @@ export const AnalysisPage: React.FC = () => {
               <h2>오답 노트</h2>
               <button className="btn-add-note" onClick={() => setIsNoteModalOpen(true)}>작성하기</button>
             </div>
-            
+
             <div className="notes-list">
               {visibleNotes.map(n => (
                 <div className="note-card glass-panel" key={n.id}>
                   <div className="note-header">
-                    <span className="note-badge">{n.strategyTag || '태그 없음'}</span>
+                    <span className="note-badge">{n.trades?.strategy_tag || '태그 없음'}</span>
                     <span className="note-meta">
-                      {n.stockName} · {new Date(n.tradeDate).toLocaleDateString(undefined, { month: '2-digit', day: '2-digit' })}
+                      {n.trades?.name} · {n.trades?.traded_at
+                        ? new Date(n.trades.traded_at).toLocaleDateString(undefined, { month: '2-digit', day: '2-digit' })
+                        : ''}
                     </span>
                   </div>
                   <p className="note-content">{n.content}</p>
@@ -174,8 +222,8 @@ export const AnalysisPage: React.FC = () => {
 
             {notes.length > visibleNotesCount && (
               <div className="more-btn-container">
-                <button 
-                  className="btn-more" 
+                <button
+                  className="btn-more"
                   onClick={() => setVisibleNotesCount(prev => prev + 2)}
                 >
                   <span className="more-icon">↓</span>
@@ -186,10 +234,10 @@ export const AnalysisPage: React.FC = () => {
         </div>
       </div>
 
-      <NoteModal 
-        isOpen={isNoteModalOpen} 
-        onClose={() => setIsNoteModalOpen(false)} 
-        onSuccess={() => fetchAnalysis()} 
+      <NoteModal
+        isOpen={isNoteModalOpen}
+        onClose={() => setIsNoteModalOpen(false)}
+        onSuccess={() => fetchAnalysis()}
       />
     </div>
   );

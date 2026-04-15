@@ -45,19 +45,32 @@ interface TradeModalProps {
 export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
   const createTrade = useTradeStore((state) => state.createTrade);
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    ticker: string;
+    name: string;
+    type: 'buy' | 'sell';
+    price: string;
+    quantity: string;
+    fee: string;
+    tradedAt: string;
+    strategyTag: string;
+    emotionTag: string;
+    memo: string;
+    isPublic: boolean;
+  }>({
     ticker: '',
     name: '',
     type: 'buy',
     price: '',
     quantity: '',
     fee: '0',
-    tradedAt: new Date().toISOString().slice(0, 16), // YYYY-MM-DDTHH:mm
+    tradedAt: new Date().toISOString().slice(0, 16),
     strategyTag: '',
     emotionTag: '',
     memo: '',
     isPublic: false
   });
+
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');

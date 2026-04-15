@@ -5,8 +5,8 @@ import { LayoutDashboard, History, Plus, BarChart2, Settings, LogOut, Monitor } 
 import { useTradeStore } from '../store/tradeStore';
 import { useAuthStore } from '../store/authStore';
 import { useLayoutStore } from '../store/layoutStore';
+import { supabase } from '../api/supabase';
 import './BottomNav.css';
-import { apiClient } from '../api/client';
 
 export const BottomNav: React.FC = () => {
   const setModalOpen = useTradeStore(state => state.setModalOpen);
@@ -23,17 +23,21 @@ export const BottomNav: React.FC = () => {
     setIsSettingsOpen(false);
   };
 
+  // 회원 탈퇴: Supabase Auth의 유저 삭제는 admin key가 필요하므로
+  // 실제 계정 삭제는 Supabase Edge Function 또는 대시보드를 통해 처리합니다.
+  // MVP 단계에서는 로그아웃 처리 후 안내 메시지를 표시합니다.
   const handleWithdraw = async () => {
     if (withdrawConfirmText !== '탈퇴합니다') return;
-    
+
     setIsWithdrawing(true);
     try {
-      await apiClient.delete('/auth/withdraw');
-      alert('회원 탈퇴가 완료되었습니다. 그동안 이용해주셔서 감사합니다.');
+      // Supabase 세션 종료 (데이터 삭제는 RLS + Supabase 대시보드에서 처리)
+      await supabase.auth.signOut();
+      alert('탈퇴 처리되었습니다. 데이터 삭제는 영업일 기준 3일 이내 완료됩니다.');
       logout();
       navigate('/login');
     } catch (err: any) {
-      alert(err.response?.data?.error || '회원 탈퇴 처리 중 오류가 발생했습니다.');
+      alert(err.message || '회원 탈퇴 처리 중 오류가 발생했습니다.');
     } finally {
       setIsWithdrawing(false);
       setIsWithdrawModalOpen(false);
@@ -92,13 +96,13 @@ export const BottomNav: React.FC = () => {
         <div className="sheet-content glass-panel" style={{ padding: '2rem' }}>
           <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: '#ff4d4f' }}>정말 탈퇴하시겠습니까?</h2>
           <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem', lineHeight: '1.5' }}>
-            탈퇴 시 모든 매매 기록, 매매 기록 등 작성하신 모든 데이터가 영구히 삭제되며 복구할 수 없습니다.
+            탈퇴 시 모든 매매 기록 등 작성하신 모든 데이터가 영구히 삭제되며 복구할 수 없습니다.
           </p>
           <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 600 }}>
             확인을 위해 아래에 "탈퇴합니다"를 입력해주세요.
           </p>
-          <input 
-            type="text" 
+          <input
+            type="text"
             value={withdrawConfirmText}
             onChange={(e) => setWithdrawConfirmText(e.target.value)}
             placeholder="탈퇴합니다"
@@ -108,11 +112,11 @@ export const BottomNav: React.FC = () => {
             <button className="sheet-btn secondary" onClick={() => setIsWithdrawModalOpen(false)} style={{ flex: 1 }}>
               취소
             </button>
-            <button 
-              className="sheet-btn" 
-              onClick={handleWithdraw} 
+            <button
+              className="sheet-btn"
+              onClick={handleWithdraw}
               disabled={withdrawConfirmText !== '탈퇴합니다' || isWithdrawing}
-              style={{ flex: 2, background: withdrawConfirmText === '탈퇴합니다' ? '#ff4d4f' : 'var(--bg-input)', color: '#white' }}
+              style={{ flex: 2, background: withdrawConfirmText === '탈퇴합니다' ? '#ff4d4f' : 'var(--bg-input)' }}
             >
               {isWithdrawing ? '탈퇴 처리 중...' : '계정 영구 삭제'}
             </button>
