@@ -15,11 +15,11 @@ export const DashboardPage: React.FC = () => {
     fetchTrades();
   }, [fetchTrades]);
 
-  // 간이 자산 계산기
-  // 거래가 1건도 없으면 0원, 1건이라도 있으면 1000만원 기본 세팅
-  const initialCapital = trades.length > 0 ? 10000000 : 0;
+  // SRS FR-030: 초기자금은 별도로 관리하지 않으므로 누적 실현손익만 표시
+  // 매매 내역이 없으면 0원, 있으면 누적 PnL 합계를 총 자산으로 표시한다.
   const totalPnl = Math.floor(trades.reduce((sum, trade) => sum + (Number(trade.pnl) || 0), 0));
-  const currentAsset = Math.floor(initialCapital + totalPnl);
+  const currentAsset = totalPnl;
+
 
   // 차트 데이터 렌더링 (오늘 기준 전후 3일, 총 7일)
   const chartData = React.useMemo(() => {
@@ -52,7 +52,7 @@ export const DashboardPage: React.FC = () => {
       </header>
 
       <section className="metrics-grid">
-        <MetricCard title="총 자산" value={`₩ ${currentAsset.toLocaleString()}`} subtitle={trades.length > 0 ? "초기자금 1,000만원" : "보유 자산 없음"} />
+        <MetricCard title="누적 실현손익" value={`₩ ${currentAsset > 0 ? '+' : ''}${currentAsset.toLocaleString()}`} subtitle="매도 완료된 거래 기준" trend={currentAsset >= 0 ? 'up' : 'down'} />
         <MetricCard title="누적 수익금" value={`₩ ${totalPnl > 0 ? '+' : ''}${totalPnl.toLocaleString()}`} trend={totalPnl >= 0 ? 'up' : 'down'} />
         <MetricCard title="전체 매매 건수" value={`${trades.length}건`} />
       </section>
