@@ -98,6 +98,7 @@ export const GoalReverseCalculator: React.FC = () => {
             <label className="text-sm font-semibold text-gray-600">월 목표 수익금 (원)</label>
             <input
               type="text"
+              aria-label="월 목표 수익금 입력"
               className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all font-bold text-lg"
               placeholder="예: 2,000,000"
               value={goalAmount}
@@ -113,6 +114,7 @@ export const GoalReverseCalculator: React.FC = () => {
               <label className="text-sm font-semibold text-gray-600">평균 수익금 (원)</label>
               <input
                 type="number"
+                aria-label="평균 수익금 입력"
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all font-semibold"
                 placeholder="0"
                 value={avgProfit}
@@ -123,6 +125,7 @@ export const GoalReverseCalculator: React.FC = () => {
               <label className="text-sm font-semibold text-gray-600">평균 손실금 (원)</label>
               <input
                 type="number"
+                aria-label="평균 손실금 입력"
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all font-semibold"
                 placeholder="0"
                 value={avgLoss}

@@ -178,6 +178,7 @@ export const BEPCalculator: React.FC = () => {
                   <div className="grid grid-cols-[1fr_1fr_auto] gap-2 items-center">
                     <input
                       type="number"
+                      aria-label="분할 매수 단가 입력"
                       placeholder="0"
                       className={`w-full px-3 py-2.5 rounded-xl border transition-all text-sm font-semibold outline-none focus:ring-2 focus:ring-primary ${isPriceInvalid ? 'border-red-500 bg-red-50' : 'border-gray-100 bg-gray-50'}`}
                       value={row.price}
@@ -185,6 +186,7 @@ export const BEPCalculator: React.FC = () => {
                     />
                     <input
                       type="number"
+                      aria-label="분할 매수 수량 입력"
                       placeholder="0"
                       className="w-full px-3 py-2.5 rounded-xl border border-gray-100 bg-gray-50 text-sm font-semibold outline-none focus:ring-2 focus:ring-primary transition-all"
                       value={row.quantity}
@@ -222,6 +224,7 @@ export const BEPCalculator: React.FC = () => {
             <label className="text-sm font-semibold text-gray-600">현재가 (현재 상황 확인용)</label>
             <input
               type="number"
+              aria-label="현재가 입력"
               className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-primary outline-none transition-all font-bold text-lg"
               placeholder="현재 주가를 입력하세요"
               value={currentPrice}

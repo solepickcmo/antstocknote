@@ -8,12 +8,7 @@ dotenv.config();
 const app = express();
 
 // Security headers - Helmet should be at the very top
-app.use(helmet({
-  contentSecurityPolicy: false, // 필요시 커스텀 CSP 설정 가능
-  xContentTypeOptions: true,
-  xFrameOptions: { action: 'deny' },
-  hsts: true,
-}));
+app.use(helmet());
 
 
 
