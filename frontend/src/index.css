@@ -1,9 +1,13 @@
+@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
+@theme {
+  --color-primary: #F0B90B;
+  --color-success: #0ECB81;
+  --color-danger: #F6465D;
+  --color-ink: #1E2026;
+  --color-slate: #848E9C;
+}
 
 :root {
   /* Common Brand Colors */
