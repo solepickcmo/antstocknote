@@ -123,14 +123,14 @@ const LoginPage: React.FC = () => {
         <div className="modal-overlay">
           <div className="modal-content glass-panel" style={{ maxWidth: '400px' }}>
             <h2 className="modal-title">비밀번호 찾기</h2>
-            <p className="modal-subtitle" style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1rem' }}>
+            <p className="modal-subtitle" style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1rem' }}>
               가입하신 이메일을 입력하시면 비밀번호 재설정 링크를 보내드립니다.
             </p>
             {forgotMessage && <div className="auth-error" style={{ background: forgotMessage.includes('성공') ? 'rgba(0, 200, 83, 0.2)' : 'rgba(255, 77, 79, 0.2)', color: forgotMessage.includes('성공') ? '#00c853' : '#ff4d4f' }}>{forgotMessage}</div>}
             
             <form onSubmit={handleForgotPassword}>
               <div className="form-group">
-                <label id="label-forgot-email" htmlFor="forgot-email" style={{ display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>
+                <label id="label-forgot-email" htmlFor="forgot-email" style={{ display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>
                   비밀번호 재설정 링크를 받을 이메일을 입력하세요.
                 </label>
                 <input 

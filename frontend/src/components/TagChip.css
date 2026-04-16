@@ -7,8 +7,8 @@
   font-weight: 500;
   white-space: nowrap;
   transition: all 0.2s ease;
-  background: var(--bg-input);
-  color: var(--text-muted);
+  background: var(--bg-card);
+  color: var(--text-secondary);
   border: 1px solid var(--border);
 }
 
@@ -19,9 +19,9 @@
 }
 
 .tag-chip.emotion {
-  background: rgba(244, 63, 94, 0.1);
-  color: var(--loss);
-  border-color: rgba(244, 63, 94, 0.2);
+  background: rgba(246, 70, 93, 0.1);
+  color: var(--danger);
+  border-color: rgba(246, 70, 93, 0.2);
 }
 
 .tag-chip.clickable {
