@@ -14,7 +14,7 @@ export interface Trade {
   price: number;
   quantity: number;
   fee: number;
-  pnl: number | null;     // 매수 시 null, 매도 시 계산값
+  pnl: number | null;     // 단순 차익 (수수료 제외)
   traded_at: string;
   strategy_tag: string | null;
   emotion_tag: string | null;
@@ -72,7 +72,8 @@ function calcPnlForSell(
   );
 
   const avgBuyPrice = totalBuyQty > 0 ? totalBuyCost / totalBuyQty : 0;
-  return (sellPrice - avgBuyPrice) * sellQuantity - sellFee;
+  // 수정: 수수료 제외 단순 차익 계산 (사용자 요청)
+  return (sellPrice - avgBuyPrice) * sellQuantity;
 }
 
 // ─────────────────────────────────────────────
@@ -118,6 +119,21 @@ export const useTradeStore = create<TradeState>((set, get) => ({
       if (!user) throw new Error('로그인이 필요합니다.');
 
       const existingTrades = get().trades;
+
+      // --- 공매도 방지 체크 (v2.1) ---
+      if (input.type === 'sell') {
+        const tickerBuyQty = existingTrades
+          .filter((t) => t.ticker === input.ticker && t.type === 'buy')
+          .reduce((sum, t) => sum + Number(t.quantity), 0);
+        const tickerSellQty = existingTrades
+          .filter((t) => t.ticker === input.ticker && t.type === 'sell')
+          .reduce((sum, t) => sum + Number(t.quantity), 0);
+        
+        const currentHeldQty = tickerBuyQty - tickerSellQty;
+        if (input.quantity > currentHeldQty + 0.00000001) { // 부동소수점 오차 고려
+          throw new Error(`보유 주식이 부족합니다. (현재 보유: ${currentHeldQty.toLocaleString()}주)`);
+        }
+      }
 
       // 매도 시 이동평균법으로 PnL 계산
       const pnl =

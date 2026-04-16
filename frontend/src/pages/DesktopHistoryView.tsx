@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import { Download } from 'lucide-react';
 import { TagChip } from '../components/TagChip';
 import { useTradeStore } from '../store/tradeStore';
+import { exportTradesToCSV } from '../utils/exportUtils';
 import './HistoryPage.css';
 
 export const DesktopHistoryView: React.FC = () => {
@@ -14,6 +15,14 @@ export const DesktopHistoryView: React.FC = () => {
     <div className="history-page animate-fade-in desktop-history">
       <header className="page-header">
         <h1>매매 내역</h1>
+        <button 
+          className="btn-export glass-panel" 
+          onClick={() => exportTradesToCSV(trades)}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.5rem 1rem', fontSize: '0.9rem' }}
+        >
+          <Download size={16} />
+          내보내기 (CSV)
+        </button>
       </header>
 
       <div className="filters-bar glass-panel">

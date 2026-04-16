@@ -1,41 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useTradeStore } from '../store/tradeStore';
-import { loadStockMasterCSV } from '../utils/csv';
-import './TradeModal.css';
+import { useTagStore } from '../store/tagStore';
 
-const BUY_STRATEGY_TAGS = [
-  { value: "#돌파매매", label: "#돌파매매 - 주요 저항선을 돌파하는 시점에 매수" },
-  { value: "#눌림목매매", label: "#눌림목매매 - 상승 추세 중 일시적 조정 구간에서 매수" },
-  { value: "#시가베팅", label: "#시가베팅 - 장 초반 강한 수급을 확인하고 시가에 매수" },
-  { value: "#종가베팅", label: "#종가베팅 - 다음 날 갭 상승을 기대하며 장 마감 직전 매수" },
-  { value: "#재료/공시", label: "#재료/공시 - 특정 호재나 뉴스 공시를 바탕으로 매수" },
-  { value: "#기술적반등", label: "#기술적반등 - 과매도 구간에서 기술적 반등을 노리고 매수" },
-  { value: "#박스권하단", label: "#박스권하단 - 박스권 횡보 중 하단 지지선에서 매수" },
-  { value: "#정배열초입", label: "#정배열초입 - 이평선들이 정배열로 확산되는 초입에 매수" },
-  { value: "#수급매매", label: "#수급매매 - 외인이나 기관의 강한 매집을 확인 후 매수" },
-  { value: "#추세추종", label: "#추세추종 - 살아있는 우상향 추세에 올라타는 매수" }
-];
-
-const BUY_EMOTION_TAGS = [
-  "#자신감", "#조급함(FOMO)", "#설렘", "#불안감", "#차분함", "#확신", "#호기심", "#압박감", "#욕심", "#공포"
-];
-
-const SELL_STRATEGY_TAGS = [
-  { value: "#목표가도달", label: "#목표가도달 - 미리 설정한 수익 목표가에서 익절" },
-  { value: "#손절선이탈", label: "#손절선이탈 - 미리 정한 손절 가격을 터치하여 기계적 매도" },
-  { value: "#트레일링스탑", label: "#트레일링스탑 - 고점 대비 일정 비율 하락 시 수익 보전 매도" },
-  { value: "#분할익절", label: "#분할익절 - 리스크 관리를 위해 수익권에서 물량 일부 매도" },
-  { value: "#시간손절", label: "#시간손절 - 예상한 시간 내에 시세가 나지 않아 기회비용 차원 매도" },
-  { value: "#추세이탈", label: "#추세이탈 - 유지되던 상승 추세선이 꺾일 때 매도" },
-  { value: "#재료소멸", label: "#재료소멸 - 호재가 선반영되었거나 뉴스가 발표된 직후 매도" },
-  { value: "#리스크관리", label: "#리스크관리 - 지수 급락 등 시장 위험으로 인한 비중 축소" },
-  { value: "#고점신호", label: "#고점신호 - 보조지표상 과매수 혹은 캔들상 고점 신호 시 매도" },
-  { value: "#종목교체", label: "#종목교체 - 더 매력적인 다른 종목을 사기 위한 매도" }
-];
-
-const SELL_EMOTION_TAGS = [
-  "#후련함", "#아쉬움", "#기쁨", "#자책", "#무덤덤함", "#안도감", "#억울함", "#만족감", "#당혹감", "#인내"
-];
+// 기본 헬퍼: 현재 시간을 KST(UTC+9) 문자열로 변환 (datetime-local 형식)
+const getKSTNow = () => {
+  const now = new Date();
+  const kstOffset = 9 * 60 * 60 * 1000;
+  const kstDate = new Date(now.getTime() + kstOffset);
+  return kstDate.toISOString().slice(0, 16);
+};
 
 interface TradeModalProps {
   isOpen: boolean;
@@ -44,6 +15,9 @@ interface TradeModalProps {
 
 export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
   const createTrade = useTradeStore((state) => state.createTrade);
+  const { strategyTags, emotionTags, fetchTags, addTag, deleteTag } = useTagStore();
+  
+  const [newTagInput, setNewTagInput] = useState({ strategy: '', emotion: '' });
   
   const [formData, setFormData] = useState<{
     ticker: string;
@@ -64,12 +38,16 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
     price: '',
     quantity: '',
     fee: '0',
-    tradedAt: new Date().toISOString().slice(0, 16),
-    strategyTag: '',
-    emotionTag: '',
-    memo: '',
     isPublic: false
   });
+
+  // 모달 열릴 때 태그 데이터 로드
+  useEffect(() => {
+    if (isOpen) {
+      fetchTags();
+      setFormData(prev => ({ ...prev, tradedAt: getKSTNow() }));
+    }
+  }, [isOpen, fetchTags]);
 
   
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -179,6 +157,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
         price: Number(formData.price),
         quantity: Number(formData.quantity),
         fee: Number(formData.fee),
+        // KST 입력값을 UTC로 변환하여 전송
         tradedAt: new Date(formData.tradedAt).toISOString(),
         strategyTag: formData.strategyTag || null,
         emotionTag: formData.emotionTag || null,
@@ -187,12 +166,10 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
       });
       onClose(); // Close on success
     } catch (err: any) {
-      // 에러 메시지가 객체({code, message} 형태)일 수 있어 항상 문자열로 변환
-      const rawMsg = err.response?.data?.message
-        || err.response?.data?.error
+      const msg = err.response?.data?.message
         || err.message
         || '매매 내역 저장에 실패했습니다.';
-      setError(typeof rawMsg === 'string' ? rawMsg : JSON.stringify(rawMsg));
+      setError(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -281,27 +258,68 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
           
           
           <div className="form-group block-group">
-            <label>전략 태그</label>
+            <label>전략 태그 (최대 10개)</label>
             <div className="tag-selector">
-              {(formData.type === 'buy' ? BUY_STRATEGY_TAGS : SELL_STRATEGY_TAGS).map((tag) => {
-                const tagShort = tag.value.split('-')[0].trim();
-                return (
-                  <button type="button" key={tag.value} className={`sel-chip ${formData.strategyTag === tag.value ? 'active' : ''}`} onClick={() => setFormData(f => ({...f, strategyTag: f.strategyTag === tag.value ? '' : tag.value}))}>
-                     {tagShort}
+              {strategyTags.map((tag) => (
+                <div key={tag.id} className={`tag-chip-container ${formData.strategyTag === tag.name ? 'active' : ''}`}>
+                  <button type="button" className="sel-chip" onClick={() => setFormData(f => ({...f, strategyTag: f.strategyTag === tag.name ? '' : tag.name}))}>
+                     {tag.name}
                   </button>
-                );
-              })}
+                  <button type="button" className="btn-tag-delete" onClick={(e) => { e.stopPropagation(); deleteTag(tag.id); }}>×</button>
+                </div>
+              ))}
+              {strategyTags.length < 10 && (
+                <div className="tag-add-box">
+                  <input 
+                    type="text" 
+                    placeholder="추가..." 
+                    value={newTagInput.strategy} 
+                    onChange={(e) => setNewTagInput(p => ({...p, strategy: e.target.value}))}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (newTagInput.strategy) {
+                          addTag(newTagInput.strategy, 'strategy');
+                          setNewTagInput(p => ({...p, strategy: ''}));
+                        }
+                      }
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
 
           <div className="form-group block-group">
-            <label>감정 태그</label>
+            <label>감정 태그 (최대 10개)</label>
             <div className="tag-selector">
-              {(formData.type === 'buy' ? BUY_EMOTION_TAGS : SELL_EMOTION_TAGS).map((tag) => (
-                <button type="button" key={tag} className={`sel-chip ${formData.emotionTag === tag ? 'active' : ''}`} onClick={() => setFormData(f => ({...f, emotionTag: f.emotionTag === tag ? '' : tag}))}>
-                   {tag}
-                </button>
+              {emotionTags.map((tag) => (
+                <div key={tag.id} className={`tag-chip-container ${formData.emotionTag === tag.name ? 'active' : ''}`}>
+                  <button type="button" className="sel-chip" onClick={() => setFormData(f => ({...f, emotionTag: f.emotionTag === tag.name ? '' : tag.name}))}>
+                     {tag.name}
+                  </button>
+                  <button type="button" className="btn-tag-delete" onClick={(e) => { e.stopPropagation(); deleteTag(tag.id); }}>×</button>
+                </div>
               ))}
+              {emotionTags.length < 10 && (
+                <div className="tag-add-box">
+                  <input 
+                    type="text" 
+                    placeholder="추가..." 
+                    value={newTagInput.emotion} 
+                    onChange={(e) => setNewTagInput(p => ({...p, emotion: e.target.value}))}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (newTagInput.emotion) {
+                          addTag(newTagInput.emotion, 'emotion');
+                          setNewTagInput(p => ({...p, emotion: ''}));
+                        }
+                      }
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
 

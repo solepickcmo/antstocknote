@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Calendar, History, BarChart2, Users, Settings, PieChart, PlusSquare, Smartphone, LogOut } from 'lucide-react';
+import { LayoutDashboard, Calendar, History, BarChart2, Users, Settings, PieChart, PlusSquare, Smartphone, LogOut, Calculator } from 'lucide-react';
 import { useTradeStore } from '../store/tradeStore';
 import { useLayoutStore } from '../store/layoutStore';
 import { useAuthStore } from '../store/authStore';
@@ -51,6 +51,10 @@ export const NavBar: React.FC = () => {
         <NavLink to="/analysis" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
           <BarChart2 size={18} />
           <span>매매 복기</span>
+        </NavLink>
+        <NavLink to="/calculator" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+          <Calculator size={18} />
+          <span>BEP 계산기</span>
         </NavLink>
       </div>
 

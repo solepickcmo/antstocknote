@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { Download } from 'lucide-react';
 import { useTradeStore } from '../store/tradeStore';
+import { exportTradesToCSV } from '../utils/exportUtils';
 import './HistoryPage.css';
 
 export const MobileHistoryView: React.FC = () => {
@@ -81,7 +82,16 @@ export const MobileHistoryView: React.FC = () => {
     <div className="history-page animate-fade-in">
       <header className="page-header history-header">
         <h1>매매 내역</h1>
-        <button className="btn-header-action">+ 기록</button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button 
+            className="btn-header-action secondary" 
+            onClick={() => exportTradesToCSV(trades)}
+            style={{ padding: '0 10px', display: 'flex', alignItems: 'center' }}
+          >
+            <Download size={18} />
+          </button>
+          <button className="btn-header-action">+ 기록</button>
+        </div>
       </header>
 
       <div className="history-tabs">

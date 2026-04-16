@@ -325,3 +325,52 @@ input:checked + .slider:before {
   from { transform: translateY(100%); }
   to { transform: translateY(0); }
 }
+
+/* Tag Management UI (v2.1) */
+.tag-chip-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.tag-chip-container .sel-chip {
+  padding-right: 1.5rem !important; /* 삭제 버튼 공간 확보 */
+}
+
+.btn-tag-delete {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  padding: 0 4px;
+  cursor: pointer;
+  line-height: 1;
+  opacity: 0.6;
+}
+
+.btn-tag-delete:hover {
+  color: var(--loss);
+  opacity: 1;
+}
+
+.tag-add-box input {
+  padding: 0.2rem 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed var(--border);
+  border-radius: 20px;
+  color: var(--text-main);
+  font-size: 0.75rem;
+  width: 70px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.tag-add-box input:focus {
+  width: 100px;
+  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.08);
+}
