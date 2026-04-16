@@ -21,7 +21,7 @@ export const DesktopHistoryView: React.FC = () => {
           <p className="text-muted text-sm">기록된 모든 매수/매도 내역을 확인하세요.</p>
         </div>
         <button 
-          className="btn-export btn-primary" 
+          className="btn-export" 
           onClick={() => exportTradesToCSV(trades)}
         >
           <Download size={16} />

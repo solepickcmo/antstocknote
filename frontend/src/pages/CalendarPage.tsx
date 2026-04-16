@@ -96,10 +96,16 @@ export const CalendarPage: React.FC = () => {
     <div className="calendar-page animate-fade-in">
       <header className="page-header calendar-header-top">
         <h1>수익 캘린더</h1>
-        <div className="month-navigation glass-panel">
-          <button onClick={handlePrevMonth} className="nav-btn"><ChevronLeft size={20} /> {calendarData.month === 1 ? 12 : calendarData.month - 1}월</button>
+        <div className="month-navigation">
+          <button onClick={handlePrevMonth} className="nav-btn">
+            <ChevronLeft size={16} /> 
+            <span>{calendarData.month === 1 ? 12 : calendarData.month - 1}월</span>
+          </button>
           <span className="current-month-display">{calendarData.year}년 {calendarData.month}월</span>
-          <button onClick={handleNextMonth} className="nav-btn">{calendarData.month === 12 ? 1 : calendarData.month + 1}월 <ChevronRight size={20} /></button>
+          <button onClick={handleNextMonth} className="nav-btn">
+            <span>{calendarData.month === 12 ? 1 : calendarData.month + 1}월</span>
+            <ChevronRight size={16} />
+          </button>
         </div>
       </header>
 

@@ -117,9 +117,9 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
             ></textarea>
           </div>
 
-          <div className="modal-actions">
-            <button type="button" className="btn-cancel" onClick={onClose} disabled={isSubmitting}>취소</button>
-            <button type="submit" className="btn-submit" disabled={isSubmitting}>
+          <div className="modal-footer">
+            <button type="button" className="btn-secondary" onClick={onClose} disabled={isSubmitting}>취소</button>
+            <button type="submit" className="btn-primary" disabled={isSubmitting}>
               {isSubmitting ? '저장 중...' : '노트 저장'}
             </button>
           </div>
