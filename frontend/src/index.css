@@ -1,43 +1,66 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Rich Dark Theme Palette */
-  --bg-main: #0B0F19; /* Very dark blue-gray */
-  --bg-card: #151A28;
-  --bg-input: #1F2937;
-  --primary: #6366F1; /* Indigo */
-  --primary-hover: #4F46E5;
-  --text-main: #F9FAFB;
-  --text-muted: #9CA3AF;
+  /* Apple Binary Theme Palette */
+  --bg-black: #000000;
+  --bg-gray: #f5f5f7;
+  --bg-white: #ffffff;
   
-  --profit: #10B981; /* Emerald */
-  --profit-bg: rgba(16, 185, 129, 0.15);
-  --loss: #F43F5E; /* Rose */
-  --loss-bg: rgba(244, 63, 94, 0.15);
+  --primary: #0071e3; /* Apple Blue */
+  --primary-hover: #0077ed;
   
-  --border: rgba(255, 255, 255, 0.1);
-  --glass-bg: rgba(21, 26, 40, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.05);
-
-  --radius-sm: 6px;
+  --text-main: #1d1d1f;
+  --text-secondary: #86868b;
+  --text-white: #f5f5f7;
+  
+  --profit: #24b14d; /* Apple-style Green */
+  --loss: #ff3b30;   /* Apple-style Red */
+  
+  --border-light: rgba(0, 0, 0, 0.1);
+  --border-dark: rgba(255, 255, 255, 0.1);
+  
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-bg-dark: rgba(0, 0, 0, 0.7);
+  
+  --radius-sm: 8px;
   --radius-md: 12px;
-  --radius-lg: 16px;
+  --radius-lg: 20px;
+  --radius-pill: 980px; /* Apple-style rounded buttons */
   
-  --shadow-glow: 0 4px 14px 0 rgba(99, 102, 241, 0.39);
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  background-color: var(--bg-main);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: var(--bg-gray);
   color: var(--text-main);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
+  line-height: 1.47059;
+  font-weight: 400;
+  letter-spacing: -0.022em;
+}
+
+/* Apple-style Glassmorphism Utility */
+.apple-glass {
+  background-color: var(--glass-bg);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.apple-glass-dark {
+  background-color: var(--glass-bg-dark);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .glass-panel {

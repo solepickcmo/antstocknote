@@ -184,7 +184,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-container glass-panel" onClick={e => e.stopPropagation()}>
+      <div className="modal-container" onClick={e => e.stopPropagation()}>
         <div className="modal-header-mobile">
           <h2>매매 내역</h2>
           <div className="header-actions">
@@ -197,8 +197,8 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
         
         <form id="tradeForm" onSubmit={handleSubmit} className="trade-form">
           <div className="segment-control">
-            <button type="button" className={`segment-btn buy ${formData.type === 'buy' ? 'active' : ''}`} onClick={() => setFormData((prev: any) => ({...prev, type: 'buy', strategyTag: '', emotionTag: ''}))}>매수 BUY</button>
-            <button type="button" className={`segment-btn sell ${formData.type === 'sell' ? 'active' : ''}`} onClick={() => setFormData((prev: any) => ({...prev, type: 'sell', strategyTag: '', emotionTag: ''}))}>매도 SELL</button>
+            <button type="button" className={`segment-btn ${formData.type === 'buy' ? 'active buy' : ''}`} onClick={() => setFormData((prev: any) => ({...prev, type: 'buy', strategyTag: '', emotionTag: ''}))}>매수 BUY</button>
+            <button type="button" className={`segment-btn ${formData.type === 'sell' ? 'active sell' : ''}`} onClick={() => setFormData((prev: any) => ({...prev, type: 'sell', strategyTag: '', emotionTag: ''}))}>매도 SELL</button>
           </div>
           <div className="form-row" ref={dropdownRef}>
             <div className="form-group autocomplete-container">
@@ -253,7 +253,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
           <div className="form-row-single">
             <div className="form-group">
               <label>총 체결금액</label>
-              <input type="text" readOnly value={(Number(formData.price) * Number(formData.quantity)).toLocaleString()} className="readonly-input highlight" />
+              <input type="text" readOnly value={(Number(formData.price) * Number(formData.quantity)).toLocaleString() + ' 원'} className="readonly-input" />
             </div>
           </div>
           <div className="form-row-single">
@@ -298,13 +298,13 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          <div className="form-group">
+          <div className="form-group" style={{ marginTop: '1rem' }}>
             <label>자유 메모 (선택)</label>
             <textarea name="memo" value={formData.memo} onChange={handleChange} placeholder="매매에 대한 생각이나 근거를 기록하세요." rows={3}></textarea>
           </div>
           
-          <div className="checkbox-group tooltip-wrapper mobile-toggle-wrapper">
-             <span style={{fontWeight: 600}}>커뮤니티 공개</span>
+          <div className="mobile-toggle-wrapper">
+             <span style={{fontWeight: 600, color: 'var(--text-main)'}}>커뮤니티 공개</span>
              <label className="switch">
                 <input type="checkbox" name="isPublic" checked={formData.isPublic} onChange={handleChange} disabled />
                 <span className="slider round"></span>
