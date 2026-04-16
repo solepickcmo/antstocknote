@@ -31,6 +31,7 @@
 | 1.9.0 | 2026-04-16 | — | **구독 Tier 기반 접근 제어 및 Premium 기능 설계 반영**: subscriptions·goals 테이블 DDL, get_user_tier 함수, tierStore·themeStore 설계 및 TierGate 컴포넌트 구조 추가 (미구현 상태) |
 | 1.10.0 | 2026-04-16 | — | **데이터베이스 보안 강화 반영**: Supabase RLS 전수 적용, TEXT/UUID 타입 캐스팅 이슈(`::uuid`) 해결을 위한 정책 고도화 명세 추가 |
 | 2.0.0 | 2026-04-16 | — | **고급 매매 도구 및 정합성 로직 반영**: 손익분기점(BEP) 계산기, CSV 내보내기, KST 시간대 처리(DD-012), 공매도 방지 정책(BR-003, DD-013), 단순 차익 계산(BR-001, DD-014), 동적 태그 관리(tagStore) 설계 추가 및 구현 완료 상태 업데이트 |
+| 2.1.0 | 2026-04-16 | — | **전체 설계 구현 완료 및 배포 반영**: CalculatorPage, tagStore, exportUtils 실제 구현 상세 반영 및 Vercel 배포 완료 |
 
 ---
 
@@ -293,7 +294,7 @@ App
     ├── /analysis      → AnalysisPage
     ├── /journal/pre   → PreJournalPage (미구현)
     ├── /journal/post  → PostJournalPage (미구현)
-    ├── /calculator    → CalculatorPage (미구현)
+    ├── /calculator    → CalculatorPage
     └── /goals         → GoalSettingPage (미구현)
 ```
 
