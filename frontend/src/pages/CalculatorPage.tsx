@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Plus, Trash2, RotateCcw, Calculator as CalcIcon } from 'lucide-react';
 import './CalculatorPage.css';
 
@@ -22,12 +22,12 @@ export const CalculatorPage: React.FC = () => {
 
   const removeEntry = (id: string) => {
     if (entries.length > 1) {
-      setEntries(entries.filter(e => e.id !== id));
+      setEntries(entries.filter(entry => entry.id !== id));
     }
   };
 
   const updateEntry = (id: string, field: 'price' | 'quantity', value: string) => {
-    setEntries(entries.map(e => e.id === id ? { ...e, [field]: value } : e));
+    setEntries(entries.map(entry => entry.id === id ? { ...entry, [field]: value } : entry));
   };
 
   const reset = () => {
@@ -35,29 +35,29 @@ export const CalculatorPage: React.FC = () => {
     setSellFeeRate('0.23');
   };
 
-  const stats = useMemo(() => {
+  const statistics = useMemo(() => {
     let totalCost = 0;
     let totalQty = 0;
 
-    entries.forEach(e => {
-      const p = parseFloat(e.price);
-      const q = parseFloat(e.quantity);
-      if (!isNaN(p) && !isNaN(q)) {
-        totalCost += p * q;
-        totalQty += q;
+    entries.forEach(entry => {
+      const priceValue = parseFloat(entry.price);
+      const quantityValue = parseFloat(entry.quantity);
+      if (!isNaN(priceValue) && !isNaN(quantityValue)) {
+        totalCost += priceValue * quantityValue;
+        totalQty += quantityValue;
       }
     });
 
-    const avgPrice = totalQty > 0 ? totalCost / totalQty : 0;
-    const fee = parseFloat(sellFeeRate) / 100;
-    const bepPrice = avgPrice * (1 + fee);
-    const requiredReturnPct = avgPrice > 0 ? ((bepPrice / avgPrice) - 1) * 100 : 0;
+    const averagePrice = totalQty > 0 ? totalCost / totalQty : 0;
+    const feeDecimal = parseFloat(sellFeeRate) / 100;
+    const breakEvenPrice = averagePrice * (1 + feeDecimal);
+    const requiredReturnPct = averagePrice > 0 ? ((breakEvenPrice / averagePrice) - 1) * 100 : 0;
 
     return {
       totalCost,
       totalQty,
-      avgPrice,
-      bepPrice,
+      averagePrice,
+      breakEvenPrice,
       requiredReturnPct
     };
   }, [entries, sellFeeRate]);
@@ -94,7 +94,7 @@ export const CalculatorPage: React.FC = () => {
                     type="number" 
                     placeholder="0" 
                     value={entry.price} 
-                    onChange={(e) => updateEntry(entry.id, 'price', e.target.value)}
+                    onChange={(event) => updateEntry(entry.id, 'price', event.target.value)}
                   />
                 </div>
                 <div className="input-group">
@@ -103,7 +103,7 @@ export const CalculatorPage: React.FC = () => {
                     type="number" 
                     placeholder="0" 
                     value={entry.quantity} 
-                    onChange={(e) => updateEntry(entry.id, 'quantity', e.target.value)}
+                    onChange={(event) => updateEntry(entry.id, 'quantity', event.target.value)}
                   />
                 </div>
                 <button 
@@ -128,7 +128,7 @@ export const CalculatorPage: React.FC = () => {
                 type="number" 
                 step="0.01"
                 value={sellFeeRate} 
-                onChange={(e) => setSellFeeRate(e.target.value)}
+                onChange={(event) => setSellFeeRate(event.target.value)}
               />
             </div>
             <p className="fee-helper">유관기관수수료 + 세금 등을 포함한 요율을 입력하세요.</p>
@@ -140,7 +140,7 @@ export const CalculatorPage: React.FC = () => {
           <div className="result-card glass-panel primary-glow">
             <span className="label">평균 매수 단가</span>
             <div className="value-group">
-              <span className="val">{Math.floor(stats.avgPrice).toLocaleString()}</span>
+              <span className="val">{Math.floor(statistics.averagePrice).toLocaleString()}</span>
               <span className="unit">원</span>
             </div>
           </div>
@@ -149,14 +149,14 @@ export const CalculatorPage: React.FC = () => {
             <div className="result-card glass-panel">
               <span className="label">총 투자 금액</span>
               <div className="value-group small">
-                <span className="val">{Math.floor(stats.totalCost).toLocaleString()}</span>
+                <span className="val">{Math.floor(statistics.totalCost).toLocaleString()}</span>
                 <span className="unit">원</span>
               </div>
             </div>
             <div className="result-card glass-panel">
               <span className="label">총 보유 수량</span>
               <div className="value-group small">
-                <span className="val">{stats.totalQty.toLocaleString()}</span>
+                <span className="val">{statistics.totalQty.toLocaleString()}</span>
                 <span className="unit">주</span>
               </div>
             </div>
@@ -168,11 +168,11 @@ export const CalculatorPage: React.FC = () => {
               <span className="bep-hint">수수료 포함</span>
             </div>
             <div className="value-group large">
-              <span className="val profit-text">{Math.ceil(stats.bepPrice).toLocaleString()}</span>
+              <span className="val profit-text">{Math.ceil(statistics.breakEvenPrice).toLocaleString()}</span>
               <span className="unit">원</span>
             </div>
             <div className="return-required">
-              탈출을 위한 필요 수익률: <span className="profit-text">+{stats.requiredReturnPct.toFixed(2)}%</span>
+              탈출을 위한 필요 수익률: <span className="profit-text">+{statistics.requiredReturnPct.toFixed(2)}%</span>
             </div>
           </div>
 

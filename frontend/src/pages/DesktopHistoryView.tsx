@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import { Download } from 'lucide-react';
 import { TagChip } from '../components/TagChip';
 import { useTradeStore } from '../store/tradeStore';

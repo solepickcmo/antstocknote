@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useMemo } from 'react';
 import { Download } from 'lucide-react';
 import { useTradeStore } from '../store/tradeStore';
 import { exportTradesToCSV } from '../utils/exportUtils';
@@ -13,27 +14,28 @@ export const MobileHistoryView: React.FC = () => {
 
   // Holdings Calculation
   const holdings = useMemo(() => {
-    const map = new Map();
-    trades.forEach(t => {
-      if (!map.has(t.ticker)) {
-        map.set(t.ticker, {
-          ticker: t.ticker,
-          name: t.name,
+    const holdingsMap = new Map();
+    trades.forEach(trade => {
+      if (!holdingsMap.has(trade.ticker)) {
+        holdingsMap.set(trade.ticker, {
+          ticker: trade.ticker,
+          name: trade.name,
           totalCost: 0,
           quantity: 0,
         });
       }
-      const holding = map.get(t.ticker);
-      const qty = Number(t.quantity);
-      const price = Number(t.price);
+      const holding = holdingsMap.get(trade.ticker);
+      const quantityValue = Number(trade.quantity);
+      const priceValue = Number(trade.price);
       
-      if (t.type === 'buy') {
-        holding.quantity += qty;
-        holding.totalCost += price * qty;
-      } else if (t.type === 'sell' && holding.quantity > 0) {
+      if (trade.type === 'buy') {
+        holding.quantity += quantityValue;
+        holding.totalCost += priceValue * quantityValue;
+      } else if (trade.type === 'sell' && holding.quantity > 0) {
+        // 이동평균법: 매도 시 기존 평균 단가를 적용하여 투자 원금 차감
         const avgCost = holding.totalCost / holding.quantity;
-        holding.quantity -= qty;
-        holding.totalCost -= avgCost * qty;
+        holding.quantity -= quantityValue;
+        holding.totalCost -= avgCost * quantityValue;
       }
     });
 
@@ -41,12 +43,12 @@ export const MobileHistoryView: React.FC = () => {
     let portfolioTotalValue = 0;
     let portfolioTotalCost = 0;
 
-    map.forEach(holding => {
+    holdingsMap.forEach(holding => {
       if (holding.quantity > 0.000001) {
         const avgPrice = holding.totalCost / holding.quantity;
-        // Mock current price for simulation (+5% to -3% range based on hash of ticker)
-        const mockRandom = (parseInt(holding.ticker, 10) % 100) / 100; // 0 to 0.99
-        const priceModifier = 0.95 + (mockRandom * 0.15); // 0.95 to 1.10
+        // 임시 시뮬레이션: 티커 해시값을 활용한 변동률 적용 (실제 가격 API 연동 전까지 유지)
+        const mockRandom = (parseInt(holding.ticker, 10) % 100) / 100; 
+        const priceModifier = 0.95 + (mockRandom * 0.15); 
         const currentPrice = Math.floor(avgPrice * priceModifier);
         
         const currentValue = currentPrice * holding.quantity;
@@ -67,13 +69,13 @@ export const MobileHistoryView: React.FC = () => {
       }
     });
     
-    // Calculate weights
-    activeHoldings.forEach(h => {
-      h.weight = portfolioTotalValue > 0 ? (h.currentValue / portfolioTotalValue) * 100 : 0;
+    // 포트폴리오 비중 계산
+    activeHoldings.forEach(holding => {
+      holding.weight = portfolioTotalValue > 0 ? (holding.currentValue / portfolioTotalValue) * 100 : 0;
     });
 
     return {
-      list: activeHoldings.sort((a, b) => b.weight - a.weight), // Sort by weight
+      list: activeHoldings.sort((a, b) => b.weight - a.weight), // 비중 높은 순 정렬
       totalCost: portfolioTotalCost
     };
   }, [trades]);
@@ -120,16 +122,13 @@ export const MobileHistoryView: React.FC = () => {
               <span className="chip">보유중</span>
               <span className="chip">추세추종</span>
             </div>
-            <div className="trades-summary">
-              총 {trades.length}건 · 실현손익 ...
-            </div>
           </div>
 
           <div className="history-list">
             {isLoading && <div className="p-4 text-center">불러오는 중...</div>}
             {error && <div className="p-4 text-center text-red-500">{error}</div>}
             
-            {trades.map(trade => (
+            {trades.map((trade: any) => (
               <div key={trade.id} className="trade-card glass-panel">
                 <div className="trade-card-top">
                   <div>
@@ -178,35 +177,35 @@ export const MobileHistoryView: React.FC = () => {
           </div>
 
           <div className="holdings-list">
-            {holdings.list.map((h, idx) => (
-              <div key={h.ticker} className="holding-card glass-panel">
+            {holdings.list.map((holding: any, index: number) => (
+              <div key={holding.ticker} className="holding-card glass-panel">
                  <div className="holding-top">
                    <div>
-                     <span className="ticker">{h.ticker}</span>
-                     <span className="name">{h.name}</span>
+                     <span className="ticker">{holding.ticker}</span>
+                     <span className="name">{holding.name}</span>
                    </div>
                  </div>
                  
                  <div className="holding-mid text-muted text-sm my-1">
-                   {h.quantity}주 · 평균 {Math.floor(h.avgPrice).toLocaleString()}원
+                   {holding.quantity}주 · 평균 {Math.floor(holding.avgPrice).toLocaleString()}원
                  </div>
                  
                  <div className="holding-grid">
                    <div className="grid-cell" style={{ borderRight: '1px solid var(--border)' }}>
                      <span className="label">매수금액</span>
-                     <span className="val">{Math.floor(h.totalCost).toLocaleString()}</span>
+                     <span className="val">{Math.floor(holding.totalCost).toLocaleString()}</span>
                    </div>
                    <div className="grid-cell right">
                      <span className="label">비중</span>
-                     <span className="val">{h.weight.toFixed(0)}%</span>
+                     <span className="val">{holding.weight.toFixed(0)}%</span>
                    </div>
                  </div>
                  
                  <div className="weight-bar-container">
                    <span className="weight-label">포트폴리오 비중</span>
-                   <span className="weight-val-small">{h.weight.toFixed(0)}%</span>
+                   <span className="weight-val-small">{holding.weight.toFixed(0)}%</span>
                    <div className="weight-track">
-                     <div className="weight-fill" style={{ width: `${h.weight}%`, backgroundColor: `hsl(${(idx * 50) % 360}, 70%, 50%)` }}></div>
+                     <div className="weight-fill" style={{ width: `${holding.weight}%`, backgroundColor: `hsl(${(index * 50) % 360}, 70%, 50%)` }}></div>
                    </div>
                  </div>
               </div>

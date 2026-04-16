@@ -57,23 +57,25 @@ function calcPnlForSell(
   ticker: string,
   sellPrice: number,
   sellQuantity: number,
-  sellFee: number,
   existingTrades: Trade[]
 ): number {
-  // 해당 종목의 매수 거래만 필터링하여 이동평균 계산
+  // 해당 종목의 매수 거래만 필터링하여 이동평균 단가를 계산합니다.
   const buyTrades = existingTrades.filter(
-    (t) => t.ticker === ticker && t.type === 'buy'
+    (trade) => trade.ticker === ticker && trade.type === 'buy'
   );
 
-  const totalBuyQty = buyTrades.reduce((sum, t) => sum + t.quantity, 0);
+  const totalBuyQty = buyTrades.reduce((sum, trade) => sum + trade.quantity, 0);
   const totalBuyCost = buyTrades.reduce(
-    (sum, t) => sum + t.price * t.quantity,
+    (sum, trade) => sum + trade.price * trade.quantity,
     0
   );
 
-  const avgBuyPrice = totalBuyQty > 0 ? totalBuyCost / totalBuyQty : 0;
-  // 수정: 수수료 제외 단순 차익 계산 (사용자 요청)
-  return (sellPrice - avgBuyPrice) * sellQuantity;
+  // 평균 매수 단가 산출
+  const averageBuyPrice = totalBuyQty > 0 ? totalBuyCost / totalBuyQty : 0;
+  
+  // 단순 차익 계산: (매도가 - 평균매수가) * 수량
+  // 사용자 요청에 따라 제세공과금(수수료)은 제외한 순수 매매 차익만 산출합니다.
+  return (sellPrice - averageBuyPrice) * sellQuantity;
 }
 
 // ─────────────────────────────────────────────
@@ -121,46 +123,49 @@ export const useTradeStore = create<TradeState>((set, get) => ({
       const existingTrades = get().trades;
 
       // --- 공매도 방지 체크 (v2.1) ---
+      // 매도 주문 시 사용자가 실제로 보유한 수량보다 많이 팔 수 없도록 차단합니다.
       if (input.type === 'sell') {
         const tickerBuyQty = existingTrades
-          .filter((t) => t.ticker === input.ticker && t.type === 'buy')
-          .reduce((sum, t) => sum + Number(t.quantity), 0);
+          .filter((trade) => trade.ticker === input.ticker && trade.type === 'buy')
+          .reduce((sum, trade) => sum + Number(trade.quantity), 0);
         const tickerSellQty = existingTrades
-          .filter((t) => t.ticker === input.ticker && t.type === 'sell')
-          .reduce((sum, t) => sum + Number(t.quantity), 0);
+          .filter((trade) => trade.ticker === input.ticker && trade.type === 'sell')
+          .reduce((sum, trade) => sum + Number(trade.quantity), 0);
         
         const currentHeldQty = tickerBuyQty - tickerSellQty;
-        if (input.quantity > currentHeldQty + 0.00000001) { // 부동소수점 오차 고려
+        
+        // 부동소수점 오차(0.00000001)를 고려하여 보유 수량 검증
+        if (input.quantity > currentHeldQty + 0.00000001) { 
           throw new Error(`보유 주식이 부족합니다. (현재 보유: ${currentHeldQty.toLocaleString()}주)`);
         }
       }
 
-      // 매도 시 이동평균법으로 PnL 계산
+      // 매도 시 이동평균법으로 PnL 계산 (매수 시에는 null)
       const pnl =
         input.type === 'sell'
           ? calcPnlForSell(
               input.ticker,
               input.price,
               input.quantity,
-              input.fee,
               existingTrades
             )
           : null;
 
-      // 저장 후 잔여 수량 계산 (is_open 결정)
+      // 저장 후 잔여 수량 계산 (is_open 결정 로직)
       const totalBuyQty = existingTrades
-        .filter((t) => t.ticker === input.ticker && t.type === 'buy')
-        .reduce((sum, t) => sum + t.quantity, 0);
+        .filter((trade) => trade.ticker === input.ticker && trade.type === 'buy')
+        .reduce((sum, trade) => sum + trade.quantity, 0);
       const totalSellQty = existingTrades
-        .filter((t) => t.ticker === input.ticker && t.type === 'sell')
-        .reduce((sum, t) => sum + t.quantity, 0);
+        .filter((trade) => trade.ticker === input.ticker && trade.type === 'sell')
+        .reduce((sum, trade) => sum + trade.quantity, 0);
 
-      // 현재 매도 후 잔여 수량이 0이면 is_open = false
+      // 이번 거래 반영 후 최종 잔여 수량 계산
       const remainingQty =
         input.type === 'sell'
           ? totalBuyQty - totalSellQty - input.quantity
           : totalBuyQty + input.quantity - totalSellQty;
 
+      // 잔여 수량이 거의 0에 가까우면 '청산(Closed)'으로 간주하여 is_open을 false로 설정
       const isOpen = remainingQty > 0.000001;
 
       const { error } = await supabase.from('trades').insert({
@@ -182,7 +187,7 @@ export const useTradeStore = create<TradeState>((set, get) => ({
 
       if (error) throw error;
 
-      // 저장 완료 후 목록 새로고침
+      // 저장 완료 후 최신 목록 새로고침
       await get().fetchTrades();
     } catch (err: any) {
       const msg = err.message || '매매 내역 추가에 실패했습니다.';

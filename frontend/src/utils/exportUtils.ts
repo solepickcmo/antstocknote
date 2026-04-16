@@ -1,4 +1,4 @@
-import { Trade } from '../store/tradeStore';
+import type { Trade } from '../store/tradeStore';
 
 /**
  * 매매 내역을 CSV 파일로 내보냅니다.
@@ -27,24 +27,24 @@ export const exportTradesToCSV = (trades: Trade[]) => {
   ];
 
   // 데이터 행 생성
-  const rows = trades.map((t) => [
-    new Date(t.traded_at).toLocaleString(),
-    t.ticker,
-    t.name,
-    t.type === 'buy' ? '매수' : '매도',
-    t.price,
-    t.quantity,
-    t.fee,
-    t.pnl ?? '',
-    t.strategy_tag ?? '',
-    t.emotion_tag ?? '',
-    t.memo?.replace(/\n/g, ' ') ?? '', // 줄바꿈 제거
-    t.is_open ? 'O' : 'X'
+  const rows = trades.map((trade) => [
+    new Date(trade.traded_at).toLocaleString(),
+    trade.ticker,
+    trade.name,
+    trade.type === 'buy' ? '매수' : '매도',
+    trade.price,
+    trade.quantity,
+    trade.fee,
+    trade.pnl ?? '',
+    trade.strategy_tag ?? '',
+    trade.emotion_tag ?? '',
+    trade.memo?.replace(/\n/g, ' ') ?? '', // 줄바꿈 제거
+    trade.is_open ? 'O' : 'X'
   ]);
 
   // CSV 문자열 합치기
   const csvContent = [headers, ...rows]
-    .map((e) => e.join(','))
+    .map((row) => row.join(','))
     .join('\n');
 
   // 다운로드 트리거

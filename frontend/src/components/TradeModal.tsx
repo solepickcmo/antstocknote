@@ -1,4 +1,7 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useTradeStore } from '../store/tradeStore';
 import { useTagStore } from '../store/tagStore';
+import { loadStockMasterCSV, StockData } from '../utils/csv';
 
 // 기본 헬퍼: 현재 시간을 KST(UTC+9) 문자열로 변환 (datetime-local 형식)
 const getKSTNow = () => {
@@ -14,7 +17,7 @@ interface TradeModalProps {
 }
 
 export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
-  const createTrade = useTradeStore((state) => state.createTrade);
+  const createTrade = useTradeStore((state: any) => state.createTrade);
   const { strategyTags, emotionTags, fetchTags, addTag, deleteTag } = useTagStore();
   
   const [newTagInput, setNewTagInput] = useState({ strategy: '', emotion: '' });
@@ -45,7 +48,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
   useEffect(() => {
     if (isOpen) {
       fetchTags();
-      setFormData(prev => ({ ...prev, tradedAt: getKSTNow() }));
+      setFormData((prev: any) => ({ ...prev, tradedAt: getKSTNow() }));
     }
   }, [isOpen, fetchTags]);
 
@@ -86,7 +89,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
         const lowerQuery = query.toLowerCase();
         
         // Local filtering
-        const filtered = stocks.filter(s => 
+        const filtered = stocks.filter((s: StockData) => 
           s.symbol.toLowerCase().includes(lowerQuery) || 
           s.nameKo.toLowerCase().includes(lowerQuery) || 
           s.nameEn.toLowerCase().includes(lowerQuery)
@@ -108,7 +111,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
     if (name === 'type') {
       // [name]: value 동적 키 방식은 TypeScript가 type 필드를 string으로 추론하므로
       // 명시적 필드명과 타입 단언으로 처리한다.
-      setFormData(prev => ({
+      setFormData((prev: any) => ({
         ...prev,
         type: value as 'buy' | 'sell',
         strategyTag: '',
@@ -117,8 +120,8 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
       return;
     }
 
-    setFormData(prev => ({
-      ...prev,
+    setFormData((prevData: any) => ({
+      ...prevData,
       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
     }));
 
@@ -135,9 +138,9 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
     return stock.nameKo || stock.nameEn;
   };
 
-  const handleStockSelect = (stock: any) => {
-    setFormData(prev => ({
-      ...prev,
+  const handleStockSelect = (stock: StockData) => {
+    setFormData((prevData: any) => ({
+      ...prevData,
       ticker: stock.symbol,
       name: getStockDisplayName(stock)
     }));
@@ -190,8 +193,8 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
         
         <form id="tradeForm" onSubmit={handleSubmit} className="trade-form">
           <div className="segment-control">
-            <button type="button" className={`segment-btn buy ${formData.type === 'buy' ? 'active' : ''}`} onClick={() => setFormData(prev => ({...prev, type: 'buy', strategyTag: '', emotionTag: ''}))}>매수 BUY</button>
-            <button type="button" className={`segment-btn sell ${formData.type === 'sell' ? 'active' : ''}`} onClick={() => setFormData(prev => ({...prev, type: 'sell', strategyTag: '', emotionTag: ''}))}>매도 SELL</button>
+            <button type="button" className={`segment-btn buy ${formData.type === 'buy' ? 'active' : ''}`} onClick={() => setFormData((prev: any) => ({...prev, type: 'buy', strategyTag: '', emotionTag: ''}))}>매수 BUY</button>
+            <button type="button" className={`segment-btn sell ${formData.type === 'sell' ? 'active' : ''}`} onClick={() => setFormData((prev: any) => ({...prev, type: 'sell', strategyTag: '', emotionTag: ''}))}>매도 SELL</button>
           </div>
           <div className="form-row" ref={dropdownRef}>
             <div className="form-group autocomplete-container">
@@ -199,7 +202,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
               <input type="text" name="ticker" value={formData.ticker} onChange={handleChange} required placeholder="005930" autoComplete="off" onFocus={() => { setActiveInput('ticker'); if(formData.ticker) searchStocks(formData.ticker); }} />
               {showStockDropdown && activeInput === 'ticker' && stockResults.length > 0 && (
                 <ul className="autocomplete-dropdown">
-                  {stockResults.map(stock => (
+                  {stockResults.map((stock: StockData) => (
                     <li key={`${stock.marketCode}-${stock.symbol}`} onClick={() => handleStockSelect(stock)}>
                       <div className="stock-info">
                         <span className="stock-symbol">{stock.symbol}</span>
@@ -217,7 +220,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
               <input type="text" name="name" value={formData.name} onChange={handleChange} required placeholder="삼성전자" autoComplete="off" onFocus={() => { setActiveInput('name'); if(formData.name) searchStocks(formData.name); }} />
               {showStockDropdown && activeInput === 'name' && stockResults.length > 0 && (
                 <ul className="autocomplete-dropdown">
-                  {stockResults.map(stock => (
+                  {stockResults.map((stock: StockData) => (
                     <li key={`${stock.marketCode}-${stock.symbol}`} onClick={() => handleStockSelect(stock)}>
                       <div className="stock-info">
                         <span className="stock-name">{stock.nameKo}</span>
@@ -262,10 +265,10 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
             <div className="tag-selector">
               {strategyTags.map((tag) => (
                 <div key={tag.id} className={`tag-chip-container ${formData.strategyTag === tag.name ? 'active' : ''}`}>
-                  <button type="button" className="sel-chip" onClick={() => setFormData(f => ({...f, strategyTag: f.strategyTag === tag.name ? '' : tag.name}))}>
+                  <button type="button" className="sel-chip" onClick={() => setFormData((prevFormData: any) => ({...prevFormData, strategyTag: prevFormData.strategyTag === tag.name ? '' : tag.name}))}>
                      {tag.name}
                   </button>
-                  <button type="button" className="btn-tag-delete" onClick={(e) => { e.stopPropagation(); deleteTag(tag.id); }}>×</button>
+                  <button type="button" className="btn-tag-delete" onClick={(event) => { event.stopPropagation(); deleteTag(tag.id); }}>×</button>
                 </div>
               ))}
               {strategyTags.length < 10 && (
@@ -274,13 +277,13 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
                     type="text" 
                     placeholder="추가..." 
                     value={newTagInput.strategy} 
-                    onChange={(e) => setNewTagInput(p => ({...p, strategy: e.target.value}))}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
+                    onChange={(event) => setNewTagInput((prevTagInput: any) => ({...prevTagInput, strategy: event.target.value}))}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        event.preventDefault();
                         if (newTagInput.strategy) {
                           addTag(newTagInput.strategy, 'strategy');
-                          setNewTagInput(p => ({...p, strategy: ''}));
+                          setNewTagInput((prevTagInput: any) => ({...prevTagInput, strategy: ''}));
                         }
                       }
                     }}
@@ -295,10 +298,10 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
             <div className="tag-selector">
               {emotionTags.map((tag) => (
                 <div key={tag.id} className={`tag-chip-container ${formData.emotionTag === tag.name ? 'active' : ''}`}>
-                  <button type="button" className="sel-chip" onClick={() => setFormData(f => ({...f, emotionTag: f.emotionTag === tag.name ? '' : tag.name}))}>
+                  <button type="button" className="sel-chip" onClick={() => setFormData((prevFormData: any) => ({...prevFormData, emotionTag: prevFormData.emotionTag === tag.name ? '' : tag.name}))}>
                      {tag.name}
                   </button>
-                  <button type="button" className="btn-tag-delete" onClick={(e) => { e.stopPropagation(); deleteTag(tag.id); }}>×</button>
+                  <button type="button" className="btn-tag-delete" onClick={(event) => { event.stopPropagation(); deleteTag(tag.id); }}>×</button>
                 </div>
               ))}
               {emotionTags.length < 10 && (
@@ -307,13 +310,13 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
                     type="text" 
                     placeholder="추가..." 
                     value={newTagInput.emotion} 
-                    onChange={(e) => setNewTagInput(p => ({...p, emotion: e.target.value}))}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
+                    onChange={(event) => setNewTagInput((prevTagInput: any) => ({...prevTagInput, emotion: event.target.value}))}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        event.preventDefault();
                         if (newTagInput.emotion) {
                           addTag(newTagInput.emotion, 'emotion');
-                          setNewTagInput(p => ({...p, emotion: ''}));
+                          setNewTagInput((prevTagInput: any) => ({...prevTagInput, emotion: ''}));
                         }
                       }
                     }}
