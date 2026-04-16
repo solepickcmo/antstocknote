@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTradeStore } from '../store/tradeStore';
 import './HoldingsPage.css';
-import { MoreHorizontal, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import { format } from 'date-fns';
 
 export const HoldingsPage: React.FC = () => {
   const fetchTrades = useTradeStore(state => state.fetchTrades);
@@ -84,31 +85,25 @@ export const HoldingsPage: React.FC = () => {
   return (
     <div className="holdings-page animate-fade-in">
       <header className="holdings-header">
-        <h1>보유 종목</h1>
+        <div className="title-group">
+          <h1>보유 종목</h1>
+          <p className="text-muted text-sm">현재 보유 중인 포트폴리오 현황입니다.</p>
+        </div>
         <div className="header-actions">
-          <button className="add-btn" onClick={() => setModalOpen(true)}>
+          <button className="add-btn btn-primary" onClick={() => setModalOpen(true)}>
             <Plus size={16} /> 기록 추가
-          </button>
-          <button className="more-btn">
-            <MoreHorizontal size={20} />
           </button>
         </div>
       </header>
 
       <div className="holdings-filters glass-panel">
-         <input type="text" placeholder="종목명·메모 검색..." className="search-input" />
-         <div className="filter-chips">
-            <button className={`chip ${filter === '전체' ? 'active' : ''}`}>전체</button>
-            <button className={`chip ${filter === '매수' ? 'active' : ''}`}>매수</button>
-            <button className={`chip ${filter === '매도' ? 'active' : ''}`}>매도</button>
-            <button className={`chip ${filter === '보유중' ? 'active' : ''}`} onClick={() => setFilter('보유중')}>보유중</button>
-            <button className={`chip ${filter === '추세추종' ? 'active' : ''}`}>추세추종</button>
-            <button className={`chip ${filter === '이달' ? 'active' : ''}`}>이달</button>
+         <div className="search-box">
+           <input type="text" placeholder="종목명·티커 검색..." className="search-input" />
          </div>
-      </div>
-
-      <div className="holdings-summary">
-        <p>총 {displayList.length}건</p>
+         <div className="filter-chips">
+            <button className={`chip ${filter === '전체' ? 'active' : ''}`} onClick={() => setFilter('전체')}>전체</button>
+            <button className={`chip ${filter === '보유중' ? 'active' : ''}`} onClick={() => setFilter('보유중')}>보유중</button>
+         </div>
       </div>
 
       <div className="holdings-table-container glass-panel">
@@ -129,15 +124,15 @@ export const HoldingsPage: React.FC = () => {
                </tr>
             ) : (
                 displayList.map(h => (
-                <tr key={h.ticker}>
+                <tr key={h.ticker} className="table-row-hover">
                   <td className="col-ticker">
                     <span className="ticker-badge">{h.ticker}</span>
                   </td>
                   <td className="col-name">
                     <div className="name-wrapper">
                       <strong>{h.name}</strong>
-                      <span className="name-date">
-                        {h.lastBuyDate ? new Date(h.lastBuyDate).toLocaleString('ko-KR', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : ''} · 매수
+                      <span className="name-date text-xs">
+                        {h.lastBuyDate ? format(new Date(h.lastBuyDate), 'MM.dd HH:mm') : ''} · 매수
                       </span>
                     </div>
                   </td>
@@ -150,11 +145,11 @@ export const HoldingsPage: React.FC = () => {
                        ))}
                      </div>
                   </td>
-                  <td className="col-price text-right">
-                    {Math.floor(h.avgPrice).toLocaleString()}
+                  <td className="col-price text-right font-mono">
+                    ₩ {Math.floor(h.avgPrice).toLocaleString()}
                   </td>
-                  <td className="col-qty text-right">
-                    {h.quantity}주
+                  <td className="col-qty text-right font-mono">
+                    {h.quantity.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 4 })}
                   </td>
                 </tr>
               ))

@@ -3,6 +3,7 @@ import { Download } from 'lucide-react';
 import { TagChip } from '../components/TagChip';
 import { useTradeStore } from '../store/tradeStore';
 import { exportTradesToCSV } from '../utils/exportUtils';
+import { format } from 'date-fns';
 import './HistoryPage.css';
 
 export const DesktopHistoryView: React.FC = () => {
@@ -15,11 +16,13 @@ export const DesktopHistoryView: React.FC = () => {
   return (
     <div className="history-page animate-fade-in desktop-history">
       <header className="page-header">
-        <h1>매매 내역</h1>
+        <div className="title-group">
+          <h1>매매 내역</h1>
+          <p className="text-muted text-sm">기록된 모든 매수/매도 내역을 확인하세요.</p>
+        </div>
         <button 
-          className="btn-export glass-panel" 
+          className="btn-export btn-primary" 
           onClick={() => exportTradesToCSV(trades)}
-          style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.5rem 1rem', fontSize: '0.9rem' }}
         >
           <Download size={16} />
           내보내기 (CSV)
@@ -47,22 +50,22 @@ export const DesktopHistoryView: React.FC = () => {
               <span className="ticker">{trade.ticker}</span>
               <span className="name">{trade.name}</span>
             </div>
-            <div className="trade-date">{new Date(trade.traded_at).toLocaleString()}</div>
+            <div className="trade-date">{format(new Date(trade.traded_at), 'yyyy.MM.dd HH:mm')}</div>
             <div className="detail-inline">
               <span className="label">체결가</span>
-              <span className="val">{Number(trade.price).toLocaleString()}</span>
+              <span className="val">₩ {Number(trade.price).toLocaleString()}</span>
             </div>
             <div className="detail-inline">
               <span className="label">수량</span>
               <span className="val">{Number(trade.quantity).toLocaleString()}</span>
             </div>
             <div className="detail-inline">
-              <span className="label">손익</span>
+              <span className="label">실현손익</span>
               {trade.pnl ? (
-                <span className={Number(trade.pnl) > 0 ? 'profit-text' : 'loss-text'}>
+                <span className={`val ${Number(trade.pnl) > 0 ? 'profit-text' : 'loss-text'}`}>
                   {Number(trade.pnl) > 0 ? '+' : ''}{Number(trade.pnl).toLocaleString()}
                 </span>
-              ) : <span className="text-muted">-</span>}
+              ) : <span className="val text-muted">-</span>}
             </div>
             <div className="trade-actions-inline">
                {trade.strategy_tag && <TagChip label={trade.strategy_tag.split('-')[0].trim()} type="strategy" />}

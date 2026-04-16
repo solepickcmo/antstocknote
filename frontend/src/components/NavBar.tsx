@@ -5,6 +5,7 @@ import { useTradeStore } from '../store/tradeStore';
 import { useLayoutStore } from '../store/layoutStore';
 import { useAuthStore } from '../store/authStore';
 import { useThemeStore } from '../store/themeStore';
+import logo from '../assets/logo.png';
 import './NavBar.css';
 
 export const NavBar: React.FC = () => {
@@ -20,7 +21,10 @@ export const NavBar: React.FC = () => {
   return (
     <nav className="navbar">
       <div className="nav-brand">
-        <div className="nav-brand-logo">개미노트</div>
+        <div className="nav-brand-logo">
+          <img src={logo} alt="AntStockNote Logo" className="brand-img" />
+          <span>AntStockNote</span>
+        </div>
         <div className="theme-toggle" onClick={() => useThemeStore.getState().toggleTheme()}>
           {useThemeStore(state => state.theme) === 'light' ? <Moon size={20} /> : <Sun size={20} />}
         </div>

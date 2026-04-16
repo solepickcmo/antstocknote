@@ -6,17 +6,19 @@
   --primary-hover: #D0980B;
   --success: #0ECB81;          /* Crypto Green */
   --danger: #F6465D;           /* Crypto Red */
+  --ink: #1E2026;              /* Binance Ink */
+  --slate: #848E9C;            /* Binance Slate */
   
   /* Light Theme (Default) */
   --bg-main: #FFFFFF;
   --bg-card: #F5F5F5;
   --bg-white: #FFFFFF;
-  --text-main: #1E2026;         /* Ink */
-  --text-secondary: #848E9C;    /* Slate */
+  --text-main: var(--ink);
+  --text-secondary: var(--slate);
   --text-muted: #B7BDC6;
   --border: #E6E8EA;
-  --shadow-soft: rgba(32, 32, 37, 0.05) 0px 3px 5px;
-  --shadow-hover: rgba(8, 8, 8, 0.05) 0px 3px 5px 5px;
+  --shadow-soft: rgba(30, 35, 41, 0.05) 0px 3px 6px;
+  --shadow-hover: rgba(30, 35, 41, 0.1) 0px 5px 15px;
   
   /* Constants */
   --radius-sm: 4px;
@@ -33,12 +35,12 @@
   --bg-main: #0B0E11;           /* Binance Dark */
   --bg-card: #1E2329;           /* Dark Card */
   --bg-white: #2B3139;
-  --text-main: #EAECEF;         /* White-ish */
-  --text-secondary: #848E9C;    /* Maintaining Slate for metadata */
+  --text-main: #EAECEF;
+  --text-secondary: var(--slate);
   --text-muted: #474D57;
   --border: #2B3139;
   --shadow-soft: rgba(0, 0, 0, 0.2) 0px 3px 10px;
-  --shadow-hover: rgba(0, 0, 0, 0.3) 0px 5px 15px;
+  --shadow-hover: rgba(0, 0, 0, 0.4) 0px 8px 20px;
 }
 
 * {
@@ -76,12 +78,14 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   letter-spacing: -0.02em;
+  color: var(--text-main);
 }
 
 button {
   cursor: pointer;
   border: none;
   font-family: inherit;
+  font-weight: 600;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 

@@ -22,10 +22,23 @@
 }
 
 .nav-brand-logo {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--primary);
-  letter-spacing: -0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.brand-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.nav-brand-logo span {
+  color: var(--text-main);
 }
 
 .theme-toggle {
@@ -78,16 +91,28 @@
 }
 
 .nav-item.active {
-  background-color: rgba(240, 185, 11, 0.1);
+  background-color: var(--bg-card);
   color: var(--primary);
-  font-weight: 700;
+  position: relative;
+}
+
+.nav-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 25%;
+  height: 50%;
+  width: 3px;
+  background-color: var(--primary);
+  border-radius: 0 4px 4px 0;
 }
 
 .nav-item.action-btn {
   background-color: var(--primary);
-  color: var(--bg-main) !important;
+  color: #1E2026 !important;
   font-weight: 700;
-  box-shadow: 0 4px 15px rgba(240, 185, 11, 0.2);
+  margin-top: 0.5rem;
+  justify-content: center;
 }
 
 .nav-item.disabled {

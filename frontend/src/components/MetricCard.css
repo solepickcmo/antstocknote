@@ -17,20 +17,19 @@
 
 .metric-title {
   color: var(--text-secondary);
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .metric-value {
-  font-size: 1.85rem;
-  font-weight: 800;
+  font-size: 1.75rem;
+  font-weight: 700;
   color: var(--text-main);
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
 }
 
 .metric-subtitle {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
+  margin-top: 0.25rem;
 }

@@ -11,8 +11,9 @@
 }
 
 .holdings-header h1 {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
+  margin-bottom: 0.25rem;
 }
 
 .header-actions {
@@ -22,32 +23,8 @@
 }
 
 .add-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: var(--bg-input);
-  border: 1px solid var(--glass-border);
-  color: var(--text-main);
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.add-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.more-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--bg-input);
-  border: 1px solid var(--glass-border);
-  color: var(--text-main);
-  width: 38px;
-  height: 38px;
-  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  padding: 0.6rem 1.25rem;
 }
 
 .holdings-filters {
@@ -120,25 +97,28 @@
 
 .holdings-table th {
   text-align: left;
-  padding: 1rem;
-  font-size: 0.85rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
   font-weight: 500;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .holdings-table td {
-  padding: 1.2rem 1rem;
-  border-bottom: 1px solid var(--glass-border);
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
   vertical-align: middle;
 }
 
-.holdings-table tr:last-child td {
-  border-bottom: none;
+.table-row-hover:hover {
+  background-color: var(--bg-card);
 }
 
-.text-right {
-  text-align: right !important;
+.font-mono {
+  font-family: 'Inter', monospace;
+  font-variant-numeric: tabular-nums;
 }
 
 .col-ticker { width: 12%; }
@@ -148,25 +128,23 @@
 .col-qty { width: 10%; }
 
 .ticker-badge {
-  font-weight: 600;
-  color: var(--text-main);
-  font-size: 1.05rem;
-}
-
-.name-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 0.95rem;
+  background: rgba(240, 185, 11, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 .name-wrapper strong {
-  font-size: 1.05rem;
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--text-main);
 }
 
 .name-date {
-  font-size: 0.8rem;
-  color: var(--text-muted);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
 }
 
 .tags-wrapper {

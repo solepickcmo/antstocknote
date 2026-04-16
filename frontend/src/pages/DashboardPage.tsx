@@ -60,25 +60,27 @@ export const DashboardPage: React.FC = () => {
       <section className="chart-section glass-panel">
         <div className="section-header">
           <h3>수익금 추이 (최근 7일)</h3>
+          <span className="text-muted text-xs">최근 트래킹된 PnL 요약</span>
         </div>
         <div className="chart-container">
           <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={chartData}>
+            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorPnl" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.4}/>
+                  <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.2}/>
                   <stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/>
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-              <XAxis dataKey="date" stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `₩${val/10000}만`} />
+              <XAxis dataKey="date" stroke="var(--text-muted)" fontSize={11} tickLine={false} axisLine={false} tick={{dy: 10}} />
+              <YAxis stroke="var(--text-muted)" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(val) => `${val/10000}만`} />
               <Tooltip 
-                contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px' }}
-                itemStyle={{ color: 'var(--text-main)' }}
+                contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: 'var(--shadow-soft)' }}
+                itemStyle={{ color: 'var(--text-main)', fontSize: '13px', fontWeight: '600' }}
+                labelStyle={{ color: 'var(--text-secondary)', marginBottom: '4px', fontSize: '11px' }}
                 formatter={(value: any) => [`₩ ${Number(value).toLocaleString()}`, '손익']}
               />
-              <Area type="monotone" dataKey="pnl" stroke="var(--primary)" strokeWidth={3} fillOpacity={1} fill="url(#colorPnl)" />
+              <Area type="monotone" dataKey="pnl" stroke="var(--primary)" strokeWidth={2} fillOpacity={1} fill="url(#colorPnl)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>

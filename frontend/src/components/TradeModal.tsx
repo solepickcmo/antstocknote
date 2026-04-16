@@ -185,20 +185,21 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-container glass-panel" onClick={e => e.stopPropagation()}>
-        <div className="modal-header-mobile">
-          <h2>매매 내역</h2>
-          <div className="header-actions">
-            <button type="button" className="btn-cancel-top" onClick={onClose} disabled={isSubmitting}>취소</button>
-            <button type="submit" form="tradeForm" className="btn-save-top" disabled={isSubmitting}>저장</button>
-          </div>
+        <div className="modal-header">
+          <h2>매매 기록 추가</h2>
+          <button className="close-x" onClick={onClose}>&times;</button>
         </div>
         
         {error && <div className="modal-error">{error}</div>}
         
         <form id="tradeForm" onSubmit={handleSubmit} className="trade-form">
           <div className="segment-control">
-            <button type="button" className={`segment-btn buy ${formData.type === 'buy' ? 'active' : ''}`} onClick={() => setFormData((prev: any) => ({...prev, type: 'buy', strategyTag: '', emotionTag: ''}))}>매수 BUY</button>
-            <button type="button" className={`segment-btn sell ${formData.type === 'sell' ? 'active' : ''}`} onClick={() => setFormData((prev: any) => ({...prev, type: 'sell', strategyTag: '', emotionTag: ''}))}>매도 SELL</button>
+            <button type="button" className={`segment-btn buy ${formData.type === 'buy' ? 'active' : ''}`} onClick={() => setFormData((prev: any) => ({...prev, type: 'buy', strategyTag: '', emotionTag: ''}))}>
+              BUY <span>매수</span>
+            </button>
+            <button type="button" className={`segment-btn sell ${formData.type === 'sell' ? 'active' : ''}`} onClick={() => setFormData((prev: any) => ({...prev, type: 'sell', strategyTag: '', emotionTag: ''}))}>
+              SELL <span>매도</span>
+            </button>
           </div>
           <div className="form-row" ref={dropdownRef}>
             <div className="form-group autocomplete-container">
@@ -303,12 +304,11 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
             <textarea name="memo" value={formData.memo} onChange={handleChange} placeholder="매매에 대한 생각이나 근거를 기록하세요." rows={3}></textarea>
           </div>
           
-          <div className="checkbox-group tooltip-wrapper mobile-toggle-wrapper">
-             <span style={{fontWeight: 600}}>커뮤니티 공개</span>
-             <label className="switch">
-                <input type="checkbox" name="isPublic" checked={formData.isPublic} onChange={handleChange} disabled />
-                <span className="slider round"></span>
-             </label>
+          <div className="modal-footer">
+            <button type="button" className="btn-secondary" onClick={onClose} disabled={isSubmitting}>최초로 돌아가기</button>
+            <button type="submit" form="tradeForm" className="btn-primary" disabled={isSubmitting}>
+              {isSubmitting ? '저장 중...' : '기록 저장'}
+            </button>
           </div>
         </form>
       </div>

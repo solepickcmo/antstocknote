@@ -1,51 +1,51 @@
 .modal-overlay {
   position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 5000;
+  z-index: 1000;
   padding: 1rem;
-  backdrop-filter: blur(2px);
 }
 
 .modal-container {
-  width: 100%;
-  max-width: 500px;
   background-color: var(--bg-white);
+  width: 100%;
+  max-width: 480px;
   border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-hover);
+  border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  max-height: 90vh;
-  box-shadow: var(--shadow-hover);
-  animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes modalPop {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-.modal-header-mobile {
-  padding: 1.5rem;
+.modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--border);
 }
 
-.modal-header-mobile h2 {
+.modal-header h2 {
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-main);
-  letter-spacing: -0.02em;
 }
 
-.btn-close {
+.close-x {
   background: none;
+  border: none;
+  font-size: 1.5rem;
   color: var(--text-secondary);
+  line-height: 1;
   padding: 0.25rem;
+  cursor: pointer;
 }
 
 .trade-form {
@@ -54,13 +54,23 @@
   flex-direction: column;
   gap: 1.25rem;
   overflow-y: auto;
+  max-height: 70vh;
+}
+
+/* Scrollbar styling for form */
+.trade-form::-webkit-scrollbar {
+  width: 4px;
+}
+.trade-form::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
 }
 
 /* Binance Style Segment Control */
 .segment-control {
   display: flex;
   background-color: var(--bg-card);
-  padding: 4px;
+  padding: 0.25rem;
   border-radius: var(--radius-md);
   margin-bottom: 0.5rem;
 }
@@ -68,23 +78,39 @@
 .segment-btn {
   flex: 1;
   padding: 0.6rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
   font-weight: 700;
   color: var(--text-secondary);
-  background: transparent;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+  cursor: pointer;
 }
 
-.segment-btn.active.buy {
-  background-color: var(--bg-white);
-  color: var(--success);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+.segment-btn span {
+  font-weight: 400;
+  font-size: 0.75rem;
+  opacity: 0.7;
 }
 
-.segment-btn.active.sell {
-  background-color: var(--bg-white);
-  color: var(--danger);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+.segment-btn.buy.active {
+  background-color: var(--success);
+  color: white;
+}
+
+.segment-btn.sell.active {
+  background-color: var(--danger);
+  color: white;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
 }
 
 .form-group {
@@ -100,83 +126,124 @@
 }
 
 .form-group input, 
-.form-group select, 
-.form-group textarea {
+.form-group textarea, 
+.form-group select {
   padding: 0.75rem 1rem;
   background-color: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  font-size: 0.95rem;
   color: var(--text-main);
-  transition: all 0.2s ease;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
 }
 
-.form-group input:focus {
+.form-group input:focus, 
+.form-group textarea:focus {
   outline: none;
   border-color: var(--primary);
   background-color: var(--bg-white);
 }
 
-.readonly-input {
-  background-color: transparent !important;
+.readonly-input.highlight {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 1.125rem;
+  background: transparent !important;
   border: none !important;
   padding-left: 0 !important;
-  font-size: 1.15rem !important;
-  font-weight: 700 !important;
 }
 
-/* Tag Selection */
-.tag-scroll-row {
+.section-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
+}
+
+.tag-selector {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
-  overflow-x: auto;
-  padding-bottom: 0.25rem;
 }
 
-.tag-btn {
-  white-space: nowrap;
+.sel-chip {
   padding: 0.4rem 0.8rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: 500;
   background-color: var(--bg-card);
   border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.8rem;
   color: var(--text-secondary);
+  cursor: pointer;
 }
 
-.tag-btn.active {
-  background-color: rgba(240, 185, 11, 0.1);
+.sel-chip.active {
   border-color: var(--primary);
   color: var(--primary);
+  background-color: rgba(240, 185, 11, 0.05);
 }
 
 .modal-footer {
-  padding: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
   border-top: 1px solid var(--border);
+  background-color: var(--bg-white);
 }
 
-.btn-submit {
-  width: 100%;
-  padding: 1rem;
+.btn-primary {
+  flex: 2;
   background-color: var(--primary);
   color: #1E2026;
-  font-weight: 700;
-  font-size: 1rem;
+  padding: 0.85rem;
   border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 700;
 }
 
-.btn-submit:hover {
-  background-color: var(--primary-hover);
+.btn-secondary {
+  flex: 1;
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  padding: 0.85rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
 }
 
-/* Autocomplete Customization */
 .autocomplete-dropdown {
-  background-color: var(--bg-white);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-white);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
+  z-index: 100;
+  max-height: 200px;
+  overflow-y: auto;
   box-shadow: var(--shadow-hover);
 }
 
-.autocomplete-item:hover {
+.autocomplete-dropdown li {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+
+.autocomplete-dropdown li:hover {
   background-color: var(--bg-card);
+}
+
+.stock-symbol {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.market-badge {
+  font-size: 0.7rem;
+  background: var(--bg-card);
+  padding: 2px 4px;
+  border-radius: 2px;
 }
