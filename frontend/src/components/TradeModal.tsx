@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTradeStore } from '../store/tradeStore';
 import { useTagStore } from '../store/tagStore';
-import { loadStockMasterCSV, StockData } from '../utils/csv';
+import { loadStockMasterCSV } from '../utils/csv';
+import type { StockData } from '../utils/csv';
 
 // 기본 헬퍼: 현재 시간을 KST(UTC+9) 문자열로 변환 (datetime-local 형식)
 const getKSTNow = () => {
@@ -41,6 +42,10 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
     price: '',
     quantity: '',
     fee: '0',
+    tradedAt: '',
+    strategyTag: '',
+    emotionTag: '',
+    memo: '',
     isPublic: false
   });
 
