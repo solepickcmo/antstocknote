@@ -154,12 +154,35 @@
 }
 
 /* Mobile Responsiveness */
+/* Mobile Responsiveness & Mobile Mode Adjustments */
 @media (max-width: 900px) {
   .summary-cards {
     grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .summary-card {
+    padding: 1.25rem;
+  }
+  .summary-val {
+    font-size: 1.75rem;
   }
   .analysis-grid {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
+  .bar-label {
+    width: 80px;
+    font-size: 0.8rem;
+  }
+}
+
+.app-wrapper.mobile-mode .analysis-header h1 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.app-wrapper.mobile-mode .stats-section h2, 
+.app-wrapper.mobile-mode .notes-header h2 {
+  font-size: 1.15rem;
 }

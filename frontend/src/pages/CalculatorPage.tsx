@@ -170,12 +170,12 @@ export const CalculatorPage: React.FC = () => {
           <div className="input-group sim-group">
             <label id="label-holding-select" htmlFor="holdingSelect">📌 보유 종목 선택</label>
             <select
+              aria-label="보유 종목 선택"
               id="holdingSelect"
               className="sim-select"
               value={selectedTicker}
               onChange={(e) => setSelectedTicker(e.target.value)}
               aria-labelledby="label-holding-select"
-              aria-label="보유 종목 선택"
             >
               <option value="">-- 종목을 선택하세요 --</option>
               {currentHoldings.map(h => (
@@ -207,6 +207,7 @@ export const CalculatorPage: React.FC = () => {
           <div className="input-group sim-group">
             <label id="label-market-price" htmlFor="marketPrice">현재가 (직접 입력)</label>
             <input
+              aria-label="현재 주가(시장가) 입력"
               id="marketPrice"
               type="number"
               placeholder="현재 주가를 입력하세요"
@@ -214,7 +215,6 @@ export const CalculatorPage: React.FC = () => {
               onChange={(e) => setCurrentMarketPrice(e.target.value)}
               disabled={!selectedHolding}
               aria-labelledby="label-market-price"
-              aria-label="현재 주가(시장가) 입력"
             />
           </div>
 
@@ -227,6 +227,7 @@ export const CalculatorPage: React.FC = () => {
                 <div className="input-group sim-group">
                   <label id={`label-waterPrice-${index}`} htmlFor={`waterPrice-${index}`}>매수 단가</label>
                   <input
+                    aria-label={`${index + 1}차 추가 매수 단가 입력`}
                     id={`waterPrice-${index}`}
                     type="number"
                     placeholder="0"
@@ -234,12 +235,12 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => handleWateringChange(index, 'price', e.target.value)}
                     disabled={!selectedHolding}
                     aria-labelledby={`label-waterPrice-${index}`}
-                    aria-label={`${index + 1}차 추가 매수 단가 입력`}
                   />
                 </div>
                 <div className="input-group sim-group">
                   <label id={`label-waterQty-${index}`} htmlFor={`waterQty-${index}`}>매수 수량</label>
                   <input
+                    aria-label={`${index + 1}차 추가 매수 수량 입력`}
                     id={`waterQty-${index}`}
                     type="number"
                     placeholder="0"
@@ -247,7 +248,6 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => handleWateringChange(index, 'qty', e.target.value)}
                     disabled={!selectedHolding}
                     aria-labelledby={`label-waterQty-${index}`}
-                    aria-label={`${index + 1}차 추가 매수 수량 입력`}
                   />
                 </div>
               </div>

@@ -81,6 +81,7 @@ const LoginPage: React.FC = () => {
           <div className="form-group">
             <label id="label-email" htmlFor="email">이메일</label>
             <input 
+              aria-label="이메일 주소 입력"
               type="email" 
               id="email" 
               value={email} 
@@ -88,12 +89,12 @@ const LoginPage: React.FC = () => {
               required 
               placeholder="user@example.com"
               aria-labelledby="label-email"
-              aria-label="이메일 주소 입력"
             />
           </div>
           <div className="form-group">
             <label id="label-password" htmlFor="password">비밀번호</label>
             <input 
+              aria-label="비밀번호 입력"
               type="password" 
               id="password" 
               value={password} 
@@ -101,7 +102,6 @@ const LoginPage: React.FC = () => {
               required 
               placeholder="••••••••"
               aria-labelledby="label-password"
-              aria-label="비밀번호 입력"
             />
           </div>
           
@@ -134,6 +134,7 @@ const LoginPage: React.FC = () => {
                   비밀번호 재설정 링크를 받을 이메일을 입력하세요.
                 </label>
                 <input 
+                  aria-label="비밀번호 재설정을 받을 이메일 주소 입력"
                   id="forgot-email"
                   type="email" 
                   value={forgotEmail} 
@@ -141,7 +142,6 @@ const LoginPage: React.FC = () => {
                   required 
                   placeholder="이메일 주소"
                   aria-labelledby="label-forgot-email"
-                  aria-label="비밀번호 재설정을 받을 이메일 주소 입력"
                   className="modal-input"
                   style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'rgba(255,255,255,0.05)', color: 'var(--text-main)', marginBottom: '1rem' }}
                 />

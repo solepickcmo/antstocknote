@@ -102,16 +102,28 @@ a {
 
 .main-content {
   flex: 1;
-  padding: 2rem;
+  padding: 2.5rem 2rem;
   margin-left: var(--nav-width);
   max-width: 1200px;
   margin-right: auto;
+  transition: all 0.3s ease;
 }
 
 .app-wrapper.mobile-mode .main-content {
   margin-left: 0;
-  padding: 1rem;
-  padding-bottom: 5rem;
+  padding: 1.25rem;
+  padding-bottom: 6rem;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--bg-main);
+}
+
+.app-wrapper.mobile-mode .page-header {
+  margin-bottom: 1.5rem;
 }
 
 .glass-panel {

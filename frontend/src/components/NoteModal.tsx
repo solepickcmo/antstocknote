@@ -89,12 +89,12 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
           <div className="form-group full-width">
             <label id="label-trade" htmlFor="tradeSelect">대상 매매 선택</label>
             <select
+              aria-label="대상 매매 선택"
               id="tradeSelect"
               value={selectedTradeId}
               onChange={e => setSelectedTradeId(e.target.value)}
               required
               aria-labelledby="label-trade"
-              aria-label="대상 매매 선택"
             >
               {trades.length === 0 && <option value="">매도 기록이 없습니다.</option>}
               {trades.map(t => (
@@ -108,6 +108,7 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
           <div className="form-group full-width">
             <label id="label-content" htmlFor="noteContent">오답 내용</label>
             <textarea
+              aria-label="오답 노트 내용 입력"
               id="noteContent"
               value={content}
               onChange={e => setContent(e.target.value)}
@@ -115,7 +116,6 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
               rows={5}
               required
               aria-labelledby="label-content"
-              aria-label="오답 노트 내용 입력"
             ></textarea>
           </div>
 
