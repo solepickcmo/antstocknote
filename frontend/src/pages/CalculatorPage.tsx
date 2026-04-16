@@ -311,7 +311,7 @@ export const CalculatorPage: React.FC = () => {
                     </div>
                     <div className="value-group large">
                       <span className={`val ${(waterfallResult.afterWaterfallPnlRate ?? 0) >= 0 ? 'profit-text' : 'loss-text'}`}>
-                        {(waterfallResult.afterWaterfallPnlRate ?? 0) >= 0 ? '+' : ''}{(waterfallResult.afterWaterfallPnlRate ?? 0 || 0).toFixed(2)}%
+                        {(waterfallResult.afterWaterfallPnlRate ?? 0) >= 0 ? '+' : ''}{(waterfallResult.afterWaterfallPnlRate ?? 0).toFixed(2)}%
                       </span>
                     </div>
                     {waterfallResult.afterWaterfallPnlRate !== null && (
