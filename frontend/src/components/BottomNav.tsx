@@ -11,6 +11,10 @@ import './BottomNav.css';
 
 export const BottomNav: React.FC = () => {
   const setModalOpen = useTradeStore(state => state.setModalOpen);
+  const theme = useThemeStore(state => state.theme);
+  const toggleTheme = useThemeStore(state => state.toggleTheme);
+  const setMobileMode = useLayoutStore(state => state.setMobileMode);
+  
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
   const navigate = useNavigate();
   const logout = useAuthStore(state => state.logout);
@@ -76,8 +80,8 @@ export const BottomNav: React.FC = () => {
       <div className="bottom-settings-sheet">
         <div className="sheet-backdrop" onClick={() => setIsSettingsOpen(false)} />
         <div className="sheet-content glass-panel">
-          <button className="sheet-btn" onClick={() => useThemeStore.getState().toggleTheme()}>
-            {useThemeStore(state => state.theme) === 'light' ? (
+          <button className="sheet-btn" onClick={() => toggleTheme()}>
+            {theme === 'light' ? (
               <><Moon size={18} /> 다크 모드 켜기</>
             ) : (
               <><Sun size={18} /> 라이트 모드 켜기</>
@@ -86,7 +90,7 @@ export const BottomNav: React.FC = () => {
           <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/calculator'); }}>
             <Calculator size={18} /> 손익분기점 계산기
           </button>
-          <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); useLayoutStore.getState().setMobileMode(false); }}>
+          <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); setMobileMode(false); }}>
             <Monitor size={18} /> PC 화면으로 보기
           </button>
           <button className="sheet-btn text-danger" onClick={() => { setIsSettingsOpen(false); setIsWithdrawModalOpen(true); }}>

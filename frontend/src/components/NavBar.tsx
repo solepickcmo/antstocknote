@@ -10,6 +10,9 @@ import './NavBar.css';
 
 export const NavBar: React.FC = () => {
   const setModalOpen = useTradeStore(state => state.setModalOpen);
+  const theme = useThemeStore(state => state.theme);
+  const toggleTheme = useThemeStore(state => state.toggleTheme);
+  const toggleMobileMode = useLayoutStore(state => state.toggleMobileMode);
   const navigate = useNavigate();
   const logout = useAuthStore(state => state.logout);
 
@@ -25,8 +28,8 @@ export const NavBar: React.FC = () => {
           <img src={logo} alt="AntStockNote Logo" className="brand-img" />
           <span>AntStockNote</span>
         </div>
-        <div className="theme-toggle" onClick={() => useThemeStore.getState().toggleTheme()}>
-          {useThemeStore(state => state.theme) === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+        <div className="theme-toggle" onClick={() => toggleTheme()}>
+          {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
         </div>
       </div>
       
@@ -80,7 +83,7 @@ export const NavBar: React.FC = () => {
           <Settings size={18} />
           <span>설정 / 도구</span>
         </div>
-        <div className="nav-item action-btn" onClick={() => useLayoutStore.getState().toggleMobileMode()} style={{ marginTop: '0.5rem' }}>
+        <div className="nav-item action-btn" onClick={() => toggleMobileMode()} style={{ marginTop: '0.5rem' }}>
           <Smartphone size={18} />
           <span>모바일 뷰 전환</span>
         </div>
