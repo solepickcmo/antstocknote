@@ -77,7 +77,7 @@ export const GoalReverseCalculator: React.FC = () => {
   const formatNumber = (val: number) => Math.round(val).toLocaleString('ko-KR');
 
   return (
-    <div className="max-w-md mx-auto space-y-6 animate-fade-in">
+    <div className="max-w-2xl mx-auto space-y-6 animate-fade-in pb-10">
       {/* 입력 섹션 */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-5">
         <div className="flex justify-between items-center">
@@ -99,7 +99,7 @@ export const GoalReverseCalculator: React.FC = () => {
             <input
               type="text"
               aria-label="월 목표 수익금 입력"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all font-bold text-lg"
+              className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all font-bold text-lg"
               placeholder="예: 2,000,000"
               value={goalAmount}
               onChange={(e) => {
@@ -115,7 +115,7 @@ export const GoalReverseCalculator: React.FC = () => {
               <input
                 type="number"
                 aria-label="평균 수익금 입력"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all font-semibold"
+                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all font-semibold"
                 placeholder="0"
                 value={avgProfit}
                 onChange={(e) => setAvgProfit(e.target.value)}
@@ -126,7 +126,7 @@ export const GoalReverseCalculator: React.FC = () => {
               <input
                 type="number"
                 aria-label="평균 손실금 입력"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all font-semibold"
+                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all font-semibold"
                 placeholder="0"
                 value={avgLoss}
                 onChange={(e) => setAvgLoss(e.target.value)}
@@ -137,7 +137,7 @@ export const GoalReverseCalculator: React.FC = () => {
           <div className="space-y-3 pt-2">
             <div className="flex justify-between items-end">
               <label className="text-sm font-semibold text-gray-600">승률 (Win Rate)</label>
-              <span className="text-primary font-bold text-lg">{winRate}%</span>
+              <span className="text-gray-900 bg-primary/20 px-2 py-0.5 rounded text-lg font-black">{winRate}%</span>
             </div>
             <input
               type="range"
@@ -152,7 +152,7 @@ export const GoalReverseCalculator: React.FC = () => {
           <div className="space-y-3 pt-2">
             <div className="flex justify-between items-end">
               <label className="text-sm font-semibold text-gray-600">월 매매 횟수</label>
-              <span className="text-primary font-bold text-lg">{tradeCount}회</span>
+              <span className="text-gray-900 bg-primary/20 px-2 py-0.5 rounded text-lg font-black">{tradeCount}회</span>
             </div>
             <input
               type="range"
@@ -183,7 +183,7 @@ export const GoalReverseCalculator: React.FC = () => {
             <div className="flex justify-between items-center">
               <span className="text-sm font-medium text-gray-500">목표 달성 필요 매매 횟수</span>
               {results.requiredTrades ? (
-                <span className="text-lg font-bold text-primary">월 {results.requiredTrades}회</span>
+                <span className="text-lg font-black text-amber-500">월 {results.requiredTrades}회</span>
               ) : (
                 <span className="text-sm font-bold text-red-500">계산 불가</span>
               )}

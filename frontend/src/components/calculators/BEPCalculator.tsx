@@ -117,7 +117,7 @@ export const BEPCalculator: React.FC = () => {
   const formatNumber = (val: number) => Math.round(val).toLocaleString('ko-KR');
 
   return (
-    <div className="max-w-md mx-auto space-y-6 animate-fade-in pb-10">
+    <div className="max-w-3xl mx-auto space-y-6 animate-fade-in pb-10">
       {/* 입력 섹션 */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-6">
         <div className="flex justify-between items-center">
@@ -249,7 +249,7 @@ export const BEPCalculator: React.FC = () => {
             </div>
             <div className="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-1">
               <span className="text-[10px] text-gray-400 font-bold uppercase">평균 매수가</span>
-              <span className="text-sm font-bold truncate text-primary">{formatNumber(results.avgPrice)}<span className="text-[10px] ml-0.5">원</span></span>
+              <span className="text-sm font-black truncate text-amber-500">{formatNumber(results.avgPrice)}<span className="text-[10px] ml-0.5">원</span></span>
             </div>
             <div className="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-1">
               <span className="text-[10px] text-gray-400 font-bold uppercase">총 수량</span>
@@ -260,7 +260,7 @@ export const BEPCalculator: React.FC = () => {
           <div className="bg-gray-50 rounded-2xl p-6 space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-sm font-medium text-gray-500">손익분기점 (BEP)</span>
-              <span className="text-lg font-bold text-primary">{formatNumber(results.bepPrice)}원</span>
+              <span className="text-lg font-black text-amber-500">{formatNumber(results.bepPrice)}원</span>
             </div>
 
             {parseFloat(currentPrice) > 0 && (
@@ -300,7 +300,7 @@ export const BEPCalculator: React.FC = () => {
                         />
                     </div>
                     <div className="flex justify-center">
-                        <span className="text-[10px] text-primary font-bold">BEP (0.00%)</span>
+                        <span className="text-[10px] text-amber-500 font-bold">BEP (0.00%)</span>
                     </div>
                   </div>
                 </div>

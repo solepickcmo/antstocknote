@@ -29,15 +29,15 @@ export const CalculatorPage: React.FC = () => {
       </header>
 
       {/* 탭 네비게이션 */}
-      <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-gray-100 mb-8 max-w-md mx-auto overflow-x-auto no-scrollbar">
+      <div className="flex bg-gray-100/80 p-1.5 rounded-2xl border border-gray-200 mb-8 max-w-2xl mx-auto overflow-x-auto no-scrollbar gap-1">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as CalcTab)}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl transition-all duration-300 font-bold text-sm whitespace-nowrap px-4 ${
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all duration-300 font-bold text-sm whitespace-nowrap px-4 ${
               activeTab === tab.id
-                ? 'bg-primary text-gray-900 shadow-md shadow-primary/20 scale-100'
-                : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50 scale-95'
+                ? 'bg-gray-900 text-primary shadow-md scale-100'
+                : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/50 scale-[0.98]'
             }`}
           >
             {tab.icon}

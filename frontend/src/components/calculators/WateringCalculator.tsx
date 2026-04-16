@@ -127,7 +127,7 @@ export const WateringCalculator: React.FC = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-8 animate-fade-in max-w-5xl mx-auto">
+    <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-6 animate-fade-in max-w-4xl mx-auto pb-10">
       {/* 입력 섹션 */}
       <div className="space-y-6">
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
@@ -153,7 +153,7 @@ export const WateringCalculator: React.FC = () => {
               <select
                 aria-label="보유 종목 선택"
                 id="holdingSelect"
-                className="w-full px-4 py-3 rounded-xl border border-gray-100 bg-gray-50 focus:ring-2 focus:ring-primary outline-none transition-all font-semibold text-gray-700"
+                className="w-full px-3 py-2.5 rounded-xl border border-gray-100 bg-gray-50 focus:ring-2 focus:ring-primary outline-none transition-all font-semibold text-gray-700"
                 value={selectedTicker}
                 onChange={(e) => setSelectedTicker(e.target.value)}
               >
@@ -184,7 +184,7 @@ export const WateringCalculator: React.FC = () => {
             )}
 
             <div className="relative py-2 flex items-center gap-4">
-                <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-white px-2 z-10">진입 시점 배경</span>
+                <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest bg-white px-2 z-10">진입 시점 배경</span>
                 <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100"></div></div>
             </div>
 
@@ -195,7 +195,7 @@ export const WateringCalculator: React.FC = () => {
                 id="marketPrice"
                 type="number"
                 placeholder="현재 주가를 입력하세요"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all font-bold text-lg"
+                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all font-bold text-lg"
                 value={currentMarketPrice}
                 onChange={(e) => setCurrentMarketPrice(e.target.value)}
                 disabled={!selectedHolding}
@@ -203,7 +203,7 @@ export const WateringCalculator: React.FC = () => {
             </div>
 
             <div className="relative py-2 flex items-center gap-4">
-                <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-white px-2 z-10">추가 매수 계획 (최대 3회)</span>
+                <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest bg-white px-2 z-10">추가 매수 계획 (최대 3회)</span>
                 <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100"></div></div>
             </div>
             
