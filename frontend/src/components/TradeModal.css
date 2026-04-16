@@ -119,11 +119,19 @@
   margin-bottom: 1rem;
 }
 
-.form-group label {
+.form-group label,
+.section-label {
   display: block;
   margin-bottom: 0.4rem;
   font-size: 0.85rem;
   color: var(--text-muted);
+}
+
+.section-label {
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.02em;
 }
 
 .form-group input,

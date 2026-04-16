@@ -400,6 +400,33 @@
   line-height: 1.6;
 }
 
+.watering-row-container {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.watering-row-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.watering-row-label::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 12px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
 .loss-border {
   border-color: var(--loss);
   background: linear-gradient(135deg, rgba(21, 26, 40, 0.7) 0%, rgba(239, 68, 68, 0.05) 100%);

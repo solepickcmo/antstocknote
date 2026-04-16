@@ -21,8 +21,14 @@ export const CalculatorPage: React.FC = () => {
   // ─── 물타기 시뮬레이터 상태 ───
   const [selectedTicker, setSelectedTicker] = useState<string>('');
   const [currentMarketPrice, setCurrentMarketPrice] = useState<string>('');
-  const [additionalPrice, setAdditionalPrice] = useState<string>('');
-  const [additionalQty, setAdditionalQty] = useState<string>('');
+  
+  // 최대 3회차까지 물타기 조건을 관리하기 위한 배열 상태
+  // { price: '매수단가', qty: '매수수량' } 객체의 리스트
+  const [wateringEntries, setWateringEntries] = useState([
+    { price: '', qty: '' },
+    { price: '', qty: '' },
+    { price: '', qty: '' }
+  ]);
 
   // 컴포넌트 마운트 시 보유 종목 로드
   React.useEffect(() => {
@@ -80,31 +86,39 @@ export const CalculatorPage: React.FC = () => {
     if (!selectedHolding) return null;
 
     const currentPrice = parseFloat(currentMarketPrice);
-    const addPrice = parseFloat(additionalPrice);
-    const addQty = parseFloat(additionalQty);
-
     const existingAvgPrice = selectedHolding.avgPrice;
     const existingQty = selectedHolding.quantity;
     const existingCost = existingAvgPrice * existingQty;
 
+    // 물타기 전 현재 손익률 계산
     const currentPnlRate = !isNaN(currentPrice) && currentPrice > 0
       ? ((currentPrice - existingAvgPrice) / existingAvgPrice) * 100
       : null;
 
-    if (isNaN(addPrice) || isNaN(addQty) || addPrice <= 0 || addQty <= 0) {
-      return { currentPnlRate, newAvgPrice: null, newTotalQty: null, additionalInvestment: null, requiredRisePct: null };
+    // 모든 회차의 물타기 데이터를 합산 (유효한 입력값만 처리)
+    let totalAdditionalCost = 0;
+    let totalAdditionalQty = 0;
+    let hasValidEntry = false;
+
+    wateringEntries.forEach(entry => {
+      const p = parseFloat(entry.price);
+      const q = parseFloat(entry.qty);
+      if (!isNaN(p) && !isNaN(q) && p > 0 && q > 0) {
+        totalAdditionalCost += p * q;
+        totalAdditionalQty += q;
+        hasValidEntry = true;
+      }
+    });
+
+    if (!hasValidEntry) {
+      return { currentPnlRate, newAvgPrice: null, newTotalQty: null, additionalInvestment: null, afterWaterfallPnlRate: null };
     }
 
-    const additionalCost = addPrice * addQty;
-    const newTotalCost = existingCost + additionalCost;
-    const newTotalQty = existingQty + addQty;
+    const newTotalCost = existingCost + totalAdditionalCost;
+    const newTotalQty = existingQty + totalAdditionalQty;
     const newAvgPrice = newTotalCost / newTotalQty;
-    const breakEvenTargetPrice = Math.ceil(newAvgPrice) + 1;
 
-    const requiredRisePct = !isNaN(currentPrice) && currentPrice > 0
-      ? ((breakEvenTargetPrice - currentPrice) / currentPrice) * 100
-      : null;
-
+    // 물타기 후 현재가 기준 예상 손익률 계산
     const afterWaterfallPnlRate = !isNaN(currentPrice) && currentPrice > 0
       ? ((currentPrice - newAvgPrice) / newAvgPrice) * 100
       : null;
@@ -113,12 +127,19 @@ export const CalculatorPage: React.FC = () => {
       currentPnlRate,
       newAvgPrice,
       newTotalQty,
-      additionalInvestment: additionalCost,
-      breakEvenTargetPrice,
-      requiredRisePct,
+      additionalInvestment: totalAdditionalCost,
       afterWaterfallPnlRate,
     };
-  }, [selectedHolding, currentMarketPrice, additionalPrice, additionalQty]);
+  }, [selectedHolding, currentMarketPrice, wateringEntries]);
+
+  // 물타기 입력 변경 핸들러
+  const handleWateringChange = (index: number, field: 'price' | 'qty', value: string) => {
+    setWateringEntries(prev => {
+      const next = [...prev];
+      next[index] = { ...next[index], [field]: value };
+      return next;
+    });
+  };
 
   return (
     <div className="calculator-page animate-fade-in">
@@ -137,7 +158,11 @@ export const CalculatorPage: React.FC = () => {
         <div className="calc-input-section glass-panel">
           <div className="section-title">
             <h3>물타기 조건 입력</h3>
-            <button className="btn-reset" onClick={() => { setSelectedTicker(''); setCurrentMarketPrice(''); setAdditionalPrice(''); setAdditionalQty(''); }}>
+            <button className="btn-reset" onClick={() => { 
+              setSelectedTicker(''); 
+              setCurrentMarketPrice(''); 
+              setWateringEntries([{ price: '', qty: '' }, { price: '', qty: '' }, { price: '', qty: '' }]);
+            }}>
               <RotateCcw size={14} /> 초기화
             </button>
           </div>
@@ -187,36 +212,42 @@ export const CalculatorPage: React.FC = () => {
             />
           </div>
 
-          <div className="sim-section-divider">추가 매수 조건 (물타기)</div>
-          <div className="entry-row">
-            <div className="input-group sim-group">
-              <label>추가 매수 단가</label>
-              <input
-                type="number"
-                placeholder="0"
-                value={additionalPrice}
-                onChange={(e) => setAdditionalPrice(e.target.value)}
-                disabled={!selectedHolding}
-              />
+          <div className="sim-section-divider">추가 매수 조건 (최대 3회)</div>
+          
+          {wateringEntries.map((entry, index) => (
+            <div key={index} className="watering-row-container">
+              <div className="watering-row-label">{index + 1}차 물타기</div>
+              <div className="entry-row">
+                <div className="input-group sim-group">
+                  <label>매수 단가</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    value={entry.price}
+                    onChange={(e) => handleWateringChange(index, 'price', e.target.value)}
+                    disabled={!selectedHolding}
+                  />
+                </div>
+                <div className="input-group sim-group">
+                  <label>매수 수량</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    value={entry.qty}
+                    onChange={(e) => handleWateringChange(index, 'qty', e.target.value)}
+                    disabled={!selectedHolding}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="input-group sim-group">
-              <label>추가 수량</label>
-              <input
-                type="number"
-                placeholder="0"
-                value={additionalQty}
-                onChange={(e) => setAdditionalQty(e.target.value)}
-                disabled={!selectedHolding}
-              />
-            </div>
-          </div>
+          ))}
 
           <div className="calc-info glass-panel" style={{ marginTop: '1.5rem' }}>
             <h4>💡 물타기 전략 주의사항</h4>
             <ul>
               <li>물타기는 추가 자본이 필요합니다. 여유 자금 범위 내에서만 시뮬레이션하세요.</li>
               <li>평단이 낮아져도 주가가 계속 하락하면 손실은 커집니다.</li>
-              <li>흑자 전환에 필요한 상승률이 현실적인지 반드시 확인하세요.</li>
+              <li>현재 손익률 변화 추이를 보며 현실적인 계획을 세우세요.</li>
             </ul>
           </div>
         </div>
@@ -266,7 +297,7 @@ export const CalculatorPage: React.FC = () => {
                       </div>
                     </div>
                     <div className="result-card glass-panel">
-                      <span className="label">추가 투자 필요금액</span>
+                      <span className="label">물타기 비용</span>
                       <div className="value-group small">
                         <span className="val loss-text">{(waterfallResult.additionalInvestment ?? 0).toLocaleString()}</span>
                         <span className="unit">원</span>
@@ -274,21 +305,21 @@ export const CalculatorPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="result-card glass-panel success-border">
+                  <div className={`result-card glass-panel ${(waterfallResult.afterWaterfallPnlRate ?? 0) >= 0 ? 'success-border' : 'loss-border'}`}>
                     <div className="bep-header">
-                      <span className="label">흑자 전환 최소 목표가</span>
+                      <span className="label">현재 손익률 (물타기 후)</span>
                     </div>
                     <div className="value-group large">
-                      <span className="val profit-text">{(waterfallResult.breakEvenTargetPrice ?? 0).toLocaleString()}</span>
-                      <span className="unit">원</span>
+                      <span className={`val ${(waterfallResult.afterWaterfallPnlRate ?? 0) >= 0 ? 'profit-text' : 'loss-text'}`}>
+                        {(waterfallResult.afterWaterfallPnlRate ?? 0) >= 0 ? '+' : ''}{(waterfallResult.afterWaterfallPnlRate ?? 0 || 0).toFixed(2)}%
+                      </span>
                     </div>
-                    {waterfallResult.requiredRisePct !== null && (
+                    {waterfallResult.afterWaterfallPnlRate !== null && (
                       <div className="return-required">
-                        현재가 대비{' '}
-                        <span className={waterfallResult.requiredRisePct <= 0 ? 'profit-text' : 'loss-text'}>
-                          {waterfallResult.requiredRisePct > 0 ? '+' : ''}{waterfallResult.requiredRisePct.toFixed(2)}% 상승
-                        </span>{' '}
-                        필요
+                        물타기 전 대비{' '}
+                        <span className="profit-text">
+                          {((waterfallResult.afterWaterfallPnlRate ?? 0) - (waterfallResult.currentPnlRate ?? 0)).toFixed(2)}% 개선
+                        </span>
                       </div>
                     )}
                   </div>

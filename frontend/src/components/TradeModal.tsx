@@ -265,6 +265,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
           
           
           <div className="form-group block-group">
+            <label className="section-label">전략 태그</label>
             <div className="tag-selector">
               {strategyTags.map((tag) => (
                 <div key={tag.id} className="tag-chip-container">
@@ -281,6 +282,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
           </div>
 
           <div className="form-group block-group">
+            <label className="section-label">감정 태그</label>
             <div className="tag-selector">
               {emotionTags.map((tag) => (
                 <div key={tag.id} className="tag-chip-container">
