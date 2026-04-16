@@ -1,185 +1,276 @@
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; /* In PC mode, center it. In Mobile, we will stretch it */
   z-index: 2000;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(4px);
 }
 
 .modal-container {
   width: 90%;
-  max-width: 550px;
-  max-height: 85vh;
+  max-width: 600px;
+  max-height: 90vh;
   overflow-y: auto;
-  background-color: var(--bg-white);
   border-radius: var(--radius-lg);
-  padding: 2.5rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  animation: appleModalSpring 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  padding: 2rem;
+  animation: modalSlideIn 0.3s ease-out;
 }
 
-@keyframes appleModalSpring {
-  from { opacity: 0; transform: scale(0.9) translateY(20px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+@keyframes modalSlideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .modal-header-mobile {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1rem;
 }
 
 .modal-header-mobile h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-main);
-  letter-spacing: -0.03em;
+  font-size: 1.2rem;
+  margin: 0;
 }
 
 .header-actions {
   display: flex;
-  gap: 1rem;
+  gap: 0.8rem;
 }
 
 .btn-cancel-top {
-  color: var(--primary);
+  border: 1px solid var(--border);
   background: none;
-  font-weight: 500;
-  font-size: 1rem;
+  color: var(--text-main);
+  border-radius: 20px;
+  padding: 0.3rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
 .btn-save-top {
-  color: var(--primary);
-  background: none;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 0.3rem 1rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  font-size: 1rem;
 }
 
-/* Apple Style Segmented Control */
+.modal-error {
+  background-color: rgba(244, 63, 94, 0.15);
+  color: var(--loss);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid rgba(244, 63, 94, 0.3);
+}
+
+/* Segmented Control */
 .segment-control {
   display: flex;
-  background-color: #eeeeef;
-  border-radius: 10px;
-  padding: 2px;
-  margin-bottom: 2rem;
+  background-color: var(--bg-input);
+  border-radius: var(--radius-md);
+  padding: 4px;
+  margin-bottom: 1.5rem;
 }
 
 .segment-btn {
   flex: 1;
-  padding: 0.5rem;
+  padding: 0.8rem;
   border-radius: 8px;
-  font-weight: 500;
-  font-size: 0.9rem;
-  color: var(--text-main);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.segment-btn.active {
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   font-weight: 600;
+  color: var(--text-muted);
+  transition: all 0.2s;
 }
 
 .segment-btn.buy.active {
-  color: var(--profit);
+  background-color: rgba(99, 102, 241, 0.15); /* Primary tinted */
+  color: var(--primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 .segment-btn.sell.active {
+  background-color: rgba(244, 63, 94, 0.15); /* Rose tinted */
   color: var(--loss);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
-/* Form Styles */
+/* Base forms */
 .form-row {
   display: flex;
-  gap: 1.25rem;
-  margin-bottom: 1.25rem;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-row > div {
+  flex: 1;
+}
+
+.form-row-single {
+  margin-bottom: 1rem;
 }
 
 .form-group label,
 .section-label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
   font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-transform: none;
+  color: var(--text-muted);
 }
 
 .section-label {
-  color: var(--text-main);
-  font-size: 1.1rem;
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.02em;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
   width: 100%;
-  padding: 0.75rem 0.85rem;
-  background-color: #f2f2f7; /* Apple Input Gray */
-  border: 1px solid transparent;
-  border-radius: 10px;
+  padding: 0.8rem;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   color: var(--text-main);
-  font-size: 1rem;
-  transition: all 0.2s;
 }
-
-.form-group input:focus {
-  background-color: white;
-  border-color: var(--primary);
-  outline: none;
-  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
-}
-
 .form-group input.readonly-input {
   background-color: transparent;
-  font-size: 1.75rem;
-  font-weight: 700;
-  padding: 0;
-  letter-spacing: -0.04em;
+  border-color: transparent;
+  padding-left: 0;
+  font-size: 1.1rem;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+}
+.highlight {
+  color: var(--primary) !important;
+  font-weight: bold;
 }
 
-/* Tag Selection (Pill Chips) */
+/* Tag Selector */
+.block-group {
+  margin-bottom: 1.5rem;
+}
+
 .tag-selector {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: 0.5rem;
 }
 
 .sel-chip {
-  background-color: #f2f2f7;
-  color: var(--text-main);
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-pill);
-  font-size: 0.85rem;
-  font-weight: 500;
-  transition: all 0.2s;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
 }
 
 .sel-chip.active {
   background-color: var(--primary);
+  border-color: var(--primary);
   color: white;
 }
 
-/* Autocomplete (iOS list style) */
+/* Autocomplete updates */
+.autocomplete-container {
+  position: relative;
+}
+
 .autocomplete-dropdown {
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-  margin-top: 4px;
+  position: absolute;
+  top: 100%;
+  left: 0; right: 0;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  margin: 0; padding: 0;
+  list-style: none;
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .autocomplete-dropdown li {
-  padding: 0.85rem 1rem;
-  font-size: 0.95rem;
-  border-color: rgba(0, 0, 0, 0.05);
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+
+.autocomplete-dropdown li:hover {
+  background-color: var(--bg-input);
+}
+
+/* Mobile Toggle Switch */
+.mobile-toggle-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-top: 1px solid var(--border);
+  margin-top: 1rem;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--bg-input);
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: var(--primary);
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.slider.round {
+  border-radius: 24px;
+}
+.slider.round:before {
+  border-radius: 50%;
 }
 
 /* PC Modal Actions */
@@ -187,44 +278,64 @@
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
-  margin-top: 2.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.btn-cancel, .btn-submit {
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
 }
 
 .btn-cancel {
-  background: none;
-  color: var(--primary);
-  font-weight: 600;
-  font-size: 1rem;
+  background-color: var(--bg-input);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+}
+
+.btn-cancel:hover {
+  background-color: var(--bg-card);
 }
 
 .btn-submit {
   background-color: var(--primary);
   color: white;
-  padding: 0.75rem 2rem;
-  border-radius: var(--radius-pill);
-  font-weight: 600;
-  font-size: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 113, 227, 0.25);
+  border: none;
 }
 
-.btn-submit:active {
-  transform: scale(0.96);
+.btn-submit:hover {
+  opacity: 0.9;
 }
 
-/* Mobile Overrides (Apple Card Style) */
+/* Override container for mobile setup via generic media queries or `.mobile-mode` wrapper context */
 .app-wrapper.mobile-mode .modal-container {
   width: 100%;
   max-width: none;
-  height: calc(100% - 20px);
-  margin-top: 20px;
-  border-radius: 20px 20px 0 0;
+  height: 100%;
+  max-height: 100%;
+  border-radius: 0; /* Full screen inside the simulated phone */
+  margin: 0;
   padding: 1.5rem;
-  animation: appleSlideUpMobile 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation: slideUpMobile 0.3s ease-out forwards;
 }
 
-@keyframes appleSlideUpMobile {
+.app-wrapper.mobile-mode .modal-overlay {
+  position: absolute; /* Stick to the simulated phone, not the whole window */
+  bottom: 65px; /* Leave the bottom nav visible and clickable */
+  border-radius: 40px 40px 0 0;
+}
+
+@keyframes slideUpMobile {
   from { transform: translateY(100%); }
   to { transform: translateY(0); }
+}
+
+/* Tag Selection UI (Fixed Tags) */
+.tag-chip-container {
+  display: flex;
+  align-items: center;
 }
