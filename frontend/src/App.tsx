@@ -14,6 +14,7 @@ import { ResetPasswordPage } from './pages/Auth/ResetPasswordPage';
 import { useAuthStore } from './store/authStore';
 import { useTradeStore } from './store/tradeStore';
 import { useLayoutStore } from './store/layoutStore';
+import { useThemeStore } from './store/themeStore';
 import { TradeModal } from './components/TradeModal';
 import { BottomNav } from './components/BottomNav';
 import './App.css';
@@ -61,6 +62,11 @@ const App: React.FC = () => {
   const setAuth = useAuthStore(state => state.setAuth);
   const setInitialized = useAuthStore(state => state.setInitialized);
   const isInitialized = useAuthStore(state => state.isInitialized);
+  const theme = useThemeStore(state => state.theme);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     // Initial session loading

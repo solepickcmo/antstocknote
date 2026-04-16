@@ -1,86 +1,67 @@
 .analysis-page {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
   padding-bottom: 3rem;
-  max-width: 1000px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.analysis-header {
-  margin-bottom: 0.5rem;
 }
 
 .analysis-header h1 {
-  font-size: 1.5rem;
-  margin: 0;
-  color: var(--text-primary);
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.05em;
+  margin-bottom: 2rem;
 }
 
-/* 요약 데시보드 */
 .summary-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
+  margin-bottom: 3rem;
 }
 
 .summary-card {
-  padding: 1.25rem 1.5rem;
-  border-radius: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  padding: 2rem;
+  background-color: var(--bg-white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+  text-align: center;
 }
 
 .summary-card h3 {
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: 700;
   color: var(--text-secondary);
-  margin: 0;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
 }
 
 .summary-val {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0;
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.04em;
 }
 
-.summary-val.profit {
-  color: var(--success-color);
-}
-
-.summary-val.loss {
-  color: var(--danger-color);
-}
-
-/* 2단 레이아웃 */
 .analysis-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
-  margin-top: 1rem;
 }
 
-.analysis-col {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
+.stats-section {
+  margin-bottom: 3rem;
 }
 
-/* 통계 섹션 (좌측) */
 .stats-section h2 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 0 0 1.25rem 0;
-  color: var(--text-primary);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 1.5rem;
 }
 
 .bar-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .bar-row {
@@ -90,177 +71,95 @@
 }
 
 .bar-label {
-  width: 80px;
+  width: 90px;
   font-size: 0.85rem;
+  font-weight: 600;
   color: var(--text-secondary);
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .bar-track {
   flex: 1;
-  height: 8px;
-  background-color: var(--bg-secondary);
-  border-radius: 4px;
+  height: 6px;
+  background-color: var(--border);
+  border-radius: 3px;
   overflow: hidden;
 }
 
 .bar-fill {
   height: 100%;
-  border-radius: 4px;
-  transition: width 0.5s ease-out;
+  border-radius: 3px;
+  transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .bar-value {
-  width: 40px;
-  text-align: right;
+  width: 45px;
   font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-weight: 700;
+  color: var(--text-main);
+  text-align: right;
 }
 
-/* 오답 노트 섹션 (우측) */
-.notes-section {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
+/* Notes Section */
 .notes-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.25rem;
-}
-
-.notes-header h2 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 0;
-  color: var(--text-primary);
+  margin-bottom: 1.5rem;
 }
 
 .btn-add-note {
-  background-color: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  padding: 0.4rem 0.75rem;
-  border-radius: 0.5rem;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-add-note:hover {
-  background-color: var(--text-primary);
-  color: var(--bg-primary);
-}
-
-.notes-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  background-color: var(--primary);
+  color: #1E2026;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 0.85rem;
 }
 
 .note-card {
-  padding: 1.25rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-secondary);
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  padding: 1.5rem;
+  background-color: var(--bg-white);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
 }
 
 .note-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .note-badge {
-  background-color: rgba(220, 38, 38, 0.15); /* light red bg */
-  color: var(--danger-color);
-  padding: 0.2rem 0.5rem;
-  border-radius: 0.25rem;
+  background-color: rgba(240, 185, 11, 0.1);
+  color: var(--primary);
+  padding: 4px 8px;
+  border-radius: 4px;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 800;
 }
 
 .note-meta {
-  color: var(--text-muted);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
 }
 
 .note-content {
-  margin: 0;
-  color: var(--text-primary);
-  font-size: 0.9rem;
-  line-height: 1.5;
-  word-break: keep-all;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-main);
+  white-space: pre-wrap;
 }
 
-.more-btn-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 1.5rem;
-}
-
-.btn-more {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-more:hover {
-  background-color: var(--bg-tertiary);
-  transform: translateY(2px);
-}
-
-.more-icon {
-  font-size: 1.2rem;
-}
-
-.empty-msg {
-  color: var(--text-muted);
-  font-size: 0.85rem;
-  text-align: center;
-  padding: 1rem 0;
-}
-
-.app-wrapper.mobile-mode .summary-cards {
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
-}
-
-.app-wrapper.mobile-mode .summary-card {
-  padding: 1rem 0.5rem;
-  align-items: center;
-  text-align: center;
-}
-
-.app-wrapper.mobile-mode .summary-card h3 {
-  font-size: 0.70rem;
-}
-
-.app-wrapper.mobile-mode .summary-val {
-  font-size: 1rem;
-}
-
-.app-wrapper.mobile-mode .analysis-grid {
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-.app-wrapper.mobile-mode .notes-section, .app-wrapper.mobile-mode .stats-section {
-  gap: 1rem;
+/* Mobile Responsiveness */
+@media (max-width: 900px) {
+  .summary-cards {
+    grid-template-columns: 1fr;
+  }
+  .analysis-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
 }

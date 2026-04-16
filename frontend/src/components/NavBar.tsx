@@ -1,9 +1,10 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Calendar, History, BarChart2, Users, Settings, PieChart, PlusSquare, Smartphone, LogOut, Calculator } from 'lucide-react';
+import { LayoutDashboard, Calendar, History, BarChart2, Users, Settings, PieChart, PlusSquare, Smartphone, LogOut, Calculator, Sun, Moon } from 'lucide-react';
 import { useTradeStore } from '../store/tradeStore';
 import { useLayoutStore } from '../store/layoutStore';
 import { useAuthStore } from '../store/authStore';
+import { useThemeStore } from '../store/themeStore';
 import './NavBar.css';
 
 export const NavBar: React.FC = () => {
@@ -20,6 +21,9 @@ export const NavBar: React.FC = () => {
     <nav className="navbar">
       <div className="nav-brand">
         <div className="nav-brand-logo">개미노트</div>
+        <div className="theme-toggle" onClick={() => useThemeStore.getState().toggleTheme()}>
+          {useThemeStore(state => state.theme) === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+        </div>
       </div>
       
       <div className="nav-group">

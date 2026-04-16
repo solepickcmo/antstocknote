@@ -1,10 +1,11 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { LayoutDashboard, History, Plus, BarChart2, Settings, LogOut, Monitor, Calculator } from 'lucide-react';
+import { LayoutDashboard, History, Plus, BarChart2, Settings, LogOut, Monitor, Calculator, Sun, Moon } from 'lucide-react';
 import { useTradeStore } from '../store/tradeStore';
 import { useAuthStore } from '../store/authStore';
 import { useLayoutStore } from '../store/layoutStore';
+import { useThemeStore } from '../store/themeStore';
 import { supabase } from '../api/supabase';
 import './BottomNav.css';
 
@@ -75,6 +76,13 @@ export const BottomNav: React.FC = () => {
       <div className="bottom-settings-sheet">
         <div className="sheet-backdrop" onClick={() => setIsSettingsOpen(false)} />
         <div className="sheet-content glass-panel">
+          <button className="sheet-btn" onClick={() => useThemeStore.getState().toggleTheme()}>
+            {useThemeStore(state => state.theme) === 'light' ? (
+              <><Moon size={18} /> 다크 모드 켜기</>
+            ) : (
+              <><Sun size={18} /> 라이트 모드 켜기</>
+            )}
+          </button>
           <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/calculator'); }}>
             <Calculator size={18} /> 손익분기점 계산기
           </button>
