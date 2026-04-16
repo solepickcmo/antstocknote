@@ -168,11 +168,13 @@ export const CalculatorPage: React.FC = () => {
           </div>
 
           <div className="input-group sim-group">
-            <label>📌 보유 종목 선택</label>
+            <label htmlFor="holdingSelect">📌 보유 종목 선택</label>
             <select
+              id="holdingSelect"
               className="sim-select"
               value={selectedTicker}
               onChange={(e) => setSelectedTicker(e.target.value)}
+              aria-label="보유 종목 선택"
             >
               <option value="">-- 종목을 선택하세요 --</option>
               {currentHoldings.map(h => (
@@ -202,13 +204,15 @@ export const CalculatorPage: React.FC = () => {
 
           <div className="sim-section-divider">현재 시장 상황</div>
           <div className="input-group sim-group">
-            <label>현재가 (직접 입력)</label>
+            <label htmlFor="marketPrice">현재가 (직접 입력)</label>
             <input
+              id="marketPrice"
               type="number"
               placeholder="현재 주가를 입력하세요"
               value={currentMarketPrice}
               onChange={(e) => setCurrentMarketPrice(e.target.value)}
               disabled={!selectedHolding}
+              aria-label="현재 시장 가격 직접 입력"
             />
           </div>
 
@@ -219,23 +223,27 @@ export const CalculatorPage: React.FC = () => {
               <div className="watering-row-label">{index + 1}차 물타기</div>
               <div className="entry-row">
                 <div className="input-group sim-group">
-                  <label>매수 단가</label>
+                  <label htmlFor={`waterPrice-${index}`}>매수 단가</label>
                   <input
+                    id={`waterPrice-${index}`}
                     type="number"
                     placeholder="0"
                     value={entry.price}
                     onChange={(e) => handleWateringChange(index, 'price', e.target.value)}
                     disabled={!selectedHolding}
+                    aria-label={`${index + 1}차 추가 매수 단가`}
                   />
                 </div>
                 <div className="input-group sim-group">
-                  <label>매수 수량</label>
+                  <label htmlFor={`waterQty-${index}`}>매수 수량</label>
                   <input
+                    id={`waterQty-${index}`}
                     type="number"
                     placeholder="0"
                     value={entry.qty}
                     onChange={(e) => handleWateringChange(index, 'qty', e.target.value)}
                     disabled={!selectedHolding}
+                    aria-label={`${index + 1}차 추가 매수 수량`}
                   />
                 </div>
               </div>

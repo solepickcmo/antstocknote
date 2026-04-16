@@ -93,6 +93,7 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
               value={selectedTradeId}
               onChange={e => setSelectedTradeId(e.target.value)}
               required
+              aria-label="노트를 작성할 대상 매매 기록 선택"
             >
               {trades.length === 0 && <option value="">매도 기록이 없습니다.</option>}
               {trades.map(t => (
@@ -112,6 +113,7 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
               placeholder="무엇이 아쉬웠는지, 다음에는 어떻게 다르게 행동할 것인지 적어보세요."
               rows={5}
               required
+              aria-label="오답 노트 내용 입력"
             ></textarea>
           </div>
 
