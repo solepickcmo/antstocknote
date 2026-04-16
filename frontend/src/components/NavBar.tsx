@@ -54,7 +54,7 @@ export const NavBar: React.FC = () => {
         </NavLink>
         <NavLink to="/calculator" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
           <Calculator size={18} />
-          <span>BEP 계산기</span>
+          <span>계산기</span>
         </NavLink>
       </div>
 

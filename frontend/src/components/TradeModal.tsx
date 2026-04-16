@@ -20,7 +20,8 @@ interface TradeModalProps {
 export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
   const createTrade = useTradeStore((state: any) => state.createTrade);
   // 고정 태그 목록 (추가/삭제 없이 읽기 전용으로 사용)
-  const { strategyTags, emotionTags } = useTagStore();
+  // 매수/매도 유형에 따라 필터링된 고정 태그 목록 가져오기
+  const { strategyTags, emotionTags } = useTagStore(formData.type);
   
   const [formData, setFormData] = useState<{
     ticker: string;
@@ -264,12 +265,14 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
           
           
           <div className="form-group block-group">
-            <label>전략 태그</label>
             <div className="tag-selector">
               {strategyTags.map((tag) => (
-                <div key={tag.id} className={`tag-chip-container ${formData.strategyTag === tag.name ? 'active' : ''}`}>
-                  {/* 클릭 시 토글: 이미 선택된 태그를 다시 누르면 해제 */}
-                  <button type="button" className="sel-chip" onClick={() => setFormData((prevFormData: any) => ({...prevFormData, strategyTag: prevFormData.strategyTag === tag.name ? '' : tag.name}))}>
+                <div key={tag.id} className="tag-chip-container">
+                  <button 
+                    type="button" 
+                    className={`sel-chip ${formData.strategyTag === tag.name ? 'active' : ''}`}
+                    onClick={() => setFormData((prevFormData: any) => ({...prevFormData, strategyTag: prevFormData.strategyTag === tag.name ? '' : tag.name}))}
+                  >
                      {tag.name}
                   </button>
                 </div>
@@ -278,12 +281,14 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
           </div>
 
           <div className="form-group block-group">
-            <label>감정 태그</label>
             <div className="tag-selector">
               {emotionTags.map((tag) => (
-                <div key={tag.id} className={`tag-chip-container ${formData.emotionTag === tag.name ? 'active' : ''}`}>
-                  {/* 클릭 시 토글: 이미 선택된 태그를 다시 누르면 해제 */}
-                  <button type="button" className="sel-chip" onClick={() => setFormData((prevFormData: any) => ({...prevFormData, emotionTag: prevFormData.emotionTag === tag.name ? '' : tag.name}))}>
+                <div key={tag.id} className="tag-chip-container">
+                  <button 
+                    type="button" 
+                    className={`sel-chip ${formData.emotionTag === tag.name ? 'active' : ''}`}
+                    onClick={() => setFormData((prevFormData: any) => ({...prevFormData, emotionTag: prevFormData.emotionTag === tag.name ? '' : tag.name}))}
+                  >
                      {tag.name}
                   </button>
                 </div>
