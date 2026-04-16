@@ -124,6 +124,7 @@ export const BottomNav: React.FC = () => {
             placeholder="탈퇴합니다"
             aria-required="true"
             aria-labelledby="label-withdraw"
+            aria-label="탈퇴 확인 문구 입력 (탈퇴합니다 입력)"
             style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'rgba(255,255,255,0.05)', color: 'var(--text-main)', marginBottom: '1.5rem' }}
           />
           <div style={{ display: 'flex', gap: '0.75rem' }}>

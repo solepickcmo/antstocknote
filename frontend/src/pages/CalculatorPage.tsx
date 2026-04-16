@@ -175,6 +175,7 @@ export const CalculatorPage: React.FC = () => {
               value={selectedTicker}
               onChange={(e) => setSelectedTicker(e.target.value)}
               aria-labelledby="label-holding-select"
+              aria-label="보유 종목 선택"
             >
               <option value="">-- 종목을 선택하세요 --</option>
               {currentHoldings.map(h => (
@@ -213,6 +214,7 @@ export const CalculatorPage: React.FC = () => {
               onChange={(e) => setCurrentMarketPrice(e.target.value)}
               disabled={!selectedHolding}
               aria-labelledby="label-market-price"
+              aria-label="현재 주가(시장가) 입력"
             />
           </div>
 
@@ -232,6 +234,7 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => handleWateringChange(index, 'price', e.target.value)}
                     disabled={!selectedHolding}
                     aria-labelledby={`label-waterPrice-${index}`}
+                    aria-label={`${index + 1}차 추가 매수 단가 입력`}
                   />
                 </div>
                 <div className="input-group sim-group">
@@ -244,6 +247,7 @@ export const CalculatorPage: React.FC = () => {
                     onChange={(e) => handleWateringChange(index, 'qty', e.target.value)}
                     disabled={!selectedHolding}
                     aria-labelledby={`label-waterQty-${index}`}
+                    aria-label={`${index + 1}차 추가 매수 수량 입력`}
                   />
                 </div>
               </div>

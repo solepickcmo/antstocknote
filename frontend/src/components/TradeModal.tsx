@@ -204,7 +204,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
           <div className="form-row" ref={dropdownRef}>
             <div className="form-group autocomplete-container">
               <label id="label-ticker" htmlFor="ticker">종목코드</label>
-              <input id="ticker" type="text" name="ticker" value={formData.ticker} onChange={handleChange} required placeholder="005930" autoComplete="off" onFocus={() => { setActiveInput('ticker'); if(formData.ticker) searchStocks(formData.ticker); }} aria-labelledby="label-ticker" />
+              <input id="ticker" type="text" name="ticker" value={formData.ticker} onChange={handleChange} required placeholder="005930" autoComplete="off" onFocus={() => { setActiveInput('ticker'); if(formData.ticker) searchStocks(formData.ticker); }} aria-labelledby="label-ticker" aria-label="종목 코드 입력" />
               {showStockDropdown && activeInput === 'ticker' && stockResults.length > 0 && (
                 <ul className="autocomplete-dropdown">
                   {stockResults.map((stock: StockData) => (
@@ -222,7 +222,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
             </div>
             <div className="form-group autocomplete-container">
               <label id="label-stockName" htmlFor="stockName">종목명</label>
-              <input id="stockName" type="text" name="name" value={formData.name} onChange={handleChange} required placeholder="삼성전자" autoComplete="off" onFocus={() => { setActiveInput('name'); if(formData.name) searchStocks(formData.name); }} aria-labelledby="label-stockName" />
+              <input id="stockName" type="text" name="name" value={formData.name} onChange={handleChange} required placeholder="삼성전자" autoComplete="off" onFocus={() => { setActiveInput('name'); if(formData.name) searchStocks(formData.name); }} aria-labelledby="label-stockName" aria-label="종목명 입력" />
               {showStockDropdown && activeInput === 'name' && stockResults.length > 0 && (
                 <ul className="autocomplete-dropdown">
                   {stockResults.map((stock: StockData) => (
@@ -243,11 +243,11 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
           <div className="form-row">
             <div className="form-group">
               <label id="label-price" htmlFor="price">단가 (Price)</label>
-              <input id="price" type="number" step="1" name="price" value={formData.price} onChange={handleChange} required placeholder="70000" aria-labelledby="label-price" />
+              <input id="price" type="number" step="1" name="price" value={formData.price} onChange={handleChange} required placeholder="70000" aria-labelledby="label-price" aria-label="매수가격(단가) 입력" />
             </div>
             <div className="form-group">
               <label id="label-quantity" htmlFor="quantity">수량 (Quantity)</label>
-              <input id="quantity" type="number" step="0.00000001" name="quantity" value={formData.quantity} onChange={handleChange} required placeholder="10" aria-labelledby="label-quantity" />
+              <input id="quantity" type="number" step="0.00000001" name="quantity" value={formData.quantity} onChange={handleChange} required placeholder="10" aria-labelledby="label-quantity" aria-label="매수수량 입력" />
             </div>
           </div>
 
@@ -260,7 +260,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
           <div className="form-row-single">
             <div className="form-group">
               <label id="label-tradedAt" htmlFor="tradedAt">체결 일시</label>
-              <input id="tradedAt" type="datetime-local" name="tradedAt" value={formData.tradedAt} onChange={handleChange} required aria-labelledby="label-tradedAt" />
+              <input id="tradedAt" type="datetime-local" name="tradedAt" value={formData.tradedAt} onChange={handleChange} required aria-labelledby="label-tradedAt" aria-label="체결 일시 선택" />
             </div>
           </div>
           
@@ -301,7 +301,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
 
           <div className="form-group">
             <label id="label-memo" htmlFor="memo">자유 메모 (선택)</label>
-            <textarea id="memo" name="memo" value={formData.memo} onChange={handleChange} placeholder="매매에 대한 생각이나 근거를 기록하세요." rows={3} aria-labelledby="label-memo"></textarea>
+            <textarea id="memo" name="memo" value={formData.memo} onChange={handleChange} placeholder="매매에 대한 생각이나 근거를 기록하세요." rows={3} aria-labelledby="label-memo" aria-label="자유 메모 입력"></textarea>
           </div>
           
           <div className="modal-footer">
