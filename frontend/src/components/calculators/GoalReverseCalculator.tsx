@@ -82,12 +82,12 @@ export const GoalReverseCalculator: React.FC = () => {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-5">
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-bold flex items-center gap-2">
-            <Target className="text-blue-500" size={20} /> 목표 설정
+            <Target className="text-primary" size={20} /> 목표 설정
           </h3>
           <button 
             onClick={fetchMyStats}
             disabled={isLoading}
-            className="text-xs bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg font-medium hover:bg-blue-100 transition-colors disabled:opacity-50"
+            className="text-xs bg-primary/10 text-primary px-3 py-1.5 rounded-lg font-medium hover:bg-primary/20 transition-colors disabled:opacity-50"
           >
             {isLoading ? '불러오는 중...' : '내 통계 불러오기 (6개월)'}
           </button>
@@ -98,7 +98,7 @@ export const GoalReverseCalculator: React.FC = () => {
             <label className="text-sm font-semibold text-gray-600">월 목표 수익금 (원)</label>
             <input
               type="text"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold text-lg"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all font-bold text-lg"
               placeholder="예: 2,000,000"
               value={goalAmount}
               onChange={(e) => {
@@ -113,7 +113,7 @@ export const GoalReverseCalculator: React.FC = () => {
               <label className="text-sm font-semibold text-gray-600">평균 수익금 (원)</label>
               <input
                 type="number"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-semibold"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all font-semibold"
                 placeholder="0"
                 value={avgProfit}
                 onChange={(e) => setAvgProfit(e.target.value)}
@@ -123,7 +123,7 @@ export const GoalReverseCalculator: React.FC = () => {
               <label className="text-sm font-semibold text-gray-600">평균 손실금 (원)</label>
               <input
                 type="number"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-semibold"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all font-semibold"
                 placeholder="0"
                 value={avgLoss}
                 onChange={(e) => setAvgLoss(e.target.value)}
@@ -134,13 +134,13 @@ export const GoalReverseCalculator: React.FC = () => {
           <div className="space-y-3 pt-2">
             <div className="flex justify-between items-end">
               <label className="text-sm font-semibold text-gray-600">승률 (Win Rate)</label>
-              <span className="text-blue-600 font-bold text-lg">{winRate}%</span>
+              <span className="text-primary font-bold text-lg">{winRate}%</span>
             </div>
             <input
               type="range"
               min="1"
               max="99"
-              className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-primary"
               value={winRate}
               onChange={(e) => setWinRate(parseInt(e.target.value))}
             />
@@ -149,13 +149,13 @@ export const GoalReverseCalculator: React.FC = () => {
           <div className="space-y-3 pt-2">
             <div className="flex justify-between items-end">
               <label className="text-sm font-semibold text-gray-600">월 매매 횟수</label>
-              <span className="text-blue-600 font-bold text-lg">{tradeCount}회</span>
+              <span className="text-primary font-bold text-lg">{tradeCount}회</span>
             </div>
             <input
               type="range"
               min="1"
               max="100"
-              className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-primary"
               value={tradeCount}
               onChange={(e) => setTradeCount(parseInt(e.target.value))}
             />
@@ -180,7 +180,7 @@ export const GoalReverseCalculator: React.FC = () => {
             <div className="flex justify-between items-center">
               <span className="text-sm font-medium text-gray-500">목표 달성 필요 매매 횟수</span>
               {results.requiredTrades ? (
-                <span className="text-lg font-bold text-blue-600">월 {results.requiredTrades}회</span>
+                <span className="text-lg font-bold text-primary">월 {results.requiredTrades}회</span>
               ) : (
                 <span className="text-sm font-bold text-red-500">계산 불가</span>
               )}
@@ -208,7 +208,7 @@ export const GoalReverseCalculator: React.FC = () => {
               </div>
               <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
                 <div 
-                  className={`h-full transition-all duration-500 ${results.progress >= 100 ? 'bg-green-500' : 'bg-blue-500'}`}
+                  className={`h-full transition-all duration-500 ${results.progress >= 100 ? 'bg-green-500' : 'bg-primary'}`}
                   style={{ width: `${results.progress}%` }}
                 />
               </div>

@@ -122,12 +122,12 @@ export const BEPCalculator: React.FC = () => {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-6">
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-bold flex items-center gap-2">
-            <Calculator className="text-indigo-500" size={20} /> 분할 매수 입력
+            <Calculator className="text-primary" size={20} /> 분할 매수 입력
           </h3>
           <div className="relative">
             <button 
               onClick={fetchHoldings}
-              className="text-xs bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg font-medium hover:bg-indigo-100 transition-colors flex items-center gap-1"
+              className="text-xs bg-indigo-50 text-primary px-3 py-1.5 rounded-lg font-medium hover:bg-indigo-100 transition-colors flex items-center gap-1"
             >
               <Download size={14} /> 보유 종목 불러오기
             </button>
@@ -179,14 +179,14 @@ export const BEPCalculator: React.FC = () => {
                     <input
                       type="number"
                       placeholder="0"
-                      className={`w-full px-3 py-2.5 rounded-xl border transition-all text-sm font-semibold outline-none focus:ring-2 focus:ring-indigo-500 ${isPriceInvalid ? 'border-red-500 bg-red-50' : 'border-gray-100 bg-gray-50'}`}
+                      className={`w-full px-3 py-2.5 rounded-xl border transition-all text-sm font-semibold outline-none focus:ring-2 focus:ring-primary ${isPriceInvalid ? 'border-red-500 bg-red-50' : 'border-gray-100 bg-gray-50'}`}
                       value={row.price}
                       onChange={(e) => updateRow(row.id, 'price', e.target.value)}
                     />
                     <input
                       type="number"
                       placeholder="0"
-                      className="w-full px-3 py-2.5 rounded-xl border border-gray-100 bg-gray-50 text-sm font-semibold outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                      className="w-full px-3 py-2.5 rounded-xl border border-gray-100 bg-gray-50 text-sm font-semibold outline-none focus:ring-2 focus:ring-primary transition-all"
                       value={row.quantity}
                       onChange={(e) => updateRow(row.id, 'quantity', e.target.value)}
                     />
@@ -211,7 +211,7 @@ export const BEPCalculator: React.FC = () => {
           <button 
             onClick={addRow}
             disabled={rows.length >= 10}
-            className="w-full py-2 border-2 border-dashed border-gray-100 rounded-xl text-gray-400 hover:border-indigo-200 hover:text-indigo-400 transition-all flex items-center justify-center gap-2 text-sm font-medium disabled:hidden"
+            className="w-full py-2 border-2 border-dashed border-gray-100 rounded-xl text-gray-400 hover:border-primary/50 hover:text-primary transition-all flex items-center justify-center gap-2 text-sm font-medium disabled:hidden"
           >
             <Plus size={16} /> 회차 추가 (최대 10회)
           </button>
@@ -222,7 +222,7 @@ export const BEPCalculator: React.FC = () => {
             <label className="text-sm font-semibold text-gray-600">현재가 (현재 상황 확인용)</label>
             <input
               type="number"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-bold text-lg"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-primary outline-none transition-all font-bold text-lg"
               placeholder="현재 주가를 입력하세요"
               value={currentPrice}
               onChange={(e) => setCurrentPrice(e.target.value)}
@@ -246,7 +246,7 @@ export const BEPCalculator: React.FC = () => {
             </div>
             <div className="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-1">
               <span className="text-[10px] text-gray-400 font-bold uppercase">평균 매수가</span>
-              <span className="text-sm font-bold truncate text-indigo-600">{formatNumber(results.avgPrice)}<span className="text-[10px] ml-0.5">원</span></span>
+              <span className="text-sm font-bold truncate text-primary">{formatNumber(results.avgPrice)}<span className="text-[10px] ml-0.5">원</span></span>
             </div>
             <div className="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-1">
               <span className="text-[10px] text-gray-400 font-bold uppercase">총 수량</span>
@@ -257,7 +257,7 @@ export const BEPCalculator: React.FC = () => {
           <div className="bg-gray-50 rounded-2xl p-6 space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-sm font-medium text-gray-500">손익분기점 (BEP)</span>
-              <span className="text-lg font-bold text-indigo-600">{formatNumber(results.bepPrice)}원</span>
+              <span className="text-lg font-bold text-primary">{formatNumber(results.bepPrice)}원</span>
             </div>
 
             {parseFloat(currentPrice) > 0 && (
@@ -297,7 +297,7 @@ export const BEPCalculator: React.FC = () => {
                         />
                     </div>
                     <div className="flex justify-center">
-                        <span className="text-[10px] text-indigo-600 font-bold">BEP (0.00%)</span>
+                        <span className="text-[10px] text-primary font-bold">BEP (0.00%)</span>
                     </div>
                   </div>
                 </div>

@@ -20,7 +20,7 @@ export const CalculatorPage: React.FC = () => {
     <div className="calculator-page animate-fade-in p-4 md:p-6 bg-gray-50 min-h-screen">
       <header className="page-header mb-8">
         <div className="header-title-row flex items-center gap-3">
-          <div className="icon-box bg-blue-600 p-2 rounded-xl text-white shadow-lg shadow-blue-200">
+          <div className="icon-box bg-primary p-2 rounded-xl text-gray-900 shadow-lg shadow-primary/20">
             <CalcIcon size={24} />
           </div>
           <h1 className="text-2xl font-black text-gray-800 tracking-tight">매매 계산기</h1>
@@ -36,7 +36,7 @@ export const CalculatorPage: React.FC = () => {
             onClick={() => setActiveTab(tab.id as CalcTab)}
             className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl transition-all duration-300 font-bold text-sm whitespace-nowrap px-4 ${
               activeTab === tab.id
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-100 scale-100'
+                ? 'bg-primary text-gray-900 shadow-md shadow-primary/20 scale-100'
                 : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50 scale-95'
             }`}
           >

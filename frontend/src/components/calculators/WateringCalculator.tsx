@@ -133,7 +133,7 @@ export const WateringCalculator: React.FC = () => {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-bold flex items-center gap-2 text-gray-800">
-              <Droplets className="text-blue-500" size={20} /> 물타기 조건 입력
+              <Droplets className="text-primary" size={20} /> 물타기 조건 입력
             </h3>
             <button 
               className="flex items-center gap-1.5 text-xs font-semibold text-gray-400 hover:text-gray-600 transition-colors bg-gray-50 px-2.5 py-1.5 rounded-lg"
@@ -153,7 +153,7 @@ export const WateringCalculator: React.FC = () => {
               <select
                 aria-label="보유 종목 선택"
                 id="holdingSelect"
-                className="w-full px-4 py-3 rounded-xl border border-gray-100 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-semibold text-gray-700"
+                className="w-full px-4 py-3 rounded-xl border border-gray-100 bg-gray-50 focus:ring-2 focus:ring-primary outline-none transition-all font-semibold text-gray-700"
                 value={selectedTicker}
                 onChange={(e) => setSelectedTicker(e.target.value)}
               >
@@ -167,7 +167,7 @@ export const WateringCalculator: React.FC = () => {
             </div>
 
             {selectedHolding && (
-              <div className="bg-blue-50/50 rounded-xl p-4 border border-blue-100/50 space-y-3">
+              <div className="bg-primary/5 rounded-xl p-4 border border-primary/20 space-y-3">
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-gray-500 font-medium">현재 평균단가</span>
                   <span className="text-gray-800 font-bold">{Math.floor(selectedHolding.avgPrice).toLocaleString()}원</span>
@@ -184,7 +184,7 @@ export const WateringCalculator: React.FC = () => {
             )}
 
             <div className="relative py-2 flex items-center gap-4">
-                <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest bg-white px-2 z-10">진입 시점 배경</span>
+                <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-white px-2 z-10">진입 시점 배경</span>
                 <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100"></div></div>
             </div>
 
@@ -195,7 +195,7 @@ export const WateringCalculator: React.FC = () => {
                 id="marketPrice"
                 type="number"
                 placeholder="현재 주가를 입력하세요"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold text-lg"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all font-bold text-lg"
                 value={currentMarketPrice}
                 onChange={(e) => setCurrentMarketPrice(e.target.value)}
                 disabled={!selectedHolding}
@@ -203,7 +203,7 @@ export const WateringCalculator: React.FC = () => {
             </div>
 
             <div className="relative py-2 flex items-center gap-4">
-                <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest bg-white px-2 z-10">추가 매수 계획 (최대 3회)</span>
+                <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-white px-2 z-10">추가 매수 계획 (최대 3회)</span>
                 <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100"></div></div>
             </div>
             
@@ -218,7 +218,7 @@ export const WateringCalculator: React.FC = () => {
                         aria-label={`${index + 1}차 추가 매수 단가 입력`}
                         type="number"
                         placeholder="0"
-                        className="w-full px-3 py-2 rounded-lg border border-gray-100 bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm font-semibold"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-100 bg-white focus:ring-2 focus:ring-primary outline-none transition-all text-sm font-semibold"
                         value={entry.price}
                         onChange={(e) => handleWateringChange(index, 'price', e.target.value)}
                         disabled={!selectedHolding}
@@ -230,7 +230,7 @@ export const WateringCalculator: React.FC = () => {
                         aria-label={`${index + 1}차 추가 매수 수량 입력`}
                         type="number"
                         placeholder="0"
-                        className="w-full px-3 py-2 rounded-lg border border-gray-100 bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm font-semibold"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-100 bg-white focus:ring-2 focus:ring-primary outline-none transition-all text-sm font-semibold"
                         value={entry.qty}
                         onChange={(e) => handleWateringChange(index, 'qty', e.target.value)}
                         disabled={!selectedHolding}
@@ -281,17 +281,17 @@ export const WateringCalculator: React.FC = () => {
 
             {waterfallResult && waterfallResult.newAvgPrice && (
               <>
-                <div className="bg-blue-600 p-6 rounded-2xl shadow-lg shadow-blue-100 space-y-4">
+                <div className="bg-[#1E2026] p-6 rounded-2xl shadow-lg shadow-black/10 space-y-4">
                   <div className="flex justify-between items-start">
-                    <span className="text-xs font-bold text-blue-100 uppercase tracking-widest">📉 목표 평균단가</span>
-                    <span className="bg-blue-500/50 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">SIMULATED</span>
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">📉 목표 평균단가</span>
+                    <span className="bg-gray-800 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">SIMULATED</span>
                   </div>
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-4xl font-black text-white">{Math.floor(waterfallResult.newAvgPrice).toLocaleString()}</span>
-                    <span className="text-blue-100 font-bold">원</span>
+                    <span className="text-gray-400 font-bold">원</span>
                   </div>
-                  <div className="text-xs text-blue-100 font-medium">
-                    기존 {Math.floor(selectedHolding.avgPrice).toLocaleString()}원에서 <span className="text-white font-black underline underline-offset-4 decoration-blue-300">{Math.floor(selectedHolding.avgPrice - waterfallResult.newAvgPrice).toLocaleString()}원</span> 절감
+                  <div className="text-xs text-gray-400 font-medium">
+                    기존 {Math.floor(selectedHolding.avgPrice).toLocaleString()}원에서 <span className="text-white font-black underline underline-offset-4 decoration-primary">{Math.floor(selectedHolding.avgPrice - waterfallResult.newAvgPrice).toLocaleString()}원</span> 절감
                   </div>
                 </div>
 
@@ -321,7 +321,7 @@ export const WateringCalculator: React.FC = () => {
                   </div>
                   {waterfallResult.afterWaterfallPnlRate !== null && (
                     <div className="text-xs font-bold text-gray-500 bg-white/60 self-start px-3 py-1.5 rounded-lg border border-gray-100">
-                      기존 대비 <span className="text-blue-600">{(waterfallResult.afterWaterfallPnlRate - (waterfallResult.currentPnlRate ?? 0)).toFixed(2)}%</span> 대폭 개선
+                      기존 대비 <span className="text-primary">{(waterfallResult.afterWaterfallPnlRate - (waterfallResult.currentPnlRate ?? 0)).toFixed(2)}%</span> 대폭 개선
                     </div>
                   )}
                 </div>
