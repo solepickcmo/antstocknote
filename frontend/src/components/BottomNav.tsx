@@ -109,14 +109,16 @@ export const BottomNav: React.FC = () => {
           <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem', lineHeight: '1.5' }}>
             탈퇴 시 모든 매매 기록 등 작성하신 모든 데이터가 영구히 삭제되며 복구할 수 없습니다.
           </p>
-          <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 600 }}>
+          <label htmlFor="withdrawConfirm" style={{ fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 600, display: 'block' }}>
             확인을 위해 아래에 "탈퇴합니다"를 입력해주세요.
-          </p>
+          </label>
           <input
+            id="withdrawConfirm"
             type="text"
             value={withdrawConfirmText}
             onChange={(e) => setWithdrawConfirmText(e.target.value)}
             placeholder="탈퇴합니다"
+            aria-required="true"
             style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'rgba(255,255,255,0.05)', color: 'var(--text-main)', marginBottom: '1.5rem' }}
           />
           <div style={{ display: 'flex', gap: '0.75rem' }}>

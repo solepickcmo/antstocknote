@@ -87,8 +87,9 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
 
         <form onSubmit={handleSubmit} className="trade-form">
           <div className="form-group full-width">
-            <label>대상 매매 선택</label>
+            <label htmlFor="tradeSelect">대상 매매 선택</label>
             <select
+              id="tradeSelect"
               value={selectedTradeId}
               onChange={e => setSelectedTradeId(e.target.value)}
               required
@@ -103,8 +104,9 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
           </div>
 
           <div className="form-group full-width">
-            <label>오답 내용</label>
+            <label htmlFor="noteContent">오답 내용</label>
             <textarea
+              id="noteContent"
               value={content}
               onChange={e => setContent(e.target.value)}
               placeholder="무엇이 아쉬웠는지, 다음에는 어떻게 다르게 행동할 것인지 적어보세요."

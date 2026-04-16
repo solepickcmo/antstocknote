@@ -66,6 +66,7 @@ const RegisterPage: React.FC = () => {
               onChange={e => setEmail(e.target.value)} 
               required 
               placeholder="user@example.com"
+              aria-label="이메일 주소"
             />
           </div>
           <div className="form-group">
@@ -78,6 +79,7 @@ const RegisterPage: React.FC = () => {
               required 
               placeholder="6자리 이상 입력"
               minLength={6}
+              aria-label="비밀번호"
             />
           </div>
           <div className="form-group">
@@ -90,6 +92,7 @@ const RegisterPage: React.FC = () => {
               required 
               placeholder="표시될 이름"
               maxLength={20}
+              aria-label="닉네임"
             />
           </div>
           

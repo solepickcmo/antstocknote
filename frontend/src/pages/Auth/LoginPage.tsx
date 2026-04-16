@@ -87,6 +87,7 @@ const LoginPage: React.FC = () => {
               onChange={e => setEmail(e.target.value)} 
               required 
               placeholder="user@example.com"
+              aria-label="이메일 주소"
             />
           </div>
           <div className="form-group">
@@ -98,6 +99,7 @@ const LoginPage: React.FC = () => {
               onChange={e => setPassword(e.target.value)} 
               required 
               placeholder="••••••••"
+              aria-label="비밀번호"
             />
           </div>
           
@@ -132,6 +134,7 @@ const LoginPage: React.FC = () => {
                   onChange={e => setForgotEmail(e.target.value)} 
                   required 
                   placeholder="이메일 주소"
+                  aria-label="비밀번호 재설정을 위한 이메일 주소"
                   className="modal-input"
                   style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'rgba(255,255,255,0.05)', color: 'var(--text-main)', marginBottom: '1rem' }}
                 />

@@ -1,13 +1,16 @@
 import express from 'express';
+import helmet from 'helmet';
 import cors from 'cors';
 import dotenv from 'dotenv';
-
-
-
 
 dotenv.config();
 
 const app = express();
+
+// 보안 헤더 설정 (점진적 적용: CSP는 초기 비활성화)
+app.use(helmet({
+  contentSecurityPolicy: false,
+}));
 
 
 

@@ -68,6 +68,7 @@ export const ResetPasswordPage: React.FC = () => {
               onChange={e => setPassword(e.target.value)}
               required
               placeholder="••••••••"
+              aria-label="새 비밀번호"
             />
           </div>
           <div className="form-group">
@@ -79,6 +80,7 @@ export const ResetPasswordPage: React.FC = () => {
               onChange={e => setConfirmPassword(e.target.value)}
               required
               placeholder="••••••••"
+              aria-label="새 비밀번호 확인"
             />
           </div>
 
