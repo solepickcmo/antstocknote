@@ -19,9 +19,8 @@ interface TradeModalProps {
 
 export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
   const createTrade = useTradeStore((state: any) => state.createTrade);
-  const { strategyTags, emotionTags, fetchTags, addTag, deleteTag } = useTagStore();
-  
-  const [newTagInput, setNewTagInput] = useState({ strategy: '', emotion: '' });
+  // 고정 태그 목록 (추가/삭제 없이 읽기 전용으로 사용)
+  const { strategyTags, emotionTags } = useTagStore();
   
   const [formData, setFormData] = useState<{
     ticker: string;
@@ -49,13 +48,12 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
     isPublic: false
   });
 
-  // 모달 열릴 때 태그 데이터 로드
+  // 모달 열릴 때 날짜를 현재 KST 시각으로 초기화
   useEffect(() => {
     if (isOpen) {
-      fetchTags();
       setFormData((prev: any) => ({ ...prev, tradedAt: getKSTNow() }));
     }
-  }, [isOpen, fetchTags]);
+  }, [isOpen]);
 
   
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -266,68 +264,30 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
           
           
           <div className="form-group block-group">
-            <label>전략 태그 (최대 10개)</label>
+            <label>전략 태그</label>
             <div className="tag-selector">
               {strategyTags.map((tag) => (
                 <div key={tag.id} className={`tag-chip-container ${formData.strategyTag === tag.name ? 'active' : ''}`}>
+                  {/* 클릭 시 토글: 이미 선택된 태그를 다시 누르면 해제 */}
                   <button type="button" className="sel-chip" onClick={() => setFormData((prevFormData: any) => ({...prevFormData, strategyTag: prevFormData.strategyTag === tag.name ? '' : tag.name}))}>
                      {tag.name}
                   </button>
-                  <button type="button" className="btn-tag-delete" onClick={(event) => { event.stopPropagation(); deleteTag(tag.id); }}>×</button>
                 </div>
               ))}
-              {strategyTags.length < 10 && (
-                <div className="tag-add-box">
-                  <input 
-                    type="text" 
-                    placeholder="추가..." 
-                    value={newTagInput.strategy} 
-                    onChange={(event) => setNewTagInput((prevTagInput: any) => ({...prevTagInput, strategy: event.target.value}))}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter') {
-                        event.preventDefault();
-                        if (newTagInput.strategy) {
-                          addTag(newTagInput.strategy, 'strategy');
-                          setNewTagInput((prevTagInput: any) => ({...prevTagInput, strategy: ''}));
-                        }
-                      }
-                    }}
-                  />
-                </div>
-              )}
             </div>
           </div>
 
           <div className="form-group block-group">
-            <label>감정 태그 (최대 10개)</label>
+            <label>감정 태그</label>
             <div className="tag-selector">
               {emotionTags.map((tag) => (
                 <div key={tag.id} className={`tag-chip-container ${formData.emotionTag === tag.name ? 'active' : ''}`}>
+                  {/* 클릭 시 토글: 이미 선택된 태그를 다시 누르면 해제 */}
                   <button type="button" className="sel-chip" onClick={() => setFormData((prevFormData: any) => ({...prevFormData, emotionTag: prevFormData.emotionTag === tag.name ? '' : tag.name}))}>
                      {tag.name}
                   </button>
-                  <button type="button" className="btn-tag-delete" onClick={(event) => { event.stopPropagation(); deleteTag(tag.id); }}>×</button>
                 </div>
               ))}
-              {emotionTags.length < 10 && (
-                <div className="tag-add-box">
-                  <input 
-                    type="text" 
-                    placeholder="추가..." 
-                    value={newTagInput.emotion} 
-                    onChange={(event) => setNewTagInput((prevTagInput: any) => ({...prevTagInput, emotion: event.target.value}))}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter') {
-                        event.preventDefault();
-                        if (newTagInput.emotion) {
-                          addTag(newTagInput.emotion, 'emotion');
-                          setNewTagInput((prevTagInput: any) => ({...prevTagInput, emotion: ''}));
-                        }
-                      }
-                    }}
-                  />
-                </div>
-              )}
             </div>
           </div>
 

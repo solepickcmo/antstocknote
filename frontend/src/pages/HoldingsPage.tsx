@@ -17,7 +17,14 @@ export const HoldingsPage: React.FC = () => {
   const holdings = useMemo(() => {
     const map = new Map();
 
-    trades.forEach(t => {
+    // ⚠️ 중요: 매매 데이터는 최신순 정렬로 저장되어 있으므로,
+    // 수량 계산 시 '매도가 먼저 처리'되어 보유 수량이 틀리는 문제가 발생할 수 있습니다.
+    // 시간 오름차순으로 정렬하여 반드시 매수 → 매도 순서로 계산합니다.
+    const sortedTrades = [...trades].sort(
+      (a, b) => new Date(a.traded_at).getTime() - new Date(b.traded_at).getTime()
+    );
+
+    sortedTrades.forEach(t => {
       if (!map.has(t.ticker)) {
         map.set(t.ticker, {
           ticker: t.ticker,

@@ -1,9 +1,12 @@
-import { create } from 'zustand';
-import { supabase } from '../api/supabase';
+// ─────────────────────────────────────────────
+// tagStore.ts
+// 전략 태그와 감정 태그를 관리하는 스토어입니다.
+// 태그는 고정된 10개 항목으로 제공되며, 사용자 커스텀 추가/삭제 기능은 제공하지 않습니다.
+// (DB 조회 없이 로컬 상수에서 즉시 로드하여 성능 및 안정성 향상)
+// ─────────────────────────────────────────────
 
 export interface Tag {
   id: number;
-  user_id: string;
   name: string;
   type: 'strategy' | 'emotion';
 }
@@ -11,118 +14,48 @@ export interface Tag {
 interface TagState {
   strategyTags: Tag[];
   emotionTags: Tag[];
-  isLoading: boolean;
-  error: string | null;
-  fetchTags: () => Promise<void>;
-  addTag: (name: string, type: 'strategy' | 'emotion') => Promise<void>;
-  deleteTag: (id: number) => Promise<void>;
 }
 
-// 기본 권장 태그 (사용자 태그가 없을 경우 초기화 용도)
-const DEFAULT_STRATEGY = ['#돌파매매', '#눌림목', '#시가베팅', '#종가베팅', '#추세추종'];
-const DEFAULT_EMOTION = ['#자신감', '#설렘', '#불안감', '#공포', '#차분함'];
+// ─────────────────────────────────────────────
+// 고정 태그 정의 (각 10개)
+// 매매 전략/감정 분석에 가장 많이 쓰이는 범용 태그로 구성
+// ─────────────────────────────────────────────
 
-export const useTagStore = create<TagState>((set, get) => ({
-  strategyTags: [],
-  emotionTags: [],
-  isLoading: false,
-  error: null,
+export const STRATEGY_TAGS: Tag[] = [
+  { id: 1,  name: '#돌파매매',  type: 'strategy' },
+  { id: 2,  name: '#눌림목',    type: 'strategy' },
+  { id: 3,  name: '#시가베팅',  type: 'strategy' },
+  { id: 4,  name: '#종가베팅',  type: 'strategy' },
+  { id: 5,  name: '#추세추종',  type: 'strategy' },
+  { id: 6,  name: '#수급매매',  type: 'strategy' },
+  { id: 7,  name: '#박스권',    type: 'strategy' },
+  { id: 8,  name: '#낙주매매',  type: 'strategy' },
+  { id: 9,  name: '#재료매매',  type: 'strategy' },
+  { id: 10, name: '#하이리스크', type: 'strategy' },
+];
 
-  fetchTags: async () => {
-    set({ isLoading: true, error: null });
-    try {
-      const { data, error } = await supabase
-        .from('tags')
-        .select('*');
+export const EMOTION_TAGS: Tag[] = [
+  { id: 11, name: '#자신감',  type: 'emotion' },
+  { id: 12, name: '#설렘',    type: 'emotion' },
+  { id: 13, name: '#불안감',  type: 'emotion' },
+  { id: 14, name: '#공포',    type: 'emotion' },
+  { id: 15, name: '#차분함',  type: 'emotion' },
+  { id: 16, name: '#욕심',    type: 'emotion' },
+  { id: 17, name: '#환희',    type: 'emotion' },
+  { id: 18, name: '#좌절',    type: 'emotion' },
+  { id: 19, name: '#인내심',  type: 'emotion' },
+  { id: 20, name: '#냉정함',  type: 'emotion' },
+];
 
-      if (error) throw error;
+// ─────────────────────────────────────────────
+// useTagStore Hook
+// Zustand 불필요 - 고정 데이터이므로 단순 상수 export로 대체
+// 기존 컴포넌트 인터페이스 호환을 위해 동일한 형태 유지
+// ─────────────────────────────────────────────
 
-      const userTags = data as Tag[];
-      
-      // DB에 태그가 하나도 없으면 초기 세팅 진행
-      if (userTags.length === 0) {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          const initialTags = [
-            ...DEFAULT_STRATEGY.map(name => ({ user_id: user.id, name, type: 'strategy' })),
-            ...DEFAULT_EMOTION.map(name => ({ user_id: user.id, name, type: 'emotion' }))
-          ];
-          const { data: inserted, error: insError } = await supabase
-            .from('tags')
-            .insert(initialTags)
-            .select();
-          
-          if (!insError && inserted) {
-            const result = inserted as Tag[];
-            set({
-              strategyTags: result.filter(t => t.type === 'strategy'),
-              emotionTags: result.filter(t => t.type === 'emotion'),
-              isLoading: false
-            });
-            return;
-          }
-        }
-      }
-
-      set({
-        strategyTags: userTags.filter(t => t.type === 'strategy'),
-        emotionTags: userTags.filter(t => t.type === 'emotion'),
-        isLoading: false
-      });
-    } catch (err: any) {
-      set({ error: err.message, isLoading: false });
-    }
-  },
-
-  addTag: async (name: string, type: 'strategy' | 'emotion') => {
-    const tagName = name.startsWith('#') ? name : `#${name}`;
-    const currentTags = type === 'strategy' ? get().strategyTags : get().emotionTags;
-
-    if (currentTags.length >= 10) {
-      throw new Error('태그는 최대 10개까지 등록 가능합니다.');
-    }
-
-    if (currentTags.some(t => t.name === tagName)) {
-      throw new Error('이미 존재하는 태그입니다.');
-    }
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('로그인이 필요합니다.');
-
-      const { data, error } = await supabase
-        .from('tags')
-        .insert({ user_id: user.id, name: tagName, type })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      if (type === 'strategy') {
-        set({ strategyTags: [...get().strategyTags, data as Tag] });
-      } else {
-        set({ emotionTags: [...get().emotionTags, data as Tag] });
-      }
-    } catch (err: any) {
-      throw err;
-    }
-  },
-
-  deleteTag: async (id: number) => {
-    try {
-      const { error } = await supabase
-        .from('tags')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      set({
-        strategyTags: get().strategyTags.filter(t => t.id !== id),
-        emotionTags: get().emotionTags.filter(t => t.id !== id)
-      });
-    } catch (err: any) {
-      throw err;
-    }
-  }
-}));
+export const useTagStore = (): TagState => {
+  return {
+    strategyTags: STRATEGY_TAGS,
+    emotionTags: EMOTION_TAGS,
+  };
+};

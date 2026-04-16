@@ -74,8 +74,8 @@ function calcPnlForSell(
   const averageBuyPrice = totalBuyQty > 0 ? totalBuyCost / totalBuyQty : 0;
   
   // 단순 차익 계산: (매도가 - 평균매수가) * 수량
-  // 사용자 요청에 따라 제세공과금(수수료)은 제외한 순수 매매 차익만 산출합니다.
-  return (sellPrice - averageBuyPrice) * sellQuantity;
+  // 수수료는 제외하고, 소수점 없이 정수로 반환합니다.
+  return Math.floor((sellPrice - averageBuyPrice) * sellQuantity);
 }
 
 // ─────────────────────────────────────────────
