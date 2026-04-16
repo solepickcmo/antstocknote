@@ -20,9 +20,6 @@ interface TradeModalProps {
 export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
   const createTrade = useTradeStore((state: any) => state.createTrade);
   // 고정 태그 목록 (추가/삭제 없이 읽기 전용으로 사용)
-  // 매수/매도 유형에 따라 필터링된 고정 태그 목록 가져오기
-  const { strategyTags, emotionTags } = useTagStore(formData.type);
-  
   const [formData, setFormData] = useState<{
     ticker: string;
     name: string;
@@ -48,6 +45,9 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
     memo: '',
     isPublic: false
   });
+
+  // 매수/매도 유형에 따라 필터링된 고정 태그 목록 가져오기
+  const { strategyTags, emotionTags } = useTagStore(formData.type);
 
   // 모달 열릴 때 날짜를 현재 KST 시각으로 초기화
   useEffect(() => {

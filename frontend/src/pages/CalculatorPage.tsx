@@ -230,7 +230,7 @@ export const CalculatorPage: React.FC = () => {
             </div>
           ) : (
             <>
-              {waterfallResult?.currentPnlRate !== null && (
+              {waterfallResult && waterfallResult.currentPnlRate !== null && (
                 <div className={`result-card glass-panel ${(waterfallResult.currentPnlRate ?? 0) >= 0 ? 'success-border' : 'loss-border'}`}>
                   <span className="label">현재 손익률 (물타기 전)</span>
                   <div className="value-group">
@@ -241,7 +241,7 @@ export const CalculatorPage: React.FC = () => {
                 </div>
               )}
 
-              {waterfallResult?.newAvgPrice && (
+              {waterfallResult && waterfallResult.newAvgPrice && (
                 <>
                   <div className="result-card glass-panel primary-glow">
                     <span className="label">📉 물타기 후 새 평균단가</span>
