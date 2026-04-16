@@ -168,13 +168,13 @@ export const CalculatorPage: React.FC = () => {
           </div>
 
           <div className="input-group sim-group">
-            <label htmlFor="holdingSelect">📌 보유 종목 선택</label>
+            <label id="label-holding-select" htmlFor="holdingSelect">📌 보유 종목 선택</label>
             <select
               id="holdingSelect"
               className="sim-select"
               value={selectedTicker}
               onChange={(e) => setSelectedTicker(e.target.value)}
-              aria-label="보유 종목 선택"
+              aria-labelledby="label-holding-select"
             >
               <option value="">-- 종목을 선택하세요 --</option>
               {currentHoldings.map(h => (
@@ -204,7 +204,7 @@ export const CalculatorPage: React.FC = () => {
 
           <div className="sim-section-divider">현재 시장 상황</div>
           <div className="input-group sim-group">
-            <label htmlFor="marketPrice">현재가 (직접 입력)</label>
+            <label id="label-market-price" htmlFor="marketPrice">현재가 (직접 입력)</label>
             <input
               id="marketPrice"
               type="number"
@@ -212,7 +212,7 @@ export const CalculatorPage: React.FC = () => {
               value={currentMarketPrice}
               onChange={(e) => setCurrentMarketPrice(e.target.value)}
               disabled={!selectedHolding}
-              aria-label="현재 시장 가격 직접 입력"
+              aria-labelledby="label-market-price"
             />
           </div>
 
@@ -223,7 +223,7 @@ export const CalculatorPage: React.FC = () => {
               <div className="watering-row-label">{index + 1}차 물타기</div>
               <div className="entry-row">
                 <div className="input-group sim-group">
-                  <label htmlFor={`waterPrice-${index}`}>매수 단가</label>
+                  <label id={`label-waterPrice-${index}`} htmlFor={`waterPrice-${index}`}>매수 단가</label>
                   <input
                     id={`waterPrice-${index}`}
                     type="number"
@@ -231,11 +231,11 @@ export const CalculatorPage: React.FC = () => {
                     value={entry.price}
                     onChange={(e) => handleWateringChange(index, 'price', e.target.value)}
                     disabled={!selectedHolding}
-                    aria-label={`${index + 1}차 추가 매수 단가`}
+                    aria-labelledby={`label-waterPrice-${index}`}
                   />
                 </div>
                 <div className="input-group sim-group">
-                  <label htmlFor={`waterQty-${index}`}>매수 수량</label>
+                  <label id={`label-waterQty-${index}`} htmlFor={`waterQty-${index}`}>매수 수량</label>
                   <input
                     id={`waterQty-${index}`}
                     type="number"
@@ -243,7 +243,7 @@ export const CalculatorPage: React.FC = () => {
                     value={entry.qty}
                     onChange={(e) => handleWateringChange(index, 'qty', e.target.value)}
                     disabled={!selectedHolding}
-                    aria-label={`${index + 1}차 추가 매수 수량`}
+                    aria-labelledby={`label-waterQty-${index}`}
                   />
                 </div>
               </div>

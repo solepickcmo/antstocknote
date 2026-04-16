@@ -87,13 +87,13 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
 
         <form onSubmit={handleSubmit} className="trade-form">
           <div className="form-group full-width">
-            <label htmlFor="tradeSelect">대상 매매 선택</label>
+            <label id="label-trade" htmlFor="tradeSelect">대상 매매 선택</label>
             <select
               id="tradeSelect"
               value={selectedTradeId}
               onChange={e => setSelectedTradeId(e.target.value)}
               required
-              aria-label="노트를 작성할 대상 매매 기록 선택"
+              aria-labelledby="label-trade"
             >
               {trades.length === 0 && <option value="">매도 기록이 없습니다.</option>}
               {trades.map(t => (
@@ -105,7 +105,7 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
           </div>
 
           <div className="form-group full-width">
-            <label htmlFor="noteContent">오답 내용</label>
+            <label id="label-content" htmlFor="noteContent">오답 내용</label>
             <textarea
               id="noteContent"
               value={content}
@@ -113,7 +113,7 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
               placeholder="무엇이 아쉬웠는지, 다음에는 어떻게 다르게 행동할 것인지 적어보세요."
               rows={5}
               required
-              aria-label="오답 노트 내용 입력"
+              aria-labelledby="label-content"
             ></textarea>
           </div>
 

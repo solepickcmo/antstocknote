@@ -114,7 +114,12 @@ export const MobileHistoryView: React.FC = () => {
       {activeTab === 'all' && (
         <div className="tab-pane all-trades-pane">
           <div className="filters-bar-mobile">
-            <input type="text" placeholder="종목명·메모 검색..." className="search-input" />
+            <input 
+              type="text" 
+              placeholder="종목명·메모 검색..." 
+              className="search-input" 
+              aria-label="매매 내역 검색"
+            />
             <div className="filter-chips">
               <span className="chip active">전체</span>
               <span className="chip">매수</span>

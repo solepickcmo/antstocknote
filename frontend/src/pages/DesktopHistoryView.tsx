@@ -30,7 +30,12 @@ export const DesktopHistoryView: React.FC = () => {
       </header>
 
       <div className="filters-bar glass-panel">
-        <input type="text" placeholder="종목명 또는 메모 검색..." className="search-input" />
+        <input 
+          type="text" 
+          placeholder="종목명 또는 메모 검색..." 
+          className="search-input" 
+          aria-label="매매 내역 검색"
+        />
         <div className="filter-chips">
           <TagChip label="보유중" type="default" selected />
           <TagChip label="추세추종" type="strategy" />

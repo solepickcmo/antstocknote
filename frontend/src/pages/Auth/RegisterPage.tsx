@@ -58,7 +58,7 @@ const RegisterPage: React.FC = () => {
         
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="email">이메일</label>
+            <label id="label-email" htmlFor="email">이메일</label>
             <input 
               type="email" 
               id="email" 
@@ -66,11 +66,11 @@ const RegisterPage: React.FC = () => {
               onChange={e => setEmail(e.target.value)} 
               required 
               placeholder="user@example.com"
-              aria-label="회원가입용 이메일 주소"
+              aria-labelledby="label-email"
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">비밀번호</label>
+            <label id="label-password" htmlFor="password">비밀번호</label>
             <input 
               type="password" 
               id="password" 
@@ -79,11 +79,11 @@ const RegisterPage: React.FC = () => {
               required 
               placeholder="6자리 이상 입력"
               minLength={6}
-              aria-label="회원가입용 비밀번호"
+              aria-labelledby="label-password"
             />
           </div>
           <div className="form-group">
-            <label htmlFor="nickname">닉네임</label>
+            <label id="label-nickname" htmlFor="nickname">닉네임</label>
             <input 
               type="text" 
               id="nickname" 
@@ -92,7 +92,7 @@ const RegisterPage: React.FC = () => {
               required 
               placeholder="표시될 이름"
               maxLength={20}
-              aria-label="활동할 닉네임"
+              aria-labelledby="label-nickname"
             />
           </div>
           

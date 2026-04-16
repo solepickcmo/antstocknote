@@ -98,7 +98,12 @@ export const HoldingsPage: React.FC = () => {
 
       <div className="holdings-filters glass-panel">
          <div className="search-box">
-           <input type="text" placeholder="종목명·티커 검색..." className="search-input" />
+           <input 
+             type="text" 
+             placeholder="종목명·티커 검색..." 
+             className="search-input" 
+             aria-label="보유 종목 검색"
+           />
          </div>
          <div className="filter-chips">
             <button className={`chip ${filter === '전체' ? 'active' : ''}`} onClick={() => setFilter('전체')}>전체</button>

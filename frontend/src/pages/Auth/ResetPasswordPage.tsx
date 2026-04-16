@@ -60,7 +60,7 @@ export const ResetPasswordPage: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="password">새 비밀번호</label>
+            <label id="label-new-password" htmlFor="password">새 비밀번호</label>
             <input
               type="password"
               id="password"
@@ -68,11 +68,11 @@ export const ResetPasswordPage: React.FC = () => {
               onChange={e => setPassword(e.target.value)}
               required
               placeholder="••••••••"
-              aria-label="변경할 새 비밀번호 입력"
+              aria-labelledby="label-new-password"
             />
           </div>
           <div className="form-group">
-            <label htmlFor="confirmPassword">새 비밀번호 확인</label>
+            <label id="label-confirm-password" htmlFor="confirmPassword">새 비밀번호 확인</label>
             <input
               type="password"
               id="confirmPassword"
@@ -80,7 +80,7 @@ export const ResetPasswordPage: React.FC = () => {
               onChange={e => setConfirmPassword(e.target.value)}
               required
               placeholder="••••••••"
-              aria-label="변경할 새 비밀번호 재입력 확인"
+              aria-labelledby="label-confirm-password"
             />
           </div>
 

@@ -79,7 +79,7 @@ const LoginPage: React.FC = () => {
         
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="email">이메일</label>
+            <label id="label-email" htmlFor="email">이메일</label>
             <input 
               type="email" 
               id="email" 
@@ -87,11 +87,11 @@ const LoginPage: React.FC = () => {
               onChange={e => setEmail(e.target.value)} 
               required 
               placeholder="user@example.com"
-              aria-label="로그인 이메일 주소"
+              aria-labelledby="label-email"
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">비밀번호</label>
+            <label id="label-password" htmlFor="password">비밀번호</label>
             <input 
               type="password" 
               id="password" 
@@ -99,7 +99,7 @@ const LoginPage: React.FC = () => {
               onChange={e => setPassword(e.target.value)} 
               required 
               placeholder="••••••••"
-              aria-label="로그인 비밀번호"
+              aria-labelledby="label-password"
             />
           </div>
           
@@ -128,13 +128,17 @@ const LoginPage: React.FC = () => {
             
             <form onSubmit={handleForgotPassword}>
               <div className="form-group">
+                <label id="label-forgot-email" htmlFor="forgot-email" style={{ display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>
+                  비밀번호 재설정 링크를 받을 이메일을 입력하세요.
+                </label>
                 <input 
+                  id="forgot-email"
                   type="email" 
                   value={forgotEmail} 
                   onChange={e => setForgotEmail(e.target.value)} 
                   required 
                   placeholder="이메일 주소"
-                  aria-label="비밀번호 재설정 링크를 받을 이메일 주소"
+                  aria-labelledby="label-forgot-email"
                   className="modal-input"
                   style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'rgba(255,255,255,0.05)', color: 'var(--text-main)', marginBottom: '1rem' }}
                 />
