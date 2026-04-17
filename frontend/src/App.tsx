@@ -121,6 +121,7 @@ const App: React.FC = () => {
             <Route path="/holdings" element={<HoldingsPage />} />
             <Route path="/analysis" element={<AnalysisPage />} />
             <Route path="/calculator" element={<CalculatorPage />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Route>
         </Routes>
       </BrowserRouter>
