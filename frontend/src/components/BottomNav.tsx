@@ -87,6 +87,9 @@ export const BottomNav: React.FC = () => {
               <><Sun size={18} /> 라이트 모드 켜기</>
             )}
           </button>
+          <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/calculator'); }}>
+            <Calculator size={18} /> 투자 시뮬레이터
+          </button>
           <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); setMobileMode(false); }}>
             <Monitor size={18} /> PC 화면으로 보기
           </button>

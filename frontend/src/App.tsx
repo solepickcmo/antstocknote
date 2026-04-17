@@ -7,6 +7,7 @@ import { CalendarPage } from './pages/CalendarPage';
 import { HistoryPage } from './pages/HistoryPage';
 import { HoldingsPage } from './pages/HoldingsPage';
 import { AnalysisPage } from './pages/AnalysisPage';
+import { CalculatorPage } from './pages/CalculatorPage';
 import LoginPage from './pages/Auth/LoginPage';
 import RegisterPage from './pages/Auth/RegisterPage';
 import { ResetPasswordPage } from './pages/Auth/ResetPasswordPage';
@@ -118,6 +119,7 @@ const App: React.FC = () => {
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/holdings" element={<HoldingsPage />} />
             <Route path="/analysis" element={<AnalysisPage />} />
+            <Route path="/calculator" element={<CalculatorPage />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Route>
         </Routes>
