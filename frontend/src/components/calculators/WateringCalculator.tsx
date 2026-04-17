@@ -127,11 +127,11 @@ export const WateringCalculator: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto pb-10 animate-fade-in">
-      <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-4">
+    <div className="max-w-6xl mx-auto pb-10 animate-fade-in">
+      <div className="grid grid-cols-1 md:grid-cols-[1.1fr_0.9fr] gap-6 md:gap-16">
         {/* 입력 섹션 */}
-        <div className="space-y-4">
-          <div className="card-fintech space-y-4">
+        <div className="space-y-6 md:space-y-10">
+          <div className="card-fintech space-y-6 md:space-y-8">
             <div className="flex justify-between items-center">
               <h3 className="text-fintech-xl font-fintech-bold flex items-center gap-3">
                 <Droplets className="primary-text" size={24} /> 
@@ -149,7 +149,7 @@ export const WateringCalculator: React.FC = () => {
               </button>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div className="space-y-3">
                 <label className="label-fintech">📌 보유 종목 선택</label>
                 <select
@@ -168,18 +168,18 @@ export const WateringCalculator: React.FC = () => {
               </div>
 
               {selectedHolding && (
-                <div className="bg-primary/5 rounded-xl p-4 border border-primary/20 space-y-2 animate-fade-in">
+                <div className="bg-primary/5 rounded-2xl p-6 md:p-8 border border-primary/20 space-y-4 md:space-y-6 animate-fade-in">
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] text-muted font-fintech-bold uppercase">현재 평균단가</span>
-                    <span className="text-fintech-sm font-fintech-bold">{Math.floor(selectedHolding.avgPrice).toLocaleString()}원</span>
+                    <span className="text-fintech-xs text-slate font-fintech-bold uppercase tracking-wider">현재 평균단가</span>
+                    <span className="text-fintech-lg md:text-fintech-xl font-fintech-bold">{Math.floor(selectedHolding.avgPrice).toLocaleString()}원</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] text-muted font-fintech-bold uppercase">보유 수량</span>
-                    <span className="text-fintech-sm font-fintech-bold">{selectedHolding.quantity}주</span>
+                    <span className="text-fintech-xs text-slate font-fintech-bold uppercase tracking-wider">보유 수량</span>
+                    <span className="text-fintech-lg md:text-fintech-xl font-fintech-bold">{selectedHolding.quantity}주</span>
                   </div>
-                  <div className="pt-2 border-t border-primary/10 flex justify-between items-center">
-                    <span className="text-[10px] text-muted font-fintech-bold uppercase">총 투자원금</span>
-                    <span className="text-fintech-sm font-fintech-bold primary-text">{Math.floor(selectedHolding.avgPrice * selectedHolding.quantity).toLocaleString()}원</span>
+                  <div className="pt-6 border-t border-primary/10 flex justify-between items-center">
+                    <span className="text-fintech-xs text-slate font-fintech-bold uppercase tracking-wider">총 투자원금</span>
+                    <span className="text-fintech-xl md:text-fintech-2xl font-fintech-black primary-text">{Math.floor(selectedHolding.avgPrice * selectedHolding.quantity).toLocaleString()}원</span>
                   </div>
                 </div>
               )}
@@ -194,7 +194,7 @@ export const WateringCalculator: React.FC = () => {
                   <input
                     type="number"
                     placeholder="추가 매수할 가격을 입력하세요"
-                    className="input-fintech text-fintech-lg py-3 h-auto font-fintech-bold text-center"
+                    className="input-fintech text-fintech-xl md:text-fintech-3xl py-4 md:py-8 h-auto font-fintech-black text-center"
                   value={currentMarketPrice}
                   onChange={(e) => setCurrentMarketPrice(e.target.value)}
                   disabled={!selectedHolding}
@@ -206,9 +206,9 @@ export const WateringCalculator: React.FC = () => {
                   <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border-subtle"></div></div>
               </div>
               
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {wateringEntries.map((entry, index) => (
-                  <div key={index} className="p-4 rounded-xl border border-border-subtle bg-bg-white/50 space-y-3 transition-all hover:border-primary/20 hover:shadow-soft">
+                  <div key={index} className="p-6 md:p-8 rounded-2xl border border-border-subtle bg-bg-white/50 space-y-6 transition-all hover:border-primary/20 hover:shadow-soft">
                     <div className="text-[11px] font-fintech-black text-muted uppercase tracking-wider flex items-center gap-2">
                         <div className="w-5 h-5 rounded-full bg-primary/20 text-primary flex items-center justify-center text-[9px]">{index + 1}</div>
                         {index + 1}차 추가 매수
@@ -243,7 +243,7 @@ export const WateringCalculator: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-danger/5 rounded-2xl p-6 border border-danger/10 space-y-3">
+          <div className="bg-danger/5 rounded-2xl p-8 border border-danger/10 space-y-4 mt-10 md:mt-16">
             <h4 className="text-fintech-sm font-fintech-bold loss-text flex items-center gap-2">
               <AlertCircle size={18} /> 무분별한 물타기 경고
             </h4>
@@ -271,14 +271,14 @@ export const WateringCalculator: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="space-y-6 animate-fade-in">
+            <div className="space-y-10 animate-fade-in">
               {waterfallResult && waterfallResult.currentPnlRate !== null && (
                 <div className={`card-fintech border-l-4 ${waterfallResult.currentPnlRate >= 0 ? 'border-success' : 'border-danger'} transition-all`}>
                   <div className="flex justify-between items-center">
                     <span className="text-fintech-xs font-fintech-bold text-muted uppercase tracking-widest">현재 상태 손익률</span>
                     <TrendingDown size={14} className="text-muted opacity-40" />
                   </div>
-                  <div className="mt-2 text-fintech-3xl font-fintech-black">
+                  <div className="mt-4 text-fintech-4xl md:text-fintech-5xl font-fintech-black">
                     <span className={waterfallResult.currentPnlRate >= 0 ? 'profit-text' : 'loss-text'}>
                       {waterfallResult.currentPnlRate >= 0 ? '+' : ''}{waterfallResult.currentPnlRate.toFixed(2)}%
                     </span>
@@ -329,16 +329,16 @@ export const WateringCalculator: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className={`p-8 rounded-2xl border-l-4 ${waterfallResult.afterWaterfallPnlRate! >= 0 ? 'border-success bg-success/5' : 'border-danger bg-danger/5'} space-y-4`}>
-                      <span className="text-fintech-xs font-fintech-bold text-slate uppercase tracking-widest">변경 예상 손익률</span>
-                      <div className="flex items-baseline gap-2">
-                        <span className={`text-fintech-4xl font-fintech-black ${waterfallResult.afterWaterfallPnlRate! >= 0 ? 'profit-text' : 'loss-text'}`}>
+                    <div className={`p-10 md:p-12 rounded-3xl border-l-8 ${waterfallResult.afterWaterfallPnlRate! >= 0 ? 'border-success bg-success/5' : 'border-danger bg-danger/5'} space-y-6`}>
+                      <span className="text-fintech-sm font-fintech-bold text-slate uppercase tracking-[0.2em]">변경 예상 손익률</span>
+                      <div className="flex items-baseline gap-4">
+                        <span className={`text-fintech-5xl md:text-fintech-7xl font-fintech-black ${waterfallResult.afterWaterfallPnlRate! >= 0 ? 'profit-text' : 'loss-text'}`}>
                           {waterfallResult.afterWaterfallPnlRate! >= 0 ? '+' : ''}{waterfallResult.afterWaterfallPnlRate!.toFixed(2)}%
                         </span>
                       </div>
                       {waterfallResult.afterWaterfallPnlRate !== null && (
-                        <div className="inline-flex items-center gap-2 text-fintech-xs font-fintech-black text-white bg-white/10 px-4 py-2 rounded-full border border-white/10">
-                          수익률 <span className="primary-text">{(waterfallResult.afterWaterfallPnlRate - (waterfallResult.currentPnlRate ?? 0)).toFixed(2)}%</span> 개선 효과
+                        <div className="inline-flex items-center gap-3 text-fintech-sm font-fintech-bold text-white bg-white/10 px-6 py-3 rounded-full border border-white/10">
+                          기존 대비 <span className="primary-text">{(waterfallResult.afterWaterfallPnlRate - (waterfallResult.currentPnlRate ?? 0)).toFixed(2)}%</span> 개선 예상
                         </div>
                       )}
                     </div>

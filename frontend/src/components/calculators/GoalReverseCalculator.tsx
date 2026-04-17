@@ -77,9 +77,9 @@ export const GoalReverseCalculator: React.FC = () => {
   const formatNumber = (val: number) => Math.round(val).toLocaleString('ko-KR');
 
   return (
-    <div className="max-w-2xl mx-auto space-y-4 animate-fade-in pb-20">
+    <div className="max-w-4xl mx-auto space-y-8 md:space-y-16 animate-fade-in pb-20">
       {/* 입력 섹션 */}
-      <div className="card-fintech space-y-4">
+      <div className="card-fintech space-y-8 md:space-y-12">
         <div className="flex justify-between items-center">
           <h3 className="text-fintech-xl font-fintech-bold flex items-center gap-3">
             <Target className="primary-text" size={24} /> 
@@ -99,7 +99,7 @@ export const GoalReverseCalculator: React.FC = () => {
             <label className="label-fintech">월 목표 수익금 (KRW)</label>
             <input
               type="text"
-              className="input-fintech text-fintech-xl py-3 h-auto text-center font-fintech-bold primary-text"
+              className="input-fintech text-fintech-2xl md:text-fintech-4xl py-4 md:py-8 h-auto text-center font-fintech-black primary-text"
               placeholder="예: 2,000,000"
               value={goalAmount}
               onChange={(e) => {
@@ -109,7 +109,7 @@ export const GoalReverseCalculator: React.FC = () => {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-8 md:gap-12">
             <div className="space-y-3">
               <label className="label-fintech">평균 수익금 (원)</label>
               <input
@@ -169,8 +169,8 @@ export const GoalReverseCalculator: React.FC = () => {
       </div>
 
       {/* 결과 섹션 */}
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 gap-4">
+      <div className="space-y-8 md:space-y-12">
+        <div className="grid grid-cols-1 gap-8 md:gap-12">
           <div className="card-fintech p-6 flex justify-between items-center transition-all hover:bg-card-fintech/80">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
@@ -186,7 +186,8 @@ export const GoalReverseCalculator: React.FC = () => {
             </span>
           </div>
 
-          <div className="card-fintech p-6 space-y-4 bg-ink text-white border-none shadow-2xl">
+          <div className="card-fintech p-10 md:p-12 space-y-10 md:space-y-12 bg-ink text-white border-none shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
             <div className="flex justify-between items-center">
               <div className="space-y-1">
                 <h4 className="text-fintech-sm text-slate uppercase tracking-widest font-fintech-bold">목표 달성 필요 매매 횟수</h4>
