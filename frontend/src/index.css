@@ -26,7 +26,8 @@
   --text-main: #1E2329;
   --text-secondary: #474D57;    /* 가독성 강화: 6.3:1 (AA+) */
   --text-muted: #525966;        /* 가독성 강화: 5.2:1 (AA 충족) */
-  --border: #D1D4D7;            /* 가시성 확보를 위해 테두리 색상 강화 */
+  --border: #EAECEF;            /* 더 연하고 부드러운 보더 색상으로 변경 */
+  --border-subtle: #F1F3F5;     /* 아주 미세한 구분선용 */
   --shadow-soft: rgba(30, 35, 41, 0.05) 0px 3px 6px;
   --shadow-hover: rgba(30, 35, 41, 0.1) 0px 5px 15px;
   --btn-shadow: 0 4px 0px var(--primary-contrast), 0 6px 12px rgba(240, 185, 11, 0.2);
@@ -64,9 +65,10 @@
   --text-main: #EAECEF;
   --text-secondary: #848E9C;
   --text-muted: #474D57;
-  --border: #2B3139;
+  --border: #2B3139;            /* 다크모드는 기존 유지 혹은 미세 조정 */
+  --border-subtle: #1E2329;
   --primary-contrast: #F0B90B;  /* On dark, original yellow is fine */
-  --shadow-soft: rgba(0, 0, 0, 0.2) 0px 3px 10px;
+  --shadow-soft: rgba(0, 0, 0, 0.4) 0px 4px 12px;
   --shadow-hover: rgba(0, 0, 0, 0.4) 0px 8px 20px;
 }
 
@@ -168,7 +170,7 @@ a {
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: var(--space-6);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05); /* 더 부드러운 그림자 */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -192,7 +194,7 @@ a {
   width: 100%;
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border); /* 약간의 두께감은 주되 색상을 연하게 */
   background-color: var(--bg-main);
   color: var(--text-main);
   font-family: inherit;

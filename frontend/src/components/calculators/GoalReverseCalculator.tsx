@@ -132,7 +132,7 @@ export const GoalReverseCalculator: React.FC = () => {
             </div>
           </div>
 
-          <div className="space-y-4 pt-4 border-t border-border">
+          <div className="space-y-4 pt-4 border-t border-border-subtle">
             <div className="flex justify-between items-end">
               <label className="label-fintech mb-0">예상 승률 (Win Rate)</label>
               <span className="text-fintech-xl font-fintech-black primary-text drop-shadow-sm">{winRate}%</span>
@@ -142,7 +142,7 @@ export const GoalReverseCalculator: React.FC = () => {
                 type="range"
                 min="1"
                 max="99"
-                className="w-full h-2 bg-border rounded-full appearance-none cursor-pointer accent-primary group-hover:bg-primary/20 transition-all"
+                className="w-full h-2 bg-border-subtle rounded-full appearance-none cursor-pointer accent-primary group-hover:bg-primary/20 transition-all"
                 value={winRate}
                 onChange={(e) => setWinRate(parseInt(e.target.value))}
               />
@@ -159,7 +159,7 @@ export const GoalReverseCalculator: React.FC = () => {
                 type="range"
                 min="1"
                 max="100"
-                className="w-full h-2 bg-border rounded-full appearance-none cursor-pointer accent-primary group-hover:bg-primary/20 transition-all"
+                className="w-full h-2 bg-border-subtle rounded-full appearance-none cursor-pointer accent-primary group-hover:bg-primary/20 transition-all"
                 value={tradeCount}
                 onChange={(e) => setTradeCount(parseInt(e.target.value))}
               />
@@ -237,7 +237,7 @@ export const GoalReverseCalculator: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-start gap-4 text-fintech-xs text-muted p-5 rounded-2xl bg-card-fintech/30 border border-border/50">
+        <div className="flex items-start gap-4 text-fintech-xs text-muted p-5 rounded-2xl bg-bg-white/30 border border-border-subtle">
           <HelpCircle size={24} className="shrink-0 opacity-40" />
           <div className="space-y-2">
             <p className="leading-relaxed">

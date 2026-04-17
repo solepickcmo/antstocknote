@@ -185,8 +185,8 @@ export const WateringCalculator: React.FC = () => {
               )}
 
               <div className="relative py-4 flex items-center gap-4">
-                  <span className="text-[10px] font-fintech-black primary-text uppercase tracking-widest bg-card-fintech px-3 z-10 rounded-full border border-border">시장 현황</span>
-                  <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border"></div></div>
+                  <span className="text-[10px] font-fintech-black text-slate uppercase tracking-widest bg-main px-3 z-10 rounded-full border border-border-subtle">시장 현황</span>
+                  <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border-subtle"></div></div>
               </div>
 
               <div className="space-y-3">
@@ -202,13 +202,13 @@ export const WateringCalculator: React.FC = () => {
               </div>
 
               <div className="relative py-4 flex items-center gap-4">
-                  <span className="text-[10px] font-fintech-black primary-text uppercase tracking-widest bg-card-fintech px-3 z-10 rounded-full border border-border">추가 매수 계획</span>
-                  <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border"></div></div>
+                  <span className="text-[10px] font-fintech-black text-slate uppercase tracking-widest bg-main px-3 z-10 rounded-full border border-border-subtle">추가 매수 계획</span>
+                  <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border-subtle"></div></div>
               </div>
               
               <div className="space-y-4">
                 {wateringEntries.map((entry, index) => (
-                  <div key={index} className="p-5 rounded-2xl border border-border bg-card-fintech/50 space-y-4 transition-all hover:border-primary/30">
+                  <div key={index} className="p-5 rounded-2xl border border-border-subtle bg-bg-white/50 space-y-4 transition-all hover:border-primary/20 hover:shadow-soft">
                     <div className="text-[11px] font-fintech-black text-muted uppercase tracking-wider flex items-center gap-2">
                         <div className="w-5 h-5 rounded-full bg-primary/20 text-primary flex items-center justify-center text-[9px]">{index + 1}</div>
                         {index + 1}차 추가 매수
