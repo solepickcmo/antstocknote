@@ -41,12 +41,12 @@
 }
 
 .desktop-row-item .trade-info-inline .ticker {
-  color: var(--primary);
+  color: var(--primary-contrast);
   font-weight: 700;
   font-size: 0.8rem;
   background: rgba(240, 185, 11, 0.1);
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
 }
 
 .desktop-row-item .trade-date {
@@ -89,12 +89,12 @@
 }
 
 .btn-header-action {
-  background-color: var(--bg-input);
+  background-color: var(--bg-white);
   color: var(--text-main);
-  padding: 0.4rem 1rem;
-  border-radius: 20px;
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-pill);
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
   border: 1px solid var(--border);
   cursor: pointer;
   transition: all 0.2s;
@@ -107,16 +107,17 @@
 .btn-export {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
   background-color: var(--primary);
   color: #1E2026;
-  padding: 0.6rem 1.25rem;
+  padding: var(--space-3) var(--space-5);
   border: none;
-  border-radius: var(--radius-md);
-  font-weight: 700;
+  border-radius: var(--radius-pill);
+  font-weight: 800;
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: var(--btn-shadow);
 }
 
 .btn-export:hover {
@@ -173,18 +174,20 @@
 }
 
 .chip {
-  padding: 0.4rem 1rem;
+  padding: var(--space-2) var(--space-5);
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: var(--radius-pill);
   font-size: 0.8rem;
   white-space: nowrap;
   color: var(--text-muted);
   cursor: pointer;
+  font-weight: 700;
 }
 .chip.active {
   background-color: var(--primary);
-  color: #fff;
+  color: #1E2026;
   border-color: var(--primary);
+  box-shadow: 0 4px 10px rgba(240, 185, 11, 0.2);
 }
 
 .trades-summary {

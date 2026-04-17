@@ -16,57 +16,60 @@ export const IsometricTown: React.FC = () => {
     let time = 0;
 
     const tileWidth = 60;
-    const tileHeight = 30; // Isometric scale 2:1
+    const tileHeight = 30;
+    const gridSize = 8; // Fixed grid for simplicity, or dynamic if needed
 
-    // Map size based on number of trades (expand map as you get more trades)
-    const gridSize = Math.max(5, Math.ceil(Math.sqrt(trades.length)) + 2);
+    const drawIsoTile = (x: number, y: number, cx: number, cy: number, color: string, stroke: string) => {
+      const screenX = cx + (x - y) * (tileWidth / 2);
+      const screenY = cy + (x + y) * (tileHeight / 2);
+
+      ctx.beginPath();
+      ctx.moveTo(screenX, screenY);
+      ctx.lineTo(screenX + tileWidth / 2, screenY + tileHeight / 2);
+      ctx.lineTo(screenX, screenY + tileHeight);
+      ctx.lineTo(screenX - tileWidth / 2, screenY + tileHeight / 2);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.strokeStyle = stroke;
+      ctx.stroke();
+      return { screenX, screenY };
+    };
 
     const drawGrid = () => {
-      // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
+      const style = getComputedStyle(document.documentElement);
+      const gridColor1 = style.getPropertyValue('--bg-card').trim() || '#f5f5f5';
+      const gridColor2 = style.getPropertyValue('--bg-white').trim() || '#ffffff';
+      const strokeColor = style.getPropertyValue('--border').trim() || '#d1d4d7';
+      const buyColor = style.getPropertyValue('--success').trim() || '#0ecb81';
+      const sellColor = style.getPropertyValue('--danger').trim() || '#f6465d';
+
       const cx = canvas.width / 2;
-      const cy = canvas.height / 4; // Start near top
+      const cy = canvas.height / 6;
 
       for (let x = 0; x < gridSize; x++) {
         for (let y = 0; y < gridSize; y++) {
-          // Calculate isometric screen coordinates
-          const screenX = cx + (x - y) * (tileWidth / 2);
-          const screenY = cy + (x + y) * (tileHeight / 2);
+          const color = (x + y) % 2 === 0 ? gridColor1 : gridColor2;
+          const { screenX, screenY } = drawIsoTile(x, y, cx, cy, color, strokeColor);
 
-          // Draw Base Tile
-          ctx.beginPath();
-          ctx.moveTo(screenX, screenY);
-          ctx.lineTo(screenX + tileWidth / 2, screenY + tileHeight / 2);
-          ctx.lineTo(screenX, screenY + tileHeight);
-          ctx.lineTo(screenX - tileWidth / 2, screenY + tileHeight / 2);
-          ctx.closePath();
-
-          // Subtle bounce effect based on position
-          const waveOffset = Math.sin(time + x * 0.5 + y * 0.5) * 2;
-          
-          // Fill tile color (checkered pattern)
-          ctx.fillStyle = (x + y) % 2 === 0 ? '#1e293b' : '#334155';
-          ctx.fill();
-          ctx.strokeStyle = '#0f172a';
-          ctx.stroke();
-
-          // Determine if we should draw a building here
+          // Determine if we should draw a building
           const tradeIndex = x * gridSize + y;
           if (tradeIndex < trades.length) {
             const trade = trades[tradeIndex];
             const pnl = Number(trade.pnl) || 0;
-            // Determine building size/color based on pnl/type
-            let buildingHeight = 10 + Math.abs(pnl) / 10000; 
-            if (buildingHeight > 60) buildingHeight = 60; // Max height
-            
-            let colorTop = trade.type === 'buy' ? '#3b82f6' : (pnl > 0 ? '#10b981' : '#f43f5e');
-            let colorLeft = trade.type === 'buy' ? '#2563eb' : (pnl > 0 ? '#059669' : '#e11d48');
-            let colorRight = trade.type === 'buy' ? '#1d4ed8' : (pnl > 0 ? '#047857' : '#be123c');
+            let buildingHeight = 15 + Math.abs(pnl) / 1000;
+            if (buildingHeight > 80) buildingHeight = 80;
 
-            const by = screenY + waveOffset - 2; // Offset slightly up from tile
-            
-            // Draw Left Face
+            const waveOffset = Math.sin(time + x * 0.5 + y * 0.5) * 3;
+            const by = screenY + waveOffset - 2;
+
+            const colorTop = trade.type === 'buy' ? buyColor : (pnl > 0 ? buyColor : sellColor);
+            const colorLeft = trade.type === 'buy' ? buyColor + 'CC' : (pnl > 0 ? buyColor + 'CC' : sellColor + 'CC');
+            const colorRight = trade.type === 'buy' ? buyColor + '99' : (pnl > 0 ? buyColor + '99' : sellColor + '99');
+
+            // Left Face
             ctx.beginPath();
             ctx.moveTo(screenX - tileWidth / 2, by + tileHeight / 2);
             ctx.lineTo(screenX, by + tileHeight);
@@ -76,7 +79,7 @@ export const IsometricTown: React.FC = () => {
             ctx.fillStyle = colorLeft;
             ctx.fill();
 
-            // Draw Right Face
+            // Right Face
             ctx.beginPath();
             ctx.moveTo(screenX, by + tileHeight);
             ctx.lineTo(screenX + tileWidth / 2, by + tileHeight / 2);
@@ -85,8 +88,8 @@ export const IsometricTown: React.FC = () => {
             ctx.closePath();
             ctx.fillStyle = colorRight;
             ctx.fill();
-            
-            // Draw Top Face
+
+            // Top Face
             ctx.beginPath();
             ctx.moveTo(screenX, by - buildingHeight);
             ctx.lineTo(screenX + tileWidth / 2, by + tileHeight / 2 - buildingHeight);
@@ -107,10 +110,7 @@ export const IsometricTown: React.FC = () => {
     };
 
     render();
-
-    return () => {
-      cancelAnimationFrame(animFrame);
-    };
+    return () => cancelAnimationFrame(animFrame);
   }, [trades]);
 
   return (

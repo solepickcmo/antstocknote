@@ -30,8 +30,8 @@ interface Note {
 }
 
 // 색상 팔레트: 전략은 파랑/초록계열, 실수는 붉은/노란계열
-const STRATEGY_COLORS = ['#2563eb', '#3b82f6', '#10b981', '#14b8a6', '#8b5cf6', '#6366f1'];
-const MISTAKE_COLORS  = ['#dc2626', '#ef4444', '#ea580c', '#f59e0b', '#eab308', '#d97706'];
+const STRATEGY_COLORS = ['#F0B90B', '#F8D33A', '#D49100', '#FFD700', '#B0800B', '#E6A23C'];
+const MISTAKE_COLORS  = ['#F6465D', '#D9304E', '#FF3B5C', '#CF304A', '#EB6179', '#AE263E'];
 
 export const AnalysisPage: React.FC = () => {
   const [strategies, setStrategies] = useState<StrategyStat[]>([]);

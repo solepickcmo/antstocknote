@@ -34,7 +34,7 @@ export const NavBar: React.FC = () => {
       </div>
       
       <div className="nav-group">
-        <div className="nav-item action-btn" onClick={() => setModalOpen(true)} style={{ color: 'var(--primary)', marginBottom: '0.5rem' }}>
+        <div className="nav-item action-btn" onClick={() => setModalOpen(true)} style={{ color: 'var(--ink)', marginBottom: '0.75rem' }}>
           <PlusSquare size={18} />
           <span>기록하기</span>
         </div>

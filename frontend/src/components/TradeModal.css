@@ -1,83 +1,92 @@
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  padding: 1rem;
+  z-index: 2000;
+  padding: var(--space-4);
+  animation: fade-in 0.2s ease-out;
 }
 
 .modal-container {
-  background-color: var(--bg-white);
   width: 100%;
-  max-width: 480px;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-hover);
+  max-width: 520px;
+  background-color: var(--bg-card);
+  border-radius: var(--radius-2xl);
+  box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.5);
   border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
+  max-height: 90vh;
 }
 
 .modal-header {
-  padding: 1.25rem 1.5rem;
+  padding: var(--space-6) var(--space-8);
   border-bottom: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: var(--bg-main);
 }
 
 .modal-header h2 {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: var(--font-xl);
+  font-weight: 800;
   color: var(--text-main);
+  margin: 0;
+  letter-spacing: -0.02em;
 }
 
 .close-x {
-  background: none;
+  background: transparent;
   border: none;
-  font-size: 1.5rem;
-  color: var(--text-secondary);
-  line-height: 1;
-  padding: 0.25rem;
+  font-size: 2rem;
+  color: var(--text-muted);
   cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.close-x:hover {
+  color: var(--primary);
+  transform: rotate(90deg);
+}
+
+.modal-error {
+  margin: var(--space-4) var(--space-8) 0;
+  background-color: rgba(246, 70, 93, 0.1);
+  color: var(--danger);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-xs);
+  font-weight: 600;
+  border: 1px solid rgba(246, 70, 93, 0.1);
 }
 
 .trade-form {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+  padding: var(--space-8);
   overflow-y: auto;
-  max-height: 70vh;
+  flex: 1;
 }
 
-/* Scrollbar styling for form */
-.trade-form::-webkit-scrollbar {
-  width: 4px;
-}
-.trade-form::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 4px;
-}
-
-/* Binance Style Segment Control */
 .segment-control {
   display: flex;
-  background-color: var(--bg-card);
-  padding: 0.25rem;
-  border-radius: var(--radius-md);
-  margin-bottom: 0.5rem;
+  background-color: var(--bg-main);
+  padding: 4px;
+  border-radius: var(--radius-pill);
+  gap: 4px;
+  margin-bottom: var(--space-8);
+  border: 1px solid var(--border);
 }
 
 .segment-btn {
   flex: 1;
-  padding: 0.6rem;
   border-radius: var(--radius-sm);
   font-size: 0.875rem;
   font-weight: 700;

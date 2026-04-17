@@ -77,29 +77,29 @@ export const GoalReverseCalculator: React.FC = () => {
   const formatNumber = (val: number) => Math.round(val).toLocaleString('ko-KR');
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 animate-fade-in pb-10">
+    <div className="max-w-3xl mx-auto space-y-8 animate-fade-in pb-20">
       {/* 입력 섹션 */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-5">
+      <div className="card-fintech space-y-8">
         <div className="flex justify-between items-center">
-          <h3 className="text-lg font-bold flex items-center gap-2">
-            <Target className="text-primary" size={20} /> 목표 설정
+          <h3 className="text-fintech-xl font-fintech-bold flex items-center gap-3">
+            <Target className="primary-text" size={24} /> 
+            <span>매매 목표 시뮬레이터</span>
           </h3>
           <button 
             onClick={fetchMyStats}
             disabled={isLoading}
-            className="text-xs bg-primary/10 text-primary px-3 py-1.5 rounded-lg font-medium hover:bg-primary/20 transition-colors disabled:opacity-50"
+            className="btn-fintech-secondary"
           >
-            {isLoading ? '불러오는 중...' : '내 통계 불러오기 (6개월)'}
+            {isLoading ? '데이터 분석 중...' : '내 통계 불러오기 (6개월)'}
           </button>
         </div>
 
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-gray-600">월 목표 수익금 (원)</label>
+        <div className="space-y-6">
+          <div className="space-y-3">
+            <label className="label-fintech">월 목표 수익금 (KRW)</label>
             <input
               type="text"
-              aria-label="월 목표 수익금 입력"
-              className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all font-bold text-lg"
+              className="input-fintech text-fintech-3xl py-6 h-auto text-center font-fintech-black primary-text"
               placeholder="예: 2,000,000"
               value={goalAmount}
               onChange={(e) => {
@@ -109,24 +109,22 @@ export const GoalReverseCalculator: React.FC = () => {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-600">평균 수익금 (원)</label>
+          <div className="grid grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <label className="label-fintech">평균 수익금 (원)</label>
               <input
                 type="number"
-                aria-label="평균 수익금 입력"
-                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all font-semibold"
+                className="input-fintech text-fintech-base"
                 placeholder="0"
                 value={avgProfit}
                 onChange={(e) => setAvgProfit(e.target.value)}
               />
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-600">평균 손실금 (원)</label>
+            <div className="space-y-3">
+              <label className="label-fintech">평균 손실금 (원)</label>
               <input
                 type="number"
-                aria-label="평균 손실금 입력"
-                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary outline-none transition-all font-semibold"
+                className="input-fintech text-fintech-base"
                 placeholder="0"
                 value={avgLoss}
                 onChange={(e) => setAvgLoss(e.target.value)}
@@ -134,97 +132,119 @@ export const GoalReverseCalculator: React.FC = () => {
             </div>
           </div>
 
-          <div className="space-y-3 pt-2">
+          <div className="space-y-4 pt-4 border-t border-border">
             <div className="flex justify-between items-end">
-              <label className="text-sm font-semibold text-gray-600">승률 (Win Rate)</label>
-              <span className="text-gray-900 bg-primary/20 px-2 py-0.5 rounded text-lg font-black">{winRate}%</span>
+              <label className="label-fintech mb-0">예상 승률 (Win Rate)</label>
+              <span className="text-fintech-xl font-fintech-black primary-text drop-shadow-sm">{winRate}%</span>
             </div>
-            <input
-              type="range"
-              min="1"
-              max="99"
-              className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-primary"
-              value={winRate}
-              onChange={(e) => setWinRate(parseInt(e.target.value))}
-            />
+            <div className="relative group">
+              <input
+                type="range"
+                min="1"
+                max="99"
+                className="w-full h-2 bg-border rounded-full appearance-none cursor-pointer accent-primary group-hover:bg-primary/20 transition-all"
+                value={winRate}
+                onChange={(e) => setWinRate(parseInt(e.target.value))}
+              />
+            </div>
           </div>
 
-          <div className="space-y-3 pt-2">
+          <div className="space-y-4">
             <div className="flex justify-between items-end">
-              <label className="text-sm font-semibold text-gray-600">월 매매 횟수</label>
-              <span className="text-gray-900 bg-primary/20 px-2 py-0.5 rounded text-lg font-black">{tradeCount}회</span>
+              <label className="label-fintech mb-0">월 목표 매매 횟수</label>
+              <span className="text-fintech-xl font-fintech-black primary-text drop-shadow-sm">{tradeCount}회</span>
             </div>
-            <input
-              type="range"
-              min="1"
-              max="100"
-              className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-primary"
-              value={tradeCount}
-              onChange={(e) => setTradeCount(parseInt(e.target.value))}
-            />
+            <div className="relative group">
+              <input
+                type="range"
+                min="1"
+                max="100"
+                className="w-full h-2 bg-border rounded-full appearance-none cursor-pointer accent-primary group-hover:bg-primary/20 transition-all"
+                value={tradeCount}
+                onChange={(e) => setTradeCount(parseInt(e.target.value))}
+              />
+            </div>
           </div>
         </div>
       </div>
 
       {/* 결과 섹션 */}
-      <div className="bg-gray-50 rounded-2xl p-6 space-y-6">
-        <div className="grid grid-cols-1 gap-4">
-          <div className="bg-white p-4 rounded-xl border border-gray-100 flex justify-between items-center shadow-sm">
-            <div className="flex items-center gap-2">
-              <TrendingUp size={18} className="text-gray-400" />
-              <span className="text-sm font-medium text-gray-500">매매 1회당 기대수익 (EV)</span>
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 gap-6">
+          <div className="card-fintech p-6 flex justify-between items-center transition-all hover:bg-card-fintech/80">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
+                <TrendingUp size={24} className="primary-text" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-fintech-xs text-muted font-fintech-bold uppercase tracking-wider">매매 1회당 기대수익 (EV)</span>
+                <span className="text-fintech-xs text-muted/60 mt-0.5">이론적으로 기대할 수 있는 회당 수익입니다.</span>
+              </div>
             </div>
-            <span className={`text-lg font-bold ${results.ev >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            <span className={`text-fintech-2xl font-fintech-black ${results.ev >= 0 ? 'profit-text' : 'loss-text'}`}>
               {results.ev >= 0 ? '+' : ''}{formatNumber(results.ev)}원
             </span>
           </div>
 
-          <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm space-y-2">
+          <div className="card-fintech p-8 space-y-6 bg-ink text-white border-none shadow-2xl">
             <div className="flex justify-between items-center">
-              <span className="text-sm font-medium text-gray-500">목표 달성 필요 매매 횟수</span>
+              <div className="space-y-1">
+                <h4 className="text-fintech-sm text-slate uppercase tracking-widest font-fintech-bold">목표 달성 필요 매매 횟수</h4>
+                <p className="text-fintech-xs text-slate opacity-60">월 목표를 채우기 위한 권장 매매 횟수입니다.</p>
+              </div>
               {results.requiredTrades ? (
-                <span className="text-lg font-black text-amber-500">월 {results.requiredTrades}회</span>
+                <div className="flex flex-col items-end">
+                  <span className="text-fintech-3xl font-fintech-black primary-text">월 {results.requiredTrades}회</span>
+                  <span className="text-[10px] text-slate/50">현재 속도 대비 {results.requiredTrades > tradeCount ? '증가 필요' : '여유로움'}</span>
+                </div>
               ) : (
-                <span className="text-sm font-bold text-red-500">계산 불가</span>
+                <span className="text-fintech-base font-fintech-bold loss-text">계산 불가</span>
               )}
             </div>
+            
             {results.ev <= 0 && (
-              <div className="flex items-center gap-2 text-xs text-red-500 bg-red-50 p-2 rounded-lg">
-                <AlertTriangle size={14} />
-                <span>현재 통계(기대값 {results.ev}원)로는 목표 달성이 불가능합니다.</span>
+              <div className="flex items-start gap-4 text-fintech-xs text-danger bg-danger/10 p-5 rounded-2xl border border-danger/20 animate-pulse">
+                <AlertTriangle size={20} className="shrink-0" />
+                <div className="space-y-1">
+                  <p className="font-fintech-bold">위험: 기대수익이 마이너스입니다.</p>
+                  <p className="text-slate opacity-80 leading-relaxed">현재 승률과 손익 구조로는 매매를 할수록 손실이 발생합니다. 매매 기법이나 손익비를 점검해 보세요.</p>
+                </div>
               </div>
             )}
-          </div>
-
-          <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium text-gray-500">예상 월 수익금</span>
-              <span className={`text-lg font-bold ${results.projectedIncome >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {results.projectedIncome >= 0 ? '+' : ''}{formatNumber(results.projectedIncome)}원
-              </span>
-            </div>
-            
-            <div className="pt-2">
-              <div className="flex justify-between text-[10px] text-gray-400 mb-1 font-medium">
-                <span>목표 달성률</span>
-                <span>{results.progress.toFixed(1)}%</span>
-              </div>
-              <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div 
-                  className={`h-full transition-all duration-500 ${results.progress >= 100 ? 'bg-green-500' : 'bg-primary'}`}
-                  style={{ width: `${results.progress}%` }}
-                />
-              </div>
+            <div className="pt-8 border-t border-white/10 space-y-6">
+                <div className="flex justify-between items-baseline">
+                  <span className="text-fintech-sm font-fintech-bold text-slate uppercase tracking-widest">예상 월 수익금</span>
+                  <div className="text-right">
+                    <p className={`text-fintech-3xl font-fintech-black ${results.projectedIncome >= 0 ? 'profit-text' : 'loss-text'}`}>
+                        {results.projectedIncome >= 0 ? '+' : ''}{formatNumber(results.projectedIncome)}원
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex justify-between items-end text-fintech-xs font-fintech-bold uppercase tracking-tighter">
+                    <span className="text-slate opacity-60">목표 달성 전망</span>
+                    <span className={results.progress >= 100 ? 'profit-text' : 'primary-text'}>{results.progress.toFixed(1)}%</span>
+                  </div>
+                  <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/10">
+                    <div 
+                      className={`h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(240,185,11,0.5)] ${results.progress >= 100 ? 'bg-success' : 'bg-primary'}`}
+                      style={{ width: `${results.progress}%` }}
+                    />
+                  </div>
+                </div>
             </div>
           </div>
         </div>
 
-        <div className="flex items-start gap-2 text-xs text-gray-400 px-1">
-          <HelpCircle size={14} className="mt-0.5 shrink-0" />
-          <p className="leading-relaxed">
-            기대값(EV)은 승률과 평균 수익/손실을 바탕으로 한 번의 매매에서 기대할 수 있는 이론적 수익입니다. 
-            꾸준한 매매를 통해 EV에 수렴하는 결과를 얻는 것을 목표로 하세요.
-          </p>
+        <div className="flex items-start gap-4 text-fintech-xs text-muted p-5 rounded-2xl bg-card-fintech/30 border border-border/50">
+          <HelpCircle size={24} className="shrink-0 opacity-40" />
+          <div className="space-y-2">
+            <p className="leading-relaxed">
+              <span className="font-fintech-bold text-main">기대값(EV) 분석:</span> 모든 성공적인 트레이더는 이론적으로 유리한 게임(EV {'>'} 0)을 반복합니다. 
+              단기적인 운보다는 통계적으로 승리하는 구조를 만드는 것이 중요합니다.
+            </p>
+          </div>
         </div>
       </div>
     </div>

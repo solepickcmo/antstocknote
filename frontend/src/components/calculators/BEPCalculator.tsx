@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Plus, Trash2, Download, Calculator, AlertCircle } from 'lucide-react';
+import { Plus, Trash2, Download, Calculator, AlertCircle, TrendingDown } from 'lucide-react';
 import { supabase } from '../../api/supabase';
 import { useAuthStore } from '../../store/authStore';
 
@@ -117,35 +117,36 @@ export const BEPCalculator: React.FC = () => {
   const formatNumber = (val: number) => Math.round(val).toLocaleString('ko-KR');
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 animate-fade-in pb-10">
+    <div className="max-w-4xl mx-auto space-y-8 animate-fade-in pb-20">
       {/* 입력 섹션 */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-6">
+      <div className="card-fintech space-y-8">
         <div className="flex justify-between items-center">
-          <h3 className="text-lg font-bold flex items-center gap-2">
-            <Calculator className="text-primary" size={20} /> 분할 매수 입력
+          <h3 className="text-fintech-xl font-fintech-bold flex items-center gap-3">
+            <Calculator className="primary-text" size={24} /> 
+            <span>분할 매수 시뮬레이터</span>
           </h3>
           <div className="relative">
             <button 
               onClick={fetchHoldings}
-              className="text-xs bg-indigo-50 text-primary px-3 py-1.5 rounded-lg font-medium hover:bg-indigo-100 transition-colors flex items-center gap-1"
+              className="btn-fintech-secondary"
             >
               <Download size={14} /> 보유 종목 불러오기
             </button>
             {showDropdown && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setShowDropdown(false)}></div>
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 z-20 py-2 max-h-60 overflow-y-auto">
+                <div className="absolute right-0 mt-3 w-64 bg-white dark:bg-[#2B3139] rounded-xl shadow-2xl border border-border z-20 py-2 max-h-72 overflow-y-auto">
                   {holdings.length === 0 ? (
-                    <div className="px-4 py-3 text-sm text-gray-400">보유 종목이 없습니다.</div>
+                    <div className="px-4 py-4 text-fintech-sm text-muted text-center">보유 종목이 없습니다.</div>
                   ) : (
                     holdings.map(h => (
                       <button 
                         key={h.ticker} 
                         onClick={() => handleSelectHolding(h)}
-                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 flex flex-col"
+                        className="w-full text-left px-4 py-3 hover:bg-card-fintech transition-colors flex flex-col gap-0.5"
                       >
-                        <span className="font-bold">{h.name}</span>
-                        <span className="text-xs text-gray-400">{h.ticker}</span>
+                        <span className="font-fintech-bold text-fintech-base">{h.name}</span>
+                        <span className="text-fintech-xs text-muted">{h.ticker}</span>
                       </button>
                     ))
                   )}
@@ -156,53 +157,57 @@ export const BEPCalculator: React.FC = () => {
         </div>
 
         {isNoteVisible && (
-          <div className="flex items-start gap-2 text-xs text-amber-600 bg-amber-50 p-3 rounded-xl border border-amber-100">
-            <AlertCircle size={14} className="mt-0.5 shrink-0" />
-            <p>부분 매도가 있는 종목은 수량이 다를 수 있으니 직접 확인 후 수정하세요.</p>
+          <div className="flex items-start gap-3 text-fintech-xs text-amber-600 bg-amber-50 dark:bg-amber-900/20 p-4 rounded-xl border border-amber-100 dark:border-amber-900/30">
+            <AlertCircle size={16} className="mt-0.5 shrink-0" />
+            <p className="leading-relaxed">부분 매도가 있는 종목은 실제 수량과 다를 수 있습니다. 정확한 현재 보유량을 직접 확인 후 입력해 주세요.</p>
           </div>
         )}
 
         {/* 매수 회차 리스트 */}
-        <div className="space-y-3">
-          <div className="grid grid-cols-[1fr_1fr_auto] gap-2 px-1">
-            <span className="text-[11px] font-bold text-gray-400 uppercase">매수가</span>
-            <span className="text-[11px] font-bold text-gray-400 uppercase">수량</span>
-            <div className="w-8"></div>
+        <div className="space-y-4">
+          <div className="grid grid-cols-[1fr_1fr_auto] gap-4 px-2">
+            <span className="label-fintech">매수 단가 (원)</span>
+            <span className="label-fintech">수량 (주)</span>
+            <div className="w-10"></div>
           </div>
           
-          <div className="space-y-2">
-            {rows.map((row) => {
+          <div className="space-y-3">
+            {rows.map((row, index) => {
               const isPriceInvalid = parseFloat(row.price) === 0;
               return (
-                <div key={row.id} className="group flex flex-col gap-1">
-                  <div className="grid grid-cols-[1fr_1fr_auto] gap-2 items-center">
-                    <input
-                      type="number"
-                      aria-label="분할 매수 단가 입력"
-                      placeholder="0"
-                      className={`w-full px-3 py-2.5 rounded-xl border transition-all text-sm font-semibold outline-none focus:ring-2 focus:ring-primary ${isPriceInvalid ? 'border-red-500 bg-red-50' : 'border-gray-100 bg-gray-50'}`}
-                      value={row.price}
-                      onChange={(e) => updateRow(row.id, 'price', e.target.value)}
-                    />
-                    <input
-                      type="number"
-                      aria-label="분할 매수 수량 입력"
-                      placeholder="0"
-                      className="w-full px-3 py-2.5 rounded-xl border border-gray-100 bg-gray-50 text-sm font-semibold outline-none focus:ring-2 focus:ring-primary transition-all"
-                      value={row.quantity}
-                      onChange={(e) => updateRow(row.id, 'quantity', e.target.value)}
-                    />
+                <div key={row.id} className="group animate-fade-in">
+                  <div className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center">
+                    <div className="relative">
+                      <input
+                        type="number"
+                        placeholder="0"
+                        className={`input-fintech text-fintech-base ${isPriceInvalid ? 'border-danger bg-danger/5' : ''}`}
+                        value={row.price}
+                        onChange={(e) => updateRow(row.id, 'price', e.target.value)}
+                      />
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        placeholder="0"
+                        className="input-fintech text-fintech-base"
+                        value={row.quantity}
+                        onChange={(e) => updateRow(row.id, 'quantity', e.target.value)}
+                      />
+                    </div>
                     <button 
                       onClick={() => removeRow(row.id)}
                       disabled={rows.length <= 1}
-                      className="w-8 h-8 flex items-center justify-center text-gray-300 hover:text-red-500 disabled:opacity-0 transition-colors"
+                      className="w-10 h-10 flex items-center justify-center text-muted hover:text-danger disabled:opacity-0 transition-colors bg-card-fintech rounded-lg hover:bg-danger/10"
+                      title="삭제"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={18} />
                     </button>
                   </div>
-                  <div className="flex justify-end px-1">
-                    <span className="text-[10px] text-gray-400 font-medium">
-                      소계: {formatNumber((parseFloat(row.price) || 0) * (parseFloat(row.quantity) || 0))}원
+                  <div className="flex justify-between items-center px-2 mt-2">
+                    <span className="text-fintech-xs text-muted font-bold">{index + 1}회차 매수</span>
+                    <span className="text-fintech-xs text-muted font-medium">
+                      소계: <span className="text-main">{formatNumber((parseFloat(row.price) || 0) * (parseFloat(row.quantity) || 0))}</span>원
                     </span>
                   </div>
                 </div>
@@ -213,98 +218,121 @@ export const BEPCalculator: React.FC = () => {
           <button 
             onClick={addRow}
             disabled={rows.length >= 10}
-            className="w-full py-2 border-2 border-dashed border-gray-100 rounded-xl text-gray-400 hover:border-primary/50 hover:text-primary transition-all flex items-center justify-center gap-2 text-sm font-medium disabled:hidden"
+            className="w-full py-4 border-2 border-dashed border-border rounded-pill text-muted hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-3 text-fintech-sm font-fintech-bold disabled:hidden bg-transparent hover:bg-primary/5 shadow-sm"
           >
-            <Plus size={16} /> 회차 추가 (최대 10회)
+            <Plus size={20} /> 회차 추가 (최대 10회)
           </button>
         </div>
 
-        <div className="pt-4 border-t border-gray-50 space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-gray-600">현재가 (현재 상황 확인용)</label>
-            <input
-              type="number"
-              aria-label="현재가 입력"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-primary outline-none transition-all font-bold text-lg"
-              placeholder="현재 주가를 입력하세요"
-              value={currentPrice}
-              onChange={(e) => setCurrentPrice(e.target.value)}
-            />
-          </div>
+        <div className="pt-6 border-t border-border space-y-3">
+          <label className="label-fintech">현재가 (수익률 계산용)</label>
+          <input
+            type="number"
+            className="input-fintech text-fintech-2xl py-5 h-auto text-center font-fintech-black primary-text"
+            placeholder="현재 주가를 입력하세요"
+            value={currentPrice}
+            onChange={(e) => setCurrentPrice(e.target.value)}
+          />
         </div>
       </div>
 
       {/* 결과 섹션 */}
       {!results.hasQty ? (
-        <div className="bg-gray-50 rounded-2xl p-10 flex flex-col items-center justify-center text-gray-400 border border-dashed border-gray-200">
-           <AlertCircle size={32} className="mb-2 opacity-20" />
-           <p className="text-sm font-medium">수량을 입력하면 계산이 시작됩니다.</p>
+        <div className="card-fintech py-16 flex flex-col items-center justify-center text-muted border-dashed bg-transparent">
+           <Calculator size={48} className="mb-4 opacity-10" />
+           <p className="text-fintech-base font-fintech-bold">데이터를 입력하면 시뮬레이션 결과가 표시됩니다.</p>
+           <p className="text-fintech-xs mt-2">매수가와 수량을 최소 1회차 이상 입력해 주세요.</p>
         </div>
       ) : (
-        <div className="space-y-4">
-          <div className="grid grid-cols-3 gap-3">
-            <div className="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-1">
-              <span className="text-[10px] text-gray-400 font-bold uppercase">총 투자금</span>
-              <span className="text-sm font-bold truncate">{formatNumber(results.totalCost)}<span className="text-[10px] ml-0.5">원</span></span>
+        <div className="space-y-6">
+          <div className="grid grid-cols-3 gap-6">
+            <div className="card-fintech p-5 flex flex-col gap-2">
+              <span className="label-fintech">총 투자금</span>
+              <div className="flex items-baseline gap-1">
+                <span className="text-fintech-xl font-fintech-black">{formatNumber(results.totalCost)}</span>
+                <span className="text-fintech-xs text-muted">원</span>
+              </div>
             </div>
-            <div className="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-1">
-              <span className="text-[10px] text-gray-400 font-bold uppercase">평균 매수가</span>
-              <span className="text-sm font-black truncate text-amber-500">{formatNumber(results.avgPrice)}<span className="text-[10px] ml-0.5">원</span></span>
+            <div className="card-fintech p-5 flex flex-col gap-2 border-primary/20 bg-primary/5">
+              <span className="label-fintech primary-text">평균 매수가 (BEP)</span>
+              <div className="flex items-baseline gap-1">
+                <span className="text-fintech-2xl font-fintech-black primary-text">{formatNumber(results.avgPrice)}</span>
+                <span className="text-fintech-xs primary-text opacity-70">원</span>
+              </div>
             </div>
-            <div className="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-1">
-              <span className="text-[10px] text-gray-400 font-bold uppercase">총 수량</span>
-              <span className="text-sm font-bold truncate">{results.totalQty}<span className="text-[10px] ml-0.5">주</span></span>
+            <div className="card-fintech p-5 flex flex-col gap-2">
+              <span className="label-fintech">총 보유 수량</span>
+              <div className="flex items-baseline gap-1">
+                <span className="text-fintech-xl font-fintech-black">{results.totalQty}</span>
+                <span className="text-fintech-xs text-muted">주</span>
+              </div>
             </div>
           </div>
 
-          <div className="bg-gray-50 rounded-2xl p-6 space-y-4">
+          <div className="card-fintech p-8 space-y-8 bg-ink text-white border-none shadow-xl">
             <div className="flex justify-between items-center">
-              <span className="text-sm font-medium text-gray-500">손익분기점 (BEP)</span>
-              <span className="text-lg font-black text-amber-500">{formatNumber(results.bepPrice)}원</span>
+              <div className="space-y-1">
+                <h4 className="text-fintech-sm text-slate uppercase tracking-widest font-fintech-bold">손익분기점 (BEP)</h4>
+                <p className="text-fintech-xs text-slate opacity-60">본전 탈출을 위해 도달해야 하는 가격입니다.</p>
+              </div>
+              <span className="text-fintech-3xl font-fintech-black primary-text">{formatNumber(results.bepPrice)}원</span>
             </div>
 
             {parseFloat(currentPrice) > 0 && (
-              <>
-                <div className="pt-4 border-t border-gray-200 space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-500">평가 손익</span>
-                    <span className={`text-lg font-bold ${results.currentPnl >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              <div className="pt-8 border-t border-white/10 space-y-8">
+                <div className="grid grid-cols-2 gap-8">
+                  <div className="space-y-2">
+                    <span className="text-fintech-xs text-slate uppercase font-fintech-bold">평가 손익</span>
+                    <p className={`text-fintech-3xl font-fintech-black ${results.currentPnl >= 0 ? 'profit-text' : 'loss-text'}`}>
                       {results.currentPnl >= 0 ? '+' : ''}{formatNumber(results.currentPnl)}원
-                    </span>
+                    </p>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-500">현재 수익률</span>
-                    <div className="flex items-center gap-2">
+                  <div className="space-y-2 text-right">
+                    <span className="text-fintech-xs text-slate uppercase font-fintech-bold">예상 수익률</span>
+                    <div className="flex items-center justify-end gap-3 mt-1">
                        {results.currentPnl < 0 && results.requiredReturn !== null && (
-                         <span className="text-[10px] bg-red-50 text-red-500 px-2 py-0.5 rounded-full font-bold">BEP까지 +{results.requiredReturn.toFixed(2)}% 필요</span>
+                         <div className="bg-danger/20 text-danger px-3 py-1 rounded-full text-[10px] font-fintech-black border border-danger/30 flex items-center gap-1">
+                           <TrendingDown size={10} /> BEP까지 +{results.requiredReturn.toFixed(2)}% 필요
+                         </div>
                        )}
-                       <span className={`text-lg font-bold ${results.currentPnl >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                       <span className={`text-fintech-3xl font-fintech-black ${results.currentPnl >= 0 ? 'profit-text' : 'loss-text'}`}>
                         {results.currentPnl >= 0 ? '+' : ''}{results.currentPnlRate.toFixed(2)}%
                       </span>
                     </div>
                   </div>
+                </div>
 
-                  {/* 게이지 바 */}
-                  <div className="pt-2 space-y-2">
-                    <div className="flex justify-between text-[10px] text-gray-400 font-bold">
-                        <span>손실 구간</span>
-                        <span>수익 구간</span>
+                {/* 게이지 바 */}
+                <div className="space-y-4">
+                  <div className="flex justify-between items-end">
+                    <div className="space-y-1">
+                      <span className="text-fintech-xs text-slate font-fintech-bold uppercase">포지션 상태 지표</span>
+                      <div className="flex gap-4 text-[10px] items-center">
+                        <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-danger"></div> <span className="text-slate">손실</span></div>
+                        <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-success"></div> <span className="text-slate">수익</span></div>
+                        <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-primary"></div> <span className="text-slate">BEP</span></div>
+                      </div>
                     </div>
-                    <div className="relative h-3 bg-gray-200 rounded-full overflow-hidden flex">
-                        <div className="h-full bg-red-400 w-1/2"></div>
-                        <div className="h-full bg-green-400 w-1/2"></div>
+                    <span className="text-fintech-xs font-fintech-black primary-text">탈출 확률: {results.currentPnl >= 0 ? '100%' : `${Math.floor(results.gaugePos)}%`}</span>
+                  </div>
+                  
+                  <div className="relative pt-2">
+                    <div className="h-4 bg-white/5 rounded-full overflow-hidden flex border border-white/10 p-0.5">
+                        <div className="h-full bg-danger/60 w-1/2 rounded-l-full"></div>
+                        <div className="h-full bg-success/60 w-1/2 rounded-r-full"></div>
                         {/* 마커 */}
                         <div 
-                            className="absolute top-0 w-1 h-full bg-white shadow-md transition-all duration-500"
-                            style={{ left: `${results.gaugePos}%`, transform: 'translateX(-50%)' }}
+                            className="absolute top-0 w-1.5 h-6 bg-primary shadow-[0_0_15px_rgba(240,185,11,0.8)] transition-all duration-700 ease-out z-10 rounded-full"
+                            style={{ left: `${results.gaugePos}%`, transform: 'translateX(-50%) translateY(-4px)' }}
                         />
                     </div>
-                    <div className="flex justify-center">
-                        <span className="text-[10px] text-amber-500 font-bold">BEP (0.00%)</span>
+                    <div className="absolute top-[34px] left-1/2 -translate-x-1/2 flex flex-col items-center">
+                        <div className="w-0.5 h-2 bg-primary/40"></div>
+                        <span className="text-[9px] text-primary font-fintech-black mt-1">BEP (0.00%)</span>
                     </div>
                   </div>
                 </div>
-              </>
+              </div>
             )}
           </div>
         </div>
