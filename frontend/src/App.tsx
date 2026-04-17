@@ -17,7 +17,6 @@ import { useLayoutStore } from './store/layoutStore';
 import { useThemeStore } from './store/themeStore';
 import { TradeModal } from './components/TradeModal';
 import { BottomNav } from './components/BottomNav';
-import './App.css';
 
 const ProtectedLayout: React.FC = () => {
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);

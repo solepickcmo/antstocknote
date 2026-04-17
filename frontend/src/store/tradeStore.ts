@@ -46,36 +46,11 @@ interface TradeState {
   setModalOpen: (isOpen: boolean) => void;
   fetchTrades: () => Promise<void>;
   createTrade: (input: CreateTradeInput) => Promise<void>;
-}
-
-// ─────────────────────────────────────────────
-// PnL 계산 유틸 (이동평균법)
-// SDD BR-001 기준: PnL = (매도가 - 평균매수가) × 수량 - 수수료
-// ─────────────────────────────────────────────
-
-function calcPnlForSell(
-  ticker: string,
-  sellPrice: number,
-  sellQuantity: number,
-  existingTrades: Trade[]
-): number {
-  // 해당 종목의 매수 거래만 필터링하여 이동평균 단가를 계산합니다.
-  const buyTrades = existingTrades.filter(
-    (trade) => trade.ticker === ticker && trade.type === 'buy'
-  );
-
-  const totalBuyQty = buyTrades.reduce((sum, trade) => sum + trade.quantity, 0);
-  const totalBuyCost = buyTrades.reduce(
-    (sum, trade) => sum + trade.price * trade.quantity,
-    0
-  );
-
-  // 평균 매수 단가 산출
-  const averageBuyPrice = totalBuyQty > 0 ? totalBuyCost / totalBuyQty : 0;
   
-  // 단순 차익 계산: (매도가 - 평균매수가) * 수량
-  // 수수료는 제외하고, 소수점 없이 정수로 반환합니다.
-  return Math.floor((sellPrice - averageBuyPrice) * sellQuantity);
+  // --- Derived State (Selectors) ---
+  getHoldings: () => any[];          // 현재 보유 중인 종목 리스트
+  getAnalysisStats: () => any;       // 승률 및 전략별 분석 데이터
+  getChartData: (days?: number) => any[]; // 수익금 추이 차트 데이터
 }
 
 // ─────────────────────────────────────────────
@@ -91,7 +66,6 @@ export const useTradeStore = create<TradeState>((set, get) => ({
   setModalOpen: (isOpen) => set({ isModalOpen: isOpen }),
 
   // 로그인된 유저의 전체 매매 내역을 Supabase에서 직접 조회
-  // RLS 정책으로 인해 auth.uid() = user_id 조건이 자동 적용됨
   fetchTrades: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -110,8 +84,7 @@ export const useTradeStore = create<TradeState>((set, get) => ({
     }
   },
 
-  // 매매 기록 저장: 매도일 경우 PnL을 이동평균법으로 계산 후 저장
-  // 수량이 0이 되는 경우 is_open을 FALSE로 업데이트 (BR-002)
+  // 매매 기록 저장
   createTrade: async (input) => {
     set({ isLoading: true, error: null });
     try {
@@ -122,8 +95,6 @@ export const useTradeStore = create<TradeState>((set, get) => ({
 
       const existingTrades = get().trades;
 
-      // --- 공매도 방지 체크 (v2.1) ---
-      // 매도 주문 시 사용자가 실제로 보유한 수량보다 많이 팔 수 없도록 차단합니다.
       if (input.type === 'sell') {
         const tickerBuyQty = existingTrades
           .filter((trade) => trade.ticker === input.ticker && trade.type === 'buy')
@@ -134,13 +105,11 @@ export const useTradeStore = create<TradeState>((set, get) => ({
         
         const currentHeldQty = tickerBuyQty - tickerSellQty;
         
-        // 부동소수점 오차(0.00000001)를 고려하여 보유 수량 검증
         if (input.quantity > currentHeldQty + 0.00000001) { 
           throw new Error(`보유 주식이 부족합니다. (현재 보유: ${currentHeldQty.toLocaleString()}주)`);
         }
       }
 
-      // 매도 시 이동평균법으로 PnL 계산 (매수 시에는 null)
       const pnl =
         input.type === 'sell'
           ? calcPnlForSell(
@@ -151,7 +120,6 @@ export const useTradeStore = create<TradeState>((set, get) => ({
             )
           : null;
 
-      // 저장 후 잔여 수량 계산 (is_open 결정 로직)
       const totalBuyQty = existingTrades
         .filter((trade) => trade.ticker === input.ticker && trade.type === 'buy')
         .reduce((sum, trade) => sum + trade.quantity, 0);
@@ -159,13 +127,11 @@ export const useTradeStore = create<TradeState>((set, get) => ({
         .filter((trade) => trade.ticker === input.ticker && trade.type === 'sell')
         .reduce((sum, trade) => sum + trade.quantity, 0);
 
-      // 이번 거래 반영 후 최종 잔여 수량 계산
       const remainingQty =
         input.type === 'sell'
           ? totalBuyQty - totalSellQty - input.quantity
           : totalBuyQty + input.quantity - totalSellQty;
 
-      // 잔여 수량이 거의 0에 가까우면 '청산(Closed)'으로 간주하여 is_open을 false로 설정
       const isOpen = remainingQty > 0.000001;
 
       const { error } = await supabase.from('trades').insert({
@@ -186,8 +152,6 @@ export const useTradeStore = create<TradeState>((set, get) => ({
       });
 
       if (error) throw error;
-
-      // 저장 완료 후 최신 목록 새로고침
       await get().fetchTrades();
     } catch (err: any) {
       const msg = err.message || '매매 내역 추가에 실패했습니다.';
@@ -195,4 +159,119 @@ export const useTradeStore = create<TradeState>((set, get) => ({
       throw err;
     }
   },
+
+  // --- Derived State Implementations ---
+  
+  getHoldings: () => {
+    const { trades } = get();
+    const grouped = trades.reduce((acc: any, curr: Trade) => {
+      if (!acc[curr.ticker]) {
+        acc[curr.ticker] = { ticker: curr.ticker, name: curr.name, trades: [] };
+      }
+      acc[curr.ticker].trades.push(curr);
+      return acc;
+    }, {});
+
+    // BR-002: 실질적 보유 수량이 있는 종목만 필터링
+    return Object.values(grouped).filter((h: any) => {
+      const buyQty = h.trades.filter((t: any) => t.type === 'buy').reduce((s: any, t: any) => s + t.quantity, 0);
+      const sellQty = h.trades.filter((t: any) => t.type === 'sell').reduce((s: any, t: any) => s + t.quantity, 0);
+      return buyQty - sellQty > 0.000001;
+    });
+  },
+
+  getAnalysisStats: () => {
+    const { trades } = get();
+    const sellTrades = trades.filter(t => t.type === 'sell');
+    
+    const strategyMap = new Map<string, { total: number; wins: number; pnlSum: number }>();
+    const mistakeMap = new Map<string, number>();
+
+    sellTrades.forEach(t => {
+      const tag = t.strategy_tag || '태그 없음';
+      
+      // 전략 통계
+      if (!strategyMap.has(tag)) strategyMap.set(tag, { total: 0, wins: 0, pnlSum: 0 });
+      const s = strategyMap.get(tag)!;
+      s.total++;
+      if ((t.pnl ?? 0) > 0) s.wins++;
+      s.pnlSum += Number(t.pnl ?? 0);
+
+      // 실수 분석 (손실 거래)
+      if ((t.pnl ?? 0) < 0) {
+        mistakeMap.set(tag, (mistakeMap.get(tag) ?? 0) + 1);
+      }
+    });
+
+    const strategyStats = Array.from(strategyMap.entries()).map(([tag, s]) => ({
+      tag,
+      total: s.total,
+      winRate: s.total > 0 ? Math.round((s.wins / s.total) * 100) : 0,
+      avgPnl: s.total > 0 ? Math.round(s.pnlSum / s.total) : 0,
+    }));
+
+    const mistakeStats = Array.from(mistakeMap.entries())
+      .map(([type, count]) => ({ type, count }))
+      .sort((a, b) => b.count - a.count);
+
+    const totalTrades = strategyStats.reduce((acc, s) => acc + s.total, 0);
+    const totalWins = strategyStats.reduce((acc, s) => acc + Math.round(s.total * (s.winRate / 100)), 0);
+    const totalPnlSum = trades.reduce((sum, trade) => sum + (Number(trade.pnl) || 0), 0);
+
+    return {
+      strategyStats,
+      mistakeStats,
+      overallWinRate: totalTrades > 0 ? ((totalWins / totalTrades) * 100).toFixed(1) : '0.0',
+      overallAvgPnl: totalTrades > 0 ? Math.round(totalPnlSum / totalTrades) : 0,
+      totalPnl: totalPnlSum,
+      totalTrades
+    };
+  },
+
+  getChartData: (days = 7) => {
+    const { trades } = get();
+    const today = new Date();
+    const result = [];
+    const pnlMap: Record<string, number> = {};
+
+    trades.forEach(trade => {
+      const dateStr = trade.traded_at.substring(5, 10); // MM-DD
+      pnlMap[dateStr] = (pnlMap[dateStr] || 0) + (Number(trade.pnl) || 0);
+    });
+
+    const half = Math.floor(days / 2);
+    for (let i = -half; i <= half; i++) {
+      const d = new Date();
+      d.setDate(today.getDate() + i);
+      const dateStr = d.toISOString().substring(5, 10);
+      result.push({
+        date: dateStr,
+        pnl: pnlMap[dateStr] || 0
+      });
+    }
+    return result;
+  }
 }));
+
+/**
+ * 매도 시 실현 손익을 계산합니다 (이동평균법 기준)
+ */
+function calcPnlForSell(ticker: string, sellPrice: number, sellQty: number, trades: Trade[]): number {
+  const tickerBuyTrades = trades.filter(t => t.ticker === ticker && t.type === 'buy');
+  
+  if (tickerBuyTrades.length === 0) return 0;
+
+  // 전체 매수 총액 및 총 수량 계산
+  let totalBuyCost = 0;
+  let totalBuyQty = 0;
+  
+  tickerBuyTrades.forEach(t => {
+    totalBuyCost += Number(t.price) * Number(t.quantity);
+    totalBuyQty += Number(t.quantity);
+  });
+
+  const avgBuyPrice = totalBuyCost / totalBuyQty;
+  // PnL = (매도가 - 평단가) * 매도수량
+  return Math.floor((sellPrice - avgBuyPrice) * sellQty);
+}
+

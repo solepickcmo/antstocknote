@@ -99,10 +99,14 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
           s.nameEn.toLowerCase().includes(lowerQuery)
         ).slice(0, 20); // Limit to top 20 results
         
+        console.log(`[Search] query: "${query}", found: ${filtered.length} stocks`);
+        
         setStockResults(filtered);
-        setShowStockDropdown(true);
+        if (filtered.length > 0) {
+          setShowStockDropdown(true);
+        }
       } catch (err) {
-        console.error('Failed to search stocks locally', err);
+        console.error('[Search] Failed to search stocks locally', err);
       }
     }, 150); // Reduced delay since it's local
   };

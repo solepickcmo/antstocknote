@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Plus, Trash2, Download, Calculator, AlertCircle, TrendingDown } from 'lucide-react';
-import { supabase } from '../../api/supabase';
-import { useAuthStore } from '../../store/authStore';
+import { useTradeStore } from '../../store/tradeStore';
 
 interface TradeRow {
   id: string;
@@ -10,7 +9,8 @@ interface TradeRow {
 }
 
 export const BEPCalculator: React.FC = () => {
-  const user = useAuthStore(state => state.user);
+  const getHoldings = useTradeStore(state => state.getHoldings);
+  
   const [rows, setRows] = useState<TradeRow[]>([
     { id: '1', price: '', quantity: '' }
   ]);
@@ -19,37 +19,17 @@ export const BEPCalculator: React.FC = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isNoteVisible, setIsNoteVisible] = useState(false);
 
-  // 보유 종목 불러오기
-  const fetchHoldings = async () => {
-    if (!user) return;
-    try {
-      const { data, error } = await supabase
-        .from('trades')
-        .select('ticker, name, price, quantity, type, is_open')
-        .eq('is_open', true)
-        .eq('type', 'buy');
-
-      if (error) throw error;
-
-      // ticker별로 그룹화
-      const grouped = (data || []).reduce((acc: any, curr: any) => {
-        if (!acc[curr.ticker]) {
-          acc[curr.ticker] = { ticker: curr.ticker, name: curr.name, trades: [] };
-        }
-        acc[curr.ticker].trades.push(curr);
-        return acc;
-      }, {});
-
-      setHoldings(Object.values(grouped));
-      setShowDropdown(true);
-    } catch (err) {
-      console.error('보유 종목 불러오기 실패:', err);
-      alert('보유 종목을 불러오는 중 오류가 발생했습니다.');
-    }
+  // 보유 종목 불러오기 (Store 경유)
+  const handleFetchHoldings = () => {
+    const data = getHoldings();
+    setHoldings(data);
+    setShowDropdown(true);
   };
 
   const handleSelectHolding = (holding: any) => {
-    const newRows = holding.trades.map((t: any) => ({
+    // 매수 거래만 추출하여 행 생성
+    const buyTrades = holding.trades.filter((t: any) => t.type === 'buy');
+    const newRows = buyTrades.map((t: any) => ({
       id: Math.random().toString(36).substr(2, 9),
       price: t.price.toString(),
       quantity: t.quantity.toString()
@@ -127,7 +107,7 @@ export const BEPCalculator: React.FC = () => {
           </h3>
           <div className="relative">
             <button 
-              onClick={fetchHoldings}
+              onClick={handleFetchHoldings}
               className="btn-fintech-secondary"
             >
               <Download size={14} /> 보유 종목 불러오기
