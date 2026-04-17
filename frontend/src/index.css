@@ -140,7 +140,7 @@ a {
 
 .main-content {
   flex: 1;
-  padding: var(--space-10) var(--space-8);
+  padding: var(--space-6) var(--space-6);
   margin-left: var(--nav-width);
   max-width: 1200px;
   margin-right: auto;
@@ -168,9 +168,9 @@ a {
 .card-fintech {
   background-color: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  padding: var(--space-6);
-  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05); /* 더 부드러운 그림자 */
+  border-radius: var(--radius-md);
+  padding: var(--space-4); /* 24px/20px -> 16px로 대폭 축소 */
+  box-shadow: 0 2px 10px -2px rgba(0, 0, 0, 0.05); 
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -192,14 +192,14 @@ a {
 
 .input-fintech {
   width: 100%;
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-lg);
-  border: 1.5px solid var(--border); /* 약간의 두께감은 주되 색상을 연하게 */
+  padding: var(--space-2) var(--space-3); /* 높이 축소 */
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
   background-color: var(--bg-main);
   color: var(--text-main);
   font-family: inherit;
-  font-weight: 600;
-  font-size: 0.875rem;
+  font-weight: 500;
+  font-size: 0.8125rem; /* 14px -> 13px 수준으로 축소 */
   outline: none;
   transition: all 0.2s ease;
 }

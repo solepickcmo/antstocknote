@@ -127,11 +127,11 @@ export const WateringCalculator: React.FC = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto pb-20 animate-fade-in">
-      <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-8">
+    <div className="max-w-4xl mx-auto pb-10 animate-fade-in">
+      <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-4">
         {/* 입력 섹션 */}
-        <div className="space-y-6">
-          <div className="card-fintech space-y-8">
+        <div className="space-y-4">
+          <div className="card-fintech space-y-4">
             <div className="flex justify-between items-center">
               <h3 className="text-fintech-xl font-fintech-bold flex items-center gap-3">
                 <Droplets className="primary-text" size={24} /> 
@@ -168,18 +168,18 @@ export const WateringCalculator: React.FC = () => {
               </div>
 
               {selectedHolding && (
-                <div className="bg-primary/5 rounded-2xl p-5 border border-primary/20 space-y-4 animate-fade-in">
+                <div className="bg-primary/5 rounded-xl p-4 border border-primary/20 space-y-2 animate-fade-in">
                   <div className="flex justify-between items-center">
-                    <span className="text-fintech-xs text-muted font-fintech-bold uppercase">현재 평균단가</span>
-                    <span className="text-fintech-base font-fintech-black">{Math.floor(selectedHolding.avgPrice).toLocaleString()}원</span>
+                    <span className="text-[10px] text-muted font-fintech-bold uppercase">현재 평균단가</span>
+                    <span className="text-fintech-sm font-fintech-bold">{Math.floor(selectedHolding.avgPrice).toLocaleString()}원</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-fintech-xs text-muted font-fintech-bold uppercase">보유 수량</span>
-                    <span className="text-fintech-base font-fintech-black">{selectedHolding.quantity}주</span>
+                    <span className="text-[10px] text-muted font-fintech-bold uppercase">보유 수량</span>
+                    <span className="text-fintech-sm font-fintech-bold">{selectedHolding.quantity}주</span>
                   </div>
-                  <div className="pt-3 border-t border-primary/10 flex justify-between items-center">
-                    <span className="text-fintech-xs text-muted font-fintech-bold uppercase">총 투자원금</span>
-                    <span className="text-fintech-base font-fintech-black primary-text">{Math.floor(selectedHolding.avgPrice * selectedHolding.quantity).toLocaleString()}원</span>
+                  <div className="pt-2 border-t border-primary/10 flex justify-between items-center">
+                    <span className="text-[10px] text-muted font-fintech-bold uppercase">총 투자원금</span>
+                    <span className="text-fintech-sm font-fintech-bold primary-text">{Math.floor(selectedHolding.avgPrice * selectedHolding.quantity).toLocaleString()}원</span>
                   </div>
                 </div>
               )}
@@ -191,10 +191,10 @@ export const WateringCalculator: React.FC = () => {
 
               <div className="space-y-3">
                 <label className="label-fintech">목표 진입가 (현재가/희망가)</label>
-                <input
-                  type="number"
-                  placeholder="추가 매수할 가격을 입력하세요"
-                  className="input-fintech text-fintech-xl py-4 h-auto font-fintech-black text-center"
+                  <input
+                    type="number"
+                    placeholder="추가 매수할 가격을 입력하세요"
+                    className="input-fintech text-fintech-lg py-3 h-auto font-fintech-bold text-center"
                   value={currentMarketPrice}
                   onChange={(e) => setCurrentMarketPrice(e.target.value)}
                   disabled={!selectedHolding}
@@ -208,7 +208,7 @@ export const WateringCalculator: React.FC = () => {
               
               <div className="space-y-4">
                 {wateringEntries.map((entry, index) => (
-                  <div key={index} className="p-5 rounded-2xl border border-border-subtle bg-bg-white/50 space-y-4 transition-all hover:border-primary/20 hover:shadow-soft">
+                  <div key={index} className="p-4 rounded-xl border border-border-subtle bg-bg-white/50 space-y-3 transition-all hover:border-primary/20 hover:shadow-soft">
                     <div className="text-[11px] font-fintech-black text-muted uppercase tracking-wider flex items-center gap-2">
                         <div className="w-5 h-5 rounded-full bg-primary/20 text-primary flex items-center justify-center text-[9px]">{index + 1}</div>
                         {index + 1}차 추가 매수

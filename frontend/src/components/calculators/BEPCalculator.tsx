@@ -117,9 +117,9 @@ export const BEPCalculator: React.FC = () => {
   const formatNumber = (val: number) => Math.round(val).toLocaleString('ko-KR');
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-fade-in pb-20">
+    <div className="max-w-3xl mx-auto space-y-4 animate-fade-in pb-10">
       {/* 입력 섹션 */}
-      <div className="card-fintech space-y-8">
+      <div className="card-fintech space-y-4">
         <div className="flex justify-between items-center">
           <h3 className="text-fintech-xl font-fintech-bold flex items-center gap-3">
             <Calculator className="primary-text" size={24} /> 
@@ -176,12 +176,12 @@ export const BEPCalculator: React.FC = () => {
               const isPriceInvalid = parseFloat(row.price) === 0;
               return (
                 <div key={row.id} className="group animate-fade-in">
-                  <div className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center">
+          <div className="grid grid-cols-[1.1fr_1fr_auto] gap-2 items-center">
                     <div className="relative">
                       <input
                         type="number"
                         placeholder="0"
-                        className={`input-fintech text-fintech-base ${isPriceInvalid ? 'border-danger bg-danger/5' : ''}`}
+                        className={`input-fintech text-fintech-sm ${isPriceInvalid ? 'border-danger bg-danger/5' : ''}`}
                         value={row.price}
                         onChange={(e) => updateRow(row.id, 'price', e.target.value)}
                       />
@@ -190,7 +190,7 @@ export const BEPCalculator: React.FC = () => {
                       <input
                         type="number"
                         placeholder="0"
-                        className="input-fintech text-fintech-base"
+                        className="input-fintech text-fintech-sm"
                         value={row.quantity}
                         onChange={(e) => updateRow(row.id, 'quantity', e.target.value)}
                       />
@@ -228,7 +228,7 @@ export const BEPCalculator: React.FC = () => {
           <label className="label-fintech">현재가 (수익률 계산용)</label>
           <input
             type="number"
-            className="input-fintech text-fintech-2xl py-5 h-auto text-center font-fintech-black primary-text"
+            className="input-fintech text-fintech-xl py-3 h-auto text-center font-fintech-bold primary-text"
             placeholder="현재 주가를 입력하세요"
             value={currentPrice}
             onChange={(e) => setCurrentPrice(e.target.value)}
@@ -244,8 +244,8 @@ export const BEPCalculator: React.FC = () => {
            <p className="text-fintech-xs mt-2">매수가와 수량을 최소 1회차 이상 입력해 주세요.</p>
         </div>
       ) : (
-        <div className="space-y-6">
-          <div className="grid grid-cols-3 gap-6">
+        <div className="space-y-4">
+          <div className="grid grid-cols-3 gap-3">
             <div className="card-fintech p-5 flex flex-col gap-2">
               <span className="label-fintech">총 투자금</span>
               <div className="flex items-baseline gap-1">
@@ -269,7 +269,7 @@ export const BEPCalculator: React.FC = () => {
             </div>
           </div>
 
-          <div className="card-fintech p-8 space-y-8 bg-ink text-white border-none shadow-xl">
+          <div className="card-fintech p-6 space-y-5 bg-ink text-white border-none shadow-xl">
             <div className="flex justify-between items-center">
               <div className="space-y-1">
                 <h4 className="text-fintech-sm text-slate uppercase tracking-widest font-fintech-bold">손익분기점 (BEP)</h4>
