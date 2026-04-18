@@ -57,8 +57,8 @@ export const AnalysisPage: React.FC = () => {
 
   return (
     <div className="analysis-page animate-fade-in pb-20">
-      <header className="page-header analysis-header">
-        <h1>매매 복기 / 분석</h1>
+      <header className="page-header analysis-header mb-12">
+        <h1 className="text-fintech-2xl font-fintech-black">매매 복기 / 분석</h1>
       </header>
 
       {/* 요약 대시보드 (컴포넌트화) */}
@@ -80,13 +80,13 @@ export const AnalysisPage: React.FC = () => {
         {/* 오답 노트 섹션 */}
         <div className="space-y-6">
           <section className="notes-section">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-fintech-lg font-fintech-bold">오답 노트</h2>
+            <div className="flex justify-between items-center mb-8 bg-primary/5 p-4 rounded-xl border border-primary/10">
+              <h2 className="text-fintech-base font-fintech-black primary-text">오답 노트</h2>
               <button 
-                className="btn-fintech-secondary py-1 text-xs" 
+                className="btn-fintech-primary py-2 px-4 text-xs shadow-md shadow-primary/10" 
                 onClick={() => setIsNoteModalOpen(true)}
               >
-                작성하기
+                노트 작성하기
               </button>
             </div>
 
@@ -98,17 +98,17 @@ export const AnalysisPage: React.FC = () => {
               ) : (
                 <>
                   {visibleNotes.map(n => (
-                    <div className="card-fintech group hover:border-primary/30 transition-all" key={n.id}>
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="bg-primary/10 text-primary-contrast px-2 py-0.5 rounded text-[10px] font-bold">
+                    <div className="card-fintech group hover:border-primary/40 hover:shadow-lg transition-all p-6 bg-white" key={n.id}>
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="bg-primary/10 text-primary px-2.5 py-1 rounded-md text-[10px] font-extrabold border border-primary/20 tracking-tight">
                           {n.trades?.strategy_tag || '태그 없음'}
                         </span>
-                        <span className="text-[10px] text-muted">
-                          {n.trades?.traded_at ? new Date(n.trades.traded_at).toLocaleDateString() : ''}
+                        <span className="text-[10px] text-muted font-medium">
+                          {n.trades?.traded_at ? new Date(n.trades.traded_at).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }) : ''}
                         </span>
                       </div>
-                      <h4 className="text-fintech-sm font-bold mb-2">{n.trades?.name}</h4>
-                      <p className="text-fintech-xs text-secondary leading-relaxed line-clamp-3 group-hover:line-clamp-none transition-all">
+                      <h4 className="text-fintech-base font-fintech-black mb-3">{n.trades?.name}</h4>
+                      <p className="text-fintech-xs text-secondary leading-relaxed line-clamp-3 group-hover:line-clamp-none transition-all duration-300">
                         {n.content}
                       </p>
                     </div>

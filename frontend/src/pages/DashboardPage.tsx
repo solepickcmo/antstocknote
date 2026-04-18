@@ -30,19 +30,9 @@ export const DashboardPage: React.FC = () => {
       <section className="metrics-grid mb-16 px-1">
         <MetricCard 
           title="누적 실현손익" 
-          value={`₩ ${stats.totalPnl > 0 ? '+' : ''}${stats.totalPnl.toLocaleString()}`} 
+          value={`₩ ${stats.totalPnl > 0 ? '+' : ''}${Math.round(stats.totalPnl).toLocaleString()}`} 
           subtitle="매도 완료된 거래 기준" 
           trend={stats.totalPnl >= 0 ? 'up' : 'down'} 
-        />
-        <MetricCard 
-          title="전체 매매 건수" 
-          value={`${stats.totalTrades}건`} 
-          subtitle="전체 매수/매도 합계"
-        />
-        <MetricCard 
-          title="평균 수익금" 
-          value={`₩ ${stats.overallAvgPnl > 0 ? '+' : ''}${stats.overallAvgPnl.toLocaleString()}`} 
-          trend={stats.overallAvgPnl >= 0 ? 'up' : 'down'}
         />
       </section>
 
@@ -68,7 +58,7 @@ export const DashboardPage: React.FC = () => {
                   contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: 'var(--shadow-soft)' }}
                   itemStyle={{ color: 'var(--text-main)', fontSize: '13px', fontWeight: '600' }}
                   labelStyle={{ color: 'var(--text-secondary)', marginBottom: '4px', fontSize: '11px' }}
-                  formatter={(value: any) => [`₩ ${Number(value).toLocaleString()}`, '손익']}
+                  formatter={(value: any) => [`₩ ${Math.round(Number(value)).toLocaleString()}`, '손익']}
                 />
                 <Area type="monotone" dataKey="pnl" stroke="var(--primary)" strokeWidth={3} fillOpacity={1} fill="url(#colorPnl)" />
               </AreaChart>

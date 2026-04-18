@@ -20,7 +20,7 @@ export const AnalysisSummary: React.FC<AnalysisSummaryProps> = ({
       <div className="card-fintech flex flex-col items-center justify-center py-8">
         <h3 className="label-fintech">평균 수익금</h3>
         <p className={`text-fintech-3xl font-fintech-black ${overallAvgPnl > 0 ? 'profit-text' : overallAvgPnl < 0 ? 'loss-text' : ''}`}>
-          {overallAvgPnl > 0 ? '+' : ''}{overallAvgPnl.toLocaleString()}
+          {overallAvgPnl > 0 ? '+' : ''}{Math.round(overallAvgPnl).toLocaleString()}
         </p>
       </div>
       <div className="card-fintech flex flex-col items-center justify-center py-8">

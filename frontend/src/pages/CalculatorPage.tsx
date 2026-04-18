@@ -38,10 +38,10 @@ export const CalculatorPage: React.FC = () => {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as TabId)}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition-all ${
+            className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
               activeTab === tab.id
-                ? 'bg-slate-800 dark:bg-victory-gold text-white dark:text-ink shadow-lg scale-[1.05]'
-                : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-white/50 dark:hover:bg-white/5'
+                ? 'bg-amber-500 text-ink shadow-lg scale-[1.02]'
+                : 'text-gray-500 hover:text-gray-700 hover:bg-white dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-white/5'
             }`}
           >
             {tab.icon}

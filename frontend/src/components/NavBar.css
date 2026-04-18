@@ -95,10 +95,10 @@
 }
 
 .nav-item.active {
-  background-color: var(--bg-card);
-  color: var(--primary-contrast);
+  background-color: rgba(59, 130, 246, 0.1);
+  color: var(--color-primary);
   position: relative;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+  box-shadow: none;
 }
 
 .nav-item.active::before {

@@ -130,12 +130,13 @@
 .col-qty { width: 10%; }
 
 .ticker-badge {
-  font-weight: 700;
-  color: var(--primary-contrast);
-  font-size: 0.95rem;
-  background: rgba(240, 185, 11, 0.1);
-  padding: var(--space-1) var(--space-2);
+  font-weight: 800;
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  background: rgba(59, 130, 246, 0.08);
+  padding: 0.15rem 0.5rem;
   border-radius: var(--radius-sm);
+  border: 1px solid rgba(59, 130, 246, 0.15);
 }
 
 .name-wrapper strong {
@@ -156,13 +157,13 @@
 }
 
 .tag-chip {
-  font-size: 0.8rem;
-  padding: var(--space-1) var(--space-3);
+  font-size: 0.75rem;
+  padding: 0.1rem 0.6rem;
   border-radius: var(--radius-pill);
-  background-color: var(--bg-white);
-  color: var(--text-muted);
+  background-color: var(--bg-main);
+  color: var(--text-secondary);
   border: 1px solid var(--border);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .empty-state {

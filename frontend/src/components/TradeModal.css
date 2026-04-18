@@ -87,9 +87,10 @@
 
 .segment-btn {
   flex: 1;
-  border-radius: var(--radius-sm);
-  font-size: 0.875rem;
-  font-weight: 700;
+  padding: 0.75rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.8125rem;
+  font-weight: 800;
   color: var(--text-secondary);
   background: none;
   display: flex;
@@ -162,12 +163,13 @@
 }
 
 .readonly-input.highlight {
-  color: var(--primary);
-  font-weight: 700;
-  font-size: 1.125rem;
+  color: var(--color-primary);
+  font-weight: 900;
+  font-size: 1.5rem;
   background: transparent !important;
   border: none !important;
-  padding-left: 0 !important;
+  padding: 0 !important;
+  margin-top: -0.5rem;
 }
 
 .section-label {
@@ -202,28 +204,9 @@
 .modal-footer {
   display: flex;
   gap: 0.75rem;
-  padding: 1.25rem 1.5rem;
+  padding: var(--space-6) var(--space-8);
   border-top: 1px solid var(--border);
-  background-color: var(--bg-white);
-}
-
-.btn-primary {
-  flex: 2;
-  background-color: var(--primary);
-  color: #1E2026;
-  padding: 0.85rem;
-  border-radius: var(--radius-md);
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-.btn-secondary {
-  flex: 1;
   background-color: var(--bg-card);
-  color: var(--text-main);
-  padding: 0.85rem;
-  border-radius: var(--radius-md);
-  font-size: 0.9rem;
 }
 
 .autocomplete-container {
