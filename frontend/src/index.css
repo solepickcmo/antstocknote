@@ -27,6 +27,8 @@
   --text-muted: #64748B;
   --border: #E2E8F0;
   --border-subtle: #F1F5F9;
+  --primary: #3B82F6;
+  --primary-hover: #2563EB;
   --primary-contrast: #FFFFFF;
   
   --shadow-soft: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
@@ -66,6 +68,8 @@
   --text-muted: #64748B;
   --border: #1E293B;
   --border-subtle: #0F172A;
+  --primary: #3B82F6;
+  --primary-hover: #2563EB;
   --primary-contrast: #FFFFFF;
   --shadow-soft: rgba(0, 0, 0, 0.4) 0px 4px 12px;
   --shadow-hover: rgba(0, 0, 0, 0.4) 0px 8px 20px;
@@ -268,9 +272,9 @@ a {
 
 /* Button Variants */
 .btn-fintech-primary {
-  background-color: var(--primary);
+  background-color: var(--color-primary);
   color: white;
-  padding: 0.75rem 1.75rem;
+  padding: 0.75rem 2rem;
   border-radius: var(--radius-pill);
   font-weight: 700;
   font-size: 0.875rem;

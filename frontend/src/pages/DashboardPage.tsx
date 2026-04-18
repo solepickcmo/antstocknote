@@ -27,7 +27,7 @@ export const DashboardPage: React.FC = () => {
         </div>
       </header>
 
-      <section className="metrics-grid mb-12">
+      <section className="metrics-grid mb-16 px-1">
         <MetricCard 
           title="누적 실현손익" 
           value={`₩ ${stats.totalPnl > 0 ? '+' : ''}${stats.totalPnl.toLocaleString()}`} 
@@ -77,7 +77,7 @@ export const DashboardPage: React.FC = () => {
         </section>
 
         {/* 요약 카드만 별도로 표시 */}
-        <section className="space-y-8">
+        <section className="flex flex-col gap-10">
           <div className="px-2">
              <h3 className="text-fintech-base font-fintech-bold mb-1">성과 분석 요약</h3>
              <p className="text-muted text-fintech-xs">최근 매매 성과를 한눈에 파악하세요.</p>
@@ -87,12 +87,12 @@ export const DashboardPage: React.FC = () => {
              overallAvgPnl={stats.overallAvgPnl}
              notesCount={0}
           />
-          <div className="card-fintech bg-primary/5 border-primary/20 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-8">
+          <div className="card-fintech bg-primary/5 border-primary/20 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-8 mt-4">
             <div>
               <p className="text-fintech-xs primary-text font-black mb-1">상세 분석 리포트 (PRO)</p>
               <h4 className="text-fintech-sm font-bold">내 매매 전략의 강점과 약점을 데이터로 증명하세요.</h4>
             </div>
-            <a href="/analysis" className="btn-fintech-primary py-3 px-8 text-sm shadow-lg shadow-primary/20">리뷰하기</a>
+            <a href="/analysis" className="btn-fintech-primary py-3.5 px-8 text-sm shadow-lg shadow-primary/25">리뷰하기</a>
           </div>
         </section>
       </div>

@@ -12,7 +12,7 @@ export const AnalysisSummary: React.FC<AnalysisSummaryProps> = ({
   notesCount 
 }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
       <div className="card-fintech flex flex-col items-center justify-center py-8">
         <h3 className="label-fintech">전체 승률</h3>
         <p className="text-fintech-3xl font-fintech-black primary-text">{overallWinRate}%</p>
