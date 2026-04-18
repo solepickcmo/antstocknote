@@ -1,7 +1,7 @@
 import React from 'react';
 
-const STRATEGY_COLORS = ['#F0B90B', '#F8D33A', '#D49100', '#FFD700', '#B0800B', '#E6A23C'];
-const MISTAKE_COLORS  = ['#F6465D', '#D9304E', '#FF3B5C', '#CF304A', '#EB6179', '#AE263E'];
+const STRATEGY_COLORS = ['#3B82F6', '#6366F1', '#8B5CF6', '#2563EB', '#4F46E5', '#7C3AED'];
+const MISTAKE_COLORS  = ['#F6465D', '#EF4444', '#DC2626', '#B91C1C', '#991B1B', '#7F1D1D'];
 
 interface AnalysisStatsProps {
   strategies: any[];

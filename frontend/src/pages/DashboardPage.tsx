@@ -27,7 +27,7 @@ export const DashboardPage: React.FC = () => {
         </div>
       </header>
 
-      <section className="metrics-grid mb-8">
+      <section className="metrics-grid mb-12">
         <MetricCard 
           title="누적 실현손익" 
           value={`₩ ${stats.totalPnl > 0 ? '+' : ''}${stats.totalPnl.toLocaleString()}`} 
@@ -46,7 +46,7 @@ export const DashboardPage: React.FC = () => {
         />
       </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* 차트 섹션 */}
         <section className="card-fintech">
           <div className="flex justify-between items-center mb-6">
@@ -57,7 +57,7 @@ export const DashboardPage: React.FC = () => {
               <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorPnl" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.2}/>
+                    <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3}/>
                     <stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
@@ -70,26 +70,29 @@ export const DashboardPage: React.FC = () => {
                   labelStyle={{ color: 'var(--text-secondary)', marginBottom: '4px', fontSize: '11px' }}
                   formatter={(value: any) => [`₩ ${Number(value).toLocaleString()}`, '손익']}
                 />
-                <Area type="monotone" dataKey="pnl" stroke="var(--primary)" strokeWidth={2} fillOpacity={1} fill="url(#colorPnl)" />
+                <Area type="monotone" dataKey="pnl" stroke="var(--primary)" strokeWidth={3} fillOpacity={1} fill="url(#colorPnl)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </section>
 
         {/* 요약 카드만 별도로 표시 */}
-        <section className="space-y-6">
-          <h3 className="text-fintech-base font-fintech-bold px-2">성과 분석 요약</h3>
+        <section className="space-y-8">
+          <div className="px-2">
+             <h3 className="text-fintech-base font-fintech-bold mb-1">성과 분석 요약</h3>
+             <p className="text-muted text-fintech-xs">최근 매매 성과를 한눈에 파악하세요.</p>
+          </div>
           <AnalysisSummary 
              overallWinRate={stats.overallWinRate}
              overallAvgPnl={stats.overallAvgPnl}
-             notesCount={0} // 대시보드에서는 오답 노트를 fetching하지 않으므로 0 혹은 Store 연동 필요
+             notesCount={0}
           />
-          <div className="card-fintech bg-primary/5 border-primary/20 flex items-center justify-between">
+          <div className="card-fintech bg-primary/5 border-primary/20 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-8">
             <div>
-              <p className="text-fintech-xs primary-text font-bold mb-1">상세 분석 리포트</p>
-              <h4 className="text-fintech-sm font-bold">내 매매 전략의 강점과 약점을 확인하세요.</h4>
+              <p className="text-fintech-xs primary-text font-black mb-1">상세 분석 리포트 (PRO)</p>
+              <h4 className="text-fintech-sm font-bold">내 매매 전략의 강점과 약점을 데이터로 증명하세요.</h4>
             </div>
-            <a href="/analysis" className="btn-fintech-primary py-2 px-6 text-xs">리뷰하기</a>
+            <a href="/analysis" className="btn-fintech-primary py-3 px-8 text-sm shadow-lg shadow-primary/20">리뷰하기</a>
           </div>
         </section>
       </div>

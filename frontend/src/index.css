@@ -2,13 +2,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 @theme {
-  --color-primary: #F0B90B;
-  --color-primary-hover: #D0980B;
-  --color-primary-contrast: #B0800B;
+  --color-primary: #3B82F6;
+  --color-primary-hover: #2563EB;
+  --color-brand-yellow: #F0B90B;
   --color-success: #0ECB81;
   --color-danger: #F6465D;
   --color-ink: #1E2026;
-  --color-slate: #848E9C;
+  --color-slate: #64748B;
   
   --color-bg-main: var(--bg-main);
   --color-bg-card: var(--bg-card);
@@ -18,19 +18,19 @@
 }
 
 :root {
-  /* Semantic Colors - Shared names for Light/Dark toggling */
-  --bg-main: #FFFFFF;
-  --bg-card: #F5F5F5;
+  /* Semantic Colors - High Contrast Light Mode */
+  --bg-main: #F8FAFC;
+  --bg-card: #FFFFFF;
   --bg-white: #FFFFFF;
-  --text-main: #1E2329;
-  --text-secondary: #474D57;
-  --text-muted: #525966;
-  --border: #EAECEF;
-  --border-subtle: #F1F3F5;
-  --primary-contrast: #B0800B;
+  --text-main: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  --border: #E2E8F0;
+  --border-subtle: #F1F5F9;
+  --primary-contrast: #FFFFFF;
   
-  --shadow-soft: rgba(30, 35, 41, 0.05) 0px 3px 6px;
-  --shadow-hover: rgba(30, 35, 41, 0.1) 0px 5px 15px;
+  --shadow-soft: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   
   /* Constants */
   --radius-xs: 2px;
@@ -58,15 +58,15 @@
 }
 
 [data-theme='dark'] {
-  --bg-main: #0B0E11;
-  --bg-card: #1E2329;
-  --bg-white: #2B3139;
-  --text-main: #EAECEF;
-  --text-secondary: #848E9C;
-  --text-muted: #474D57;
-  --border: #2B3139;
-  --border-subtle: #1E2329;
-  --primary-contrast: #F0B90B;
+  --bg-main: #020617;
+  --bg-card: #0F172A;
+  --bg-white: #1E293B;
+  --text-main: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --border: #1E293B;
+  --border-subtle: #0F172A;
+  --primary-contrast: #FFFFFF;
   --shadow-soft: rgba(0, 0, 0, 0.4) 0px 4px 12px;
   --shadow-hover: rgba(0, 0, 0, 0.4) 0px 8px 20px;
 }
@@ -269,24 +269,24 @@ a {
 /* Button Variants */
 .btn-fintech-primary {
   background-color: var(--primary);
-  color: #1E2026;
+  color: white;
   padding: 0.75rem 1.75rem;
   border-radius: var(--radius-pill);
   font-weight: 700;
   font-size: 0.875rem;
-  box-shadow: 0 4px 0px #D0980B, 0 6px 12px rgba(240, 185, 11, 0.2);
+  box-shadow: 0 4px 0px #2563EB, 0 6px 12px rgba(59, 130, 246, 0.2);
   transform: translateY(-2px);
 }
 
 .btn-fintech-primary:hover {
   background-color: var(--primary-hover);
   transform: translateY(-3px);
-  box-shadow: 0 6px 0px #B0800B, 0 8px 16px rgba(240, 185, 11, 0.3);
+  box-shadow: 0 6px 0px #1D4ED8, 0 8px 16px rgba(59, 130, 246, 0.3);
 }
 
 .btn-fintech-primary:active {
   transform: translateY(1px);
-  box-shadow: 0 1px 0px #B0800B, 0 2px 4px rgba(240, 185, 11, 0.1);
+  box-shadow: 0 1px 0px #1D4ED8, 0 2px 4px rgba(59, 130, 246, 0.1);
 }
 
 .btn-fintech-secondary {
