@@ -171,21 +171,21 @@ export const RiskRewardCalculator: React.FC = () => {
 
         {/* 결과 섹션 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="bg-red-50 dark:bg-red-500/5 p-4 rounded-xl border border-red-100 dark:border-red-500/10 min-w-0">
+          <div className="bg-red-50 dark:bg-red-500/5 p-4 rounded-xl border border-red-100 dark:border-red-500/10 min-w-0 text-right">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">손실 위험</p>
             <p className="text-base md:text-lg font-black text-red-600 dark:text-red-500">{result ? fmtPct(result.riskPct) : '-'}</p>
             <p className="text-[9px] text-gray-400 font-medium">{result ? '-' + fmtKRW(result.riskAmt) : '-'}</p>
           </div>
-          <div className="bg-green-50 dark:bg-green-500/5 p-4 rounded-xl border border-green-100 dark:border-green-500/10 min-w-0">
+          <div className="bg-green-50 dark:bg-green-500/5 p-4 rounded-xl border border-green-100 dark:border-green-500/10 min-w-0 text-right">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">1차 목표 수익</p>
             <p className="text-base md:text-lg font-black text-green-600 dark:text-green-500">{result ? '+' + fmtPct(result.tp1Pct) : '-'}</p>
             <p className="text-[9px] text-gray-400 font-medium">{result ? '+' + fmtKRW(result.tp1Amt) : '-'}</p>
           </div>
-          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10 min-w-0">
+          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10 min-w-0 text-right">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">R:R 비율 (1차)</p>
             <p className="text-base md:text-lg font-black text-amber-600 dark:text-amber-400">{result ? '1 : ' + result.rr1.toFixed(1) : '-'}</p>
           </div>
-          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0">
+          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0 text-right">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">R:R 비율 (2차)</p>
             <p className="text-base md:text-lg font-black">{result && result.rr2 > 0 ? '1 : ' + result.rr2.toFixed(1) : '-'}</p>
           </div>
@@ -222,12 +222,12 @@ export const RiskRewardCalculator: React.FC = () => {
         <div className="space-y-4 pt-4">
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">승률 손익분기 분석</p>
           <div className="grid grid-cols-2 gap-4">
-             <div className="bg-gray-50 dark:bg-white/5 p-6 rounded-2xl border border-gray-100 dark:border-white/5">
+             <div className="bg-gray-50 dark:bg-white/5 p-6 rounded-2xl border border-gray-100 dark:border-white/5 text-right">
                 <p className="text-[10px] font-bold text-gray-400 uppercase mb-2">최소 필요 승률 (1차)</p>
                 <p className="text-3xl font-black">{result ? result.minWr1.toFixed(1) : '-'}%</p>
                 <p className="text-[9px] text-gray-400 mt-2">이 승률 이상이면 기대값 양수</p>
              </div>
-             <div className="bg-gray-50 dark:bg-white/5 p-6 rounded-2xl border border-gray-100 dark:border-white/5">
+             <div className="bg-gray-50 dark:bg-white/5 p-6 rounded-2xl border border-gray-100 dark:border-white/5 text-right">
                 <p className="text-[10px] font-bold text-gray-400 uppercase mb-2">최소 필요 승률 (2차)</p>
                 <p className="text-3xl font-black">{result && result.rr2 > 0 ? result.minWr2.toFixed(1) : '-'}%</p>
                 <p className="text-[9px] text-gray-400 mt-2">이 승률 이상이면 기대값 양수</p>

@@ -69,6 +69,7 @@ export const AnalysisPage: React.FC = () => {
         overallWinRate={stats.overallWinRate}
         overallAvgPnl={stats.overallAvgPnl}
         notesCount={notes.length}
+        totalTradesCount={stats.totalTrades}
       />
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">

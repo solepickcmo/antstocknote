@@ -140,7 +140,7 @@ export const DividendCalculator: React.FC = () => {
         <div className="space-y-3 pt-2">
           <div className="flex justify-between items-center">
             <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">재투자 기간</label>
-            <span className="font-bold text-lg">{reinvestYears}년</span>
+            <span className="font-bold text-lg text-right min-w-[48px]">{reinvestYears}년</span>
           </div>
           <input
             type="range"
@@ -156,19 +156,19 @@ export const DividendCalculator: React.FC = () => {
 
         {/* 결과 섹션 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5">
+          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 text-right">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">시가 배당률</p>
             <p className="text-base md:text-lg font-black text-amber-600 dark:text-amber-400">{result ? fmtPct(result.yieldPct) : '-'}</p>
           </div>
-          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0">
+          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0 text-right">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">연 배당금 (세전)</p>
             <p className="text-base md:text-lg font-black">{result ? fmtKRW(result.grossAnnual) : '-'}</p>
           </div>
-          <div className="bg-green-50 dark:bg-green-500/5 p-4 rounded-xl border border-green-100 dark:border-green-500/10 min-w-0">
+          <div className="bg-green-50 dark:bg-green-500/5 p-4 rounded-xl border border-green-100 dark:border-green-500/10 min-w-0 text-right">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">연 배당금 (세후)</p>
             <p className="text-base md:text-lg font-black text-green-600 dark:text-green-500">{result ? fmtKRW(result.netAnnual) : '-'}</p>
           </div>
-          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10 min-w-0">
+          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10 min-w-0 text-right">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">재투자 후 자산</p>
             <p className="text-base md:text-lg font-black text-amber-600 dark:text-amber-400">{result ? fmtKRW(result.reinvestVal) : '-'}</p>
           </div>

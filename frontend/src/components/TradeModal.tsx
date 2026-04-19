@@ -198,11 +198,11 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
         
         <form id="tradeForm" onSubmit={handleSubmit} className="trade-form">
           <div className="segment-control">
-            <button type="button" className={`segment-btn buy ${formData.type === 'buy' ? 'active' : ''}`} onClick={() => setFormData((prev: any) => ({...prev, type: 'buy', strategyTag: '', emotionTag: ''}))}>
-              BUY <span>매수</span>
+            <button type="button" className={`segment-btn buy ${formData.type === 'buy' ? 'active text-white' : ''}`} onClick={() => setFormData((prev: any) => ({...prev, type: 'buy', strategyTag: '', emotionTag: ''}))}>
+              BUY <span className={formData.type === 'buy' ? 'text-white' : ''}>매수</span>
             </button>
-            <button type="button" className={`segment-btn sell ${formData.type === 'sell' ? 'active' : ''}`} onClick={() => setFormData((prev: any) => ({...prev, type: 'sell', strategyTag: '', emotionTag: ''}))}>
-              SELL <span>매도</span>
+            <button type="button" className={`segment-btn sell ${formData.type === 'sell' ? 'active text-white' : ''}`} onClick={() => setFormData((prev: any) => ({...prev, type: 'sell', strategyTag: '', emotionTag: ''}))}>
+              SELL <span className={formData.type === 'sell' ? 'text-white' : ''}>매도</span>
             </button>
           </div>
           <div className="form-row" ref={dropdownRef}>

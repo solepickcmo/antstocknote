@@ -20,8 +20,14 @@ export const AnalysisStats: React.FC<AnalysisStatsProps> = ({ strategies, mistak
           {strategies.map((s, idx) => (
             <div key={s.tag} className="space-y-2">
               <div className="flex justify-between text-fintech-xs font-medium px-0.5">
-                <span className="text-secondary">{s.tag}</span>
-                <span className="primary-text font-bold">{s.winRate}%</span>
+                <div>
+                  <span className="text-secondary">{s.tag}</span>
+                  <span className="ml-2 text-muted text-[10px]">{s.total}회 거래</span>
+                  {s.total < 10 && <span className="ml-1 text-[10px] text-red-400">(표본 부족)</span>}
+                </div>
+                <span className="primary-text font-bold">
+                  {s.winRate}% <span className="text-muted text-[10px] font-normal">({s.wins}승 {s.losses}패)</span>
+                </span>
               </div>
               <div className="h-1.5 bg-slate/10 rounded-full overflow-hidden">
                 <div

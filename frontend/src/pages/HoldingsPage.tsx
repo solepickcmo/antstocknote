@@ -3,6 +3,12 @@ import { useTradeStore } from '../store/tradeStore';
 import './HoldingsPage.css';
 import { Plus } from 'lucide-react';
 import { format } from 'date-fns';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+
+const COLORS = [
+  '#378ADD', '#1D9E75', '#BA7517', '#D85A30',
+  '#7F77DD', '#D4537E', '#639922', '#888780',
+];
 
 export const HoldingsPage: React.FC = () => {
   const fetchTrades = useTradeStore(state => state.fetchTrades);
@@ -63,24 +69,40 @@ export const HoldingsPage: React.FC = () => {
     });
 
     const activeHoldings: any[] = [];
+    let portfolioTotalCost = 0;
+    
     map.forEach(holding => {
+      // 0.000001 마진
       if (holding.quantity > 0.000001) {
+        portfolioTotalCost += holding.totalCost;
         activeHoldings.push({
           ...holding,
           avgPrice: holding.quantity > 0 ? holding.totalCost / holding.quantity : 0,
+          currentValue: holding.totalCost, // 평균단가 기준 초기 투자 총액 (Mock)
           tags: Array.from(holding.tags).filter(t => t).slice(0, 2)
         });
       }
     });
+
+    // 비중 계산
+    activeHoldings.forEach(holding => {
+       holding.weight = portfolioTotalCost > 0 ? (holding.currentValue / portfolioTotalCost) * 100 : 0;
+    });
     
     return activeHoldings.sort((a, b) => {
-      if (!a.lastBuyDate) return 1;
-      if (!b.lastBuyDate) return -1;
-      return new Date(b.lastBuyDate).getTime() - new Date(a.lastBuyDate).getTime();
+      return b.weight - a.weight; // 비중순 정렬
     });
   }, [trades]);
 
   const displayList = filter === '보유중' ? holdings : []; // Simple mock filter, actually '보유중' implies active holdings
+
+  const chartData = useMemo(() => {
+    return holdings.map((h) => ({
+      name: h.name,
+      value: h.currentValue,
+      weight: h.weight,
+    }));
+  }, [holdings]);
 
   return (
     <div className="holdings-page animate-fade-in">
@@ -109,6 +131,43 @@ export const HoldingsPage: React.FC = () => {
             <button className={`chip ${filter === '전체' ? 'active' : ''}`} onClick={() => setFilter('전체')}>전체</button>
             <button className={`chip ${filter === '보유중' ? 'active' : ''}`} onClick={() => setFilter('보유중')}>보유중</button>
          </div>
+      </div>
+
+      <div className="mb-6 glass-panel p-4 pb-2">
+        {holdings.length === 0 ? (
+          <div className="flex items-center justify-center h-[180px] text-gray-400 text-sm">
+            보유 종목이 없습니다
+          </div>
+        ) : (
+          <>
+            <div className="h-[180px] md:h-[220px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={chartData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={55}
+                    outerRadius={85}
+                    dataKey="value"
+                    label={(props: any) => `${props.name} ${props.payload.weight.toFixed(1)}%`}
+                    labelLine={true}
+                  >
+                    {chartData.map((_, index) => (
+                      <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    formatter={(value: any) => [Math.round(value).toLocaleString('ko-KR') + '원', '평가금액']}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="text-xs text-gray-400 text-center mt-2">
+              평균매수가 기준 투자금액 비중
+            </div>
+          </>
+        )}
       </div>
 
       <div className="holdings-table-container glass-panel">

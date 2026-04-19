@@ -157,34 +157,34 @@ export const ValuationCalculator: React.FC = () => {
 
         {/* 결과 섹션 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0">
+          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0 text-right">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">현재 PER</p>
             <p className="text-base md:text-lg font-black">{result ? fmtNum(result.per, 1) + '배' : '-'}</p>
             <p className="text-[9px] text-gray-400 font-medium">업종평균 {sectorPer}배</p>
           </div>
-          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0">
+          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0 text-right">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">현재 PBR</p>
             <p className="text-base md:text-lg font-black">{result ? fmtNum(result.pbr, 2) + '배' : '-'}</p>
             <p className="text-[9px] text-gray-400 font-medium">업종평균 {sectorPbr}배</p>
           </div>
-          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10 min-w-0">
+          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10 min-w-0 text-right">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">PER 기준 적정가</p>
             <p className="text-base md:text-lg font-black text-amber-600 dark:text-amber-400">{result ? fmtKRW(result.fairPer) : '-'}</p>
           </div>
-          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10 min-w-0">
+          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10 min-w-0 text-right">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">PBR 기준 적정가</p>
             <p className="text-base md:text-lg font-black text-amber-600 dark:text-amber-400">{result ? fmtKRW(result.fairPbr) : '-'}</p>
           </div>
-          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0">
+          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0 text-right">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">PEG 비율</p>
             <p className="text-base md:text-lg font-black">{result ? fmtNum(result.peg, 2) : '-'}</p>
             <p className="text-[9px] text-gray-400 font-medium">적정 (1~2)</p>
           </div>
-          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10 md:col-span-2 min-w-0">
+          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10 md:col-span-2 min-w-0 text-right">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">종합 적정가 (평균)</p>
             <p className="text-base md:text-lg font-black text-amber-600 dark:text-amber-400">{result ? fmtKRW(result.fairAvg) : '-'}</p>
           </div>
-          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0">
+          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0 text-right">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">현재가 대비</p>
             <p className={`text-base md:text-lg font-black ${result && result.gap > 0 ? 'text-red-500' : 'text-green-500'}`}>
               {result ? (result.gap > 0 ? '+' : '') + result.gap.toFixed(1) + '%' : '-'}

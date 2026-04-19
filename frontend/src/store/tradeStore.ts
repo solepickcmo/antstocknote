@@ -137,6 +137,18 @@ export const useTradeStore = create<TradeState>((set, get) => ({
 
       // 0.000001 이하는 전량 매도로 처리 (floating point 안전 마진)
       const isOpen = remainingQty > 0.000001;
+      const isFullySold = !isOpen;
+
+      if (isFullySold && input.type === 'sell') {
+        const { error: updateError } = await supabase
+          .from('trades')
+          .update({ is_open: false })
+          .eq('user_id', user.id)
+          .eq('ticker', input.ticker)
+          .eq('type', 'buy')
+          .eq('is_open', true);
+        if (updateError) throw updateError;
+      }
 
       const { error } = await supabase.from('trades').insert({
         user_id: user.id,
@@ -210,9 +222,11 @@ export const useTradeStore = create<TradeState>((set, get) => ({
     const strategyStats = Array.from(strategyMap.entries()).map(([tag, s]) => ({
       tag,
       total: s.total,
+      wins: s.wins,
+      losses: s.total - s.wins,
       winRate: s.total > 0 ? Math.round((s.wins / s.total) * 100) : 0,
       avgPnl: s.total > 0 ? Math.round(s.pnlSum / s.total) : 0,
-    }));
+    })).sort((a, b) => b.total - a.total);
 
     const mistakeStats = Array.from(mistakeMap.entries())
       .map(([type, count]) => ({ type, count }))

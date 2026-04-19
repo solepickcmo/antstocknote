@@ -92,6 +92,7 @@ export const DashboardPage: React.FC = () => {
              overallWinRate={stats.overallWinRate}
              overallAvgPnl={stats.overallAvgPnl}
              notesCount={notesCount}
+             totalTradesCount={stats.totalTrades}
           />
           <div className="card-fintech bg-primary/5 border-primary/20 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-8 mt-4">
             <div>
