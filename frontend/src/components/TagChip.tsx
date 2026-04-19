@@ -8,11 +8,11 @@ interface TagChipProps {
   selected?: boolean;
 }
 
-export const TagChip: React.FC<TagChipProps> = ({ label, type = 'default', onClick, selected }) => {
+export const TagChip: React.FC<TagChipProps> = React.memo(({ label, type = 'default', onClick, selected }) => {
   const chipClass = `tag-chip ${type} ${selected ? 'selected' : ''} ${onClick ? 'clickable' : ''}`;
   return (
     <span className={chipClass} onClick={onClick}>
       {label}
     </span>
   );
-};
+});

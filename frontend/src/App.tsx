@@ -1,22 +1,30 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { NavBar } from './components/NavBar';
-import { DashboardPage } from './pages/DashboardPage';
-import { CalendarPage } from './pages/CalendarPage';
-import { HistoryPage } from './pages/HistoryPage';
-import { HoldingsPage } from './pages/HoldingsPage';
-import { AnalysisPage } from './pages/AnalysisPage';
-import { CalculatorPage } from './pages/CalculatorPage';
-import LoginPage from './pages/Auth/LoginPage';
-import RegisterPage from './pages/Auth/RegisterPage';
-import { ResetPasswordPage } from './pages/Auth/ResetPasswordPage';
 import { useAuthStore } from './store/authStore';
 import { useTradeStore } from './store/tradeStore';
 import { useLayoutStore } from './store/layoutStore';
 import { useThemeStore } from './store/themeStore';
 import { TradeModal } from './components/TradeModal';
 import { BottomNav } from './components/BottomNav';
+
+// Lazy load pages
+const DashboardPage = lazy(() => import('./pages/DashboardPage').then(m => ({ default: m.DashboardPage })));
+const CalendarPage = lazy(() => import('./pages/CalendarPage').then(m => ({ default: m.CalendarPage })));
+const HistoryPage = lazy(() => import('./pages/HistoryPage').then(m => ({ default: m.HistoryPage })));
+const HoldingsPage = lazy(() => import('./pages/HoldingsPage').then(m => ({ default: m.HoldingsPage })));
+const AnalysisPage = lazy(() => import('./pages/AnalysisPage').then(m => ({ default: m.AnalysisPage })));
+const CalculatorPage = lazy(() => import('./pages/CalculatorPage').then(m => ({ default: m.CalculatorPage })));
+const LoginPage = lazy(() => import('./pages/Auth/LoginPage'));
+const RegisterPage = lazy(() => import('./pages/Auth/RegisterPage'));
+const ResetPasswordPage = lazy(() => import('./pages/Auth/ResetPasswordPage').then(m => ({ default: m.ResetPasswordPage })));
+
+const PageLoader = () => (
+  <div className="flex items-center justify-center p-20">
+    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+  </div>
+);
 
 const ProtectedLayout: React.FC = () => {
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
@@ -105,24 +113,26 @@ const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <Routes>
-          <Route element={<AuthLayout />}>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
-          </Route>
-          
-          <Route element={<ProtectedLayout />}>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/calendar" element={<CalendarPage />} />
-            <Route path="/history" element={<HistoryPage />} />
-            <Route path="/holdings" element={<HoldingsPage />} />
-            <Route path="/analysis" element={<AnalysisPage />} />
-            <Route path="/calculator" element={<CalculatorPage />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Route>
-        </Routes>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route element={<AuthLayout />}>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
+            </Route>
+            
+            <Route element={<ProtectedLayout />}>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/calendar" element={<CalendarPage />} />
+              <Route path="/history" element={<HistoryPage />} />
+              <Route path="/holdings" element={<HoldingsPage />} />
+              <Route path="/analysis" element={<AnalysisPage />} />
+              <Route path="/calculator" element={<CalculatorPage />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Route>
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     </ErrorBoundary>
   );

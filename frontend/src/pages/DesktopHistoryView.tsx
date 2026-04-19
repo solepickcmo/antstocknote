@@ -12,7 +12,10 @@ interface DesktopHistoryViewProps {
 }
 
 export const DesktopHistoryView: React.FC<DesktopHistoryViewProps> = ({ onRecordClick: _onRecordClick }) => {
-  const { trades, fetchTrades, isLoading, error } = useTradeStore();
+  const trades = useTradeStore(state => state.trades);
+  const fetchTrades = useTradeStore(state => state.fetchTrades);
+  const isLoading = useTradeStore(state => state.isLoading);
+  const error = useTradeStore(state => state.error);
 
   useEffect(() => {
     fetchTrades();

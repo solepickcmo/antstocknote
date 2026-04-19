@@ -10,7 +10,10 @@ interface MobileHistoryViewProps {
 }
 
 export const MobileHistoryView: React.FC<MobileHistoryViewProps> = ({ onRecordClick }) => {
-  const { trades, fetchTrades, isLoading, error } = useTradeStore();
+  const trades = useTradeStore(state => state.trades);
+  const fetchTrades = useTradeStore(state => state.fetchTrades);
+  const isLoading = useTradeStore(state => state.isLoading);
+  const error = useTradeStore(state => state.error);
   const [activeTab, setActiveTab] = useState<'all' | 'holdings'>('all');
 
   useEffect(() => {

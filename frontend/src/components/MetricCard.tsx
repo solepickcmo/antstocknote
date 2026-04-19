@@ -8,7 +8,7 @@ interface MetricCardProps {
   trend?: 'up' | 'down' | 'neutral';
 }
 
-export const MetricCard: React.FC<MetricCardProps> = ({ title, value, subtitle, trend }) => {
+export const MetricCard: React.FC<MetricCardProps> = React.memo(({ title, value, subtitle, trend }) => {
   return (
     <div className="glass-panel metric-card animate-fade-in">
       <div className="metric-title">{title}</div>
@@ -18,4 +18,4 @@ export const MetricCard: React.FC<MetricCardProps> = ({ title, value, subtitle, 
       {subtitle && <div className="metric-subtitle">{subtitle}</div>}
     </div>
   );
-};
+});
