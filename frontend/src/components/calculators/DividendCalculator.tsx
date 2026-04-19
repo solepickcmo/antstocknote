@@ -84,7 +84,7 @@ export const DividendCalculator: React.FC = () => {
       </div>
 
       <div className="space-y-6">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">종목명</label>
             <input
@@ -158,24 +158,24 @@ export const DividendCalculator: React.FC = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">시가 배당률</p>
-            <p className="text-lg font-black text-amber-600 dark:text-amber-400">{result ? fmtPct(result.yieldPct) : '-'}</p>
+            <p className="text-base md:text-lg font-black text-amber-600 dark:text-amber-400">{result ? fmtPct(result.yieldPct) : '-'}</p>
           </div>
-          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5">
+          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">연 배당금 (세전)</p>
-            <p className="text-lg font-black">{result ? fmtKRW(result.grossAnnual) : '-'}</p>
+            <p className="text-base md:text-lg font-black">{result ? fmtKRW(result.grossAnnual) : '-'}</p>
           </div>
-          <div className="bg-green-50 dark:bg-green-500/5 p-4 rounded-xl border border-green-100 dark:border-green-500/10">
+          <div className="bg-green-50 dark:bg-green-500/5 p-4 rounded-xl border border-green-100 dark:border-green-500/10 min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">연 배당금 (세후)</p>
-            <p className="text-lg font-black text-green-600 dark:text-green-500">{result ? fmtKRW(result.netAnnual) : '-'}</p>
+            <p className="text-base md:text-lg font-black text-green-600 dark:text-green-500">{result ? fmtKRW(result.netAnnual) : '-'}</p>
           </div>
-          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10">
+          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10 min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">재투자 후 자산</p>
-            <p className="text-lg font-black text-amber-600 dark:text-amber-400">{result ? fmtKRW(result.reinvestVal) : '-'}</p>
+            <p className="text-base md:text-lg font-black text-amber-600 dark:text-amber-400">{result ? fmtKRW(result.reinvestVal) : '-'}</p>
           </div>
         </div>
 
         {result && (
-          <div className={`p-4 rounded-xl border font-medium text-xs flex items-center gap-3 ${result.yieldPct >= 4 ? 'bg-green-50 text-green-700 border-green-100' : 'bg-blue-50 text-blue-700 border-blue-100'}`}>
+          <div className={`p-4 rounded-xl border text-sm leading-relaxed flex items-center gap-3 ${result.yieldPct >= 4 ? 'bg-green-50 text-green-700 border-green-100' : 'bg-blue-50 text-blue-700 border-blue-100'}`}>
             <Target size={16} />
             <p>
               시가 배당률 {result.yieldPct.toFixed(2)}% — {result.yieldPct >= 4 ? '고배당주 기준(4% 이상) 충족. 장기 보유 시 배당 재투자로 복리 효과를 극대화할 수 있습니다.' : '성장성과 배당을 함께 고려해 보세요.'}

@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { MetricCard } from '../components/MetricCard';
 import { AnalysisSummary } from '../components/analysis/AnalysisSummary';
 import { useTradeStore } from '../store/tradeStore';
+import { supabase } from '../api/supabase';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
 export const DashboardPage: React.FC = () => {
@@ -17,6 +18,21 @@ export const DashboardPage: React.FC = () => {
   // Store에서 분석 데이터 가져오기
   const stats = useMemo(() => getAnalysisStats(), [trades, getAnalysisStats]);
   const chartData = useMemo(() => getChartData(7), [trades, getChartData]);
+
+  // AnalysisPage와 동일한 쿼리 조건으로 오답노트 카운트 실시간 조회
+  // content IS NOT NULL AND content != '' 조건 적용해 빈 노트는 제외
+  const [notesCount, setNotesCount] = useState(0);
+  useEffect(() => {
+    const fetchNotesCount = async () => {
+      const { count } = await supabase
+        .from('notes')
+        .select('id', { count: 'exact', head: true })
+        .not('content', 'is', null)
+        .neq('content', '');
+      setNotesCount(count ?? 0);
+    };
+    fetchNotesCount();
+  }, []);
 
   return (
     <div className="dashboard-page animate-fade-in pb-20">
@@ -75,7 +91,7 @@ export const DashboardPage: React.FC = () => {
           <AnalysisSummary 
              overallWinRate={stats.overallWinRate}
              overallAvgPnl={stats.overallAvgPnl}
-             notesCount={0}
+             notesCount={notesCount}
           />
           <div className="card-fintech bg-primary/5 border-primary/20 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-8 mt-4">
             <div>

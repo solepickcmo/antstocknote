@@ -91,6 +91,9 @@
   border-radius: var(--radius-pill);
   font-size: 0.8125rem;
   font-weight: 800;
+  /* 가로 텍스트를 보장하기 위한 쓰기 모드 명시 초기화 */
+  writing-mode: horizontal-tb;
+  white-space: nowrap;
   color: var(--text-secondary);
   background: none;
   display: flex;
@@ -107,14 +110,15 @@
   opacity: 0.7;
 }
 
+/* 각성 상태: 라이트/다크 모드 관계없이 텍스트를 하염 #fff 으로 날인다 */
 .segment-btn.buy.active {
   background-color: var(--success);
-  color: white;
+  color: #ffffff;
 }
 
 .segment-btn.sell.active {
   background-color: var(--danger);
-  color: white;
+  color: #ffffff;
 }
 
 .form-row {

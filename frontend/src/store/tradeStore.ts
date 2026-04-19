@@ -127,11 +127,15 @@ export const useTradeStore = create<TradeState>((set, get) => ({
         .filter((trade) => trade.ticker === input.ticker && trade.type === 'sell')
         .reduce((sum, trade) => sum + trade.quantity, 0);
 
-      const remainingQty =
+      // 부동소수점 오차 방어: 30 - 30 = 2.84e-14 같은 케이스 처리
+      // toFixed(8)로 소수점 8자리에서 반올림하여 오차 제거
+      const rawRemaining =
         input.type === 'sell'
           ? totalBuyQty - totalSellQty - input.quantity
           : totalBuyQty + input.quantity - totalSellQty;
+      const remainingQty = parseFloat(rawRemaining.toFixed(8));
 
+      // 0.000001 이하는 전량 매도로 처리 (floating point 안전 마진)
       const isOpen = remainingQty > 0.000001;
 
       const { error } = await supabase.from('trades').insert({

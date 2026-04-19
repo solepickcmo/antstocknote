@@ -171,23 +171,23 @@ export const RiskRewardCalculator: React.FC = () => {
 
         {/* 결과 섹션 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="bg-red-50 dark:bg-red-500/5 p-4 rounded-xl border border-red-100 dark:border-red-500/10">
+          <div className="bg-red-50 dark:bg-red-500/5 p-4 rounded-xl border border-red-100 dark:border-red-500/10 min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">손실 위험</p>
-            <p className="text-lg font-black text-red-600 dark:text-red-500">{result ? fmtPct(result.riskPct) : '-'}</p>
+            <p className="text-base md:text-lg font-black text-red-600 dark:text-red-500">{result ? fmtPct(result.riskPct) : '-'}</p>
             <p className="text-[9px] text-gray-400 font-medium">{result ? '-' + fmtKRW(result.riskAmt) : '-'}</p>
           </div>
-          <div className="bg-green-50 dark:bg-green-500/5 p-4 rounded-xl border border-green-100 dark:border-green-500/10">
+          <div className="bg-green-50 dark:bg-green-500/5 p-4 rounded-xl border border-green-100 dark:border-green-500/10 min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">1차 목표 수익</p>
-            <p className="text-lg font-black text-green-600 dark:text-green-500">{result ? '+' + fmtPct(result.tp1Pct) : '-'}</p>
+            <p className="text-base md:text-lg font-black text-green-600 dark:text-green-500">{result ? '+' + fmtPct(result.tp1Pct) : '-'}</p>
             <p className="text-[9px] text-gray-400 font-medium">{result ? '+' + fmtKRW(result.tp1Amt) : '-'}</p>
           </div>
-          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10">
+          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10 min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">R:R 비율 (1차)</p>
-            <p className="text-lg font-black text-amber-600 dark:text-amber-400">{result ? '1 : ' + result.rr1.toFixed(1) : '-'}</p>
+            <p className="text-base md:text-lg font-black text-amber-600 dark:text-amber-400">{result ? '1 : ' + result.rr1.toFixed(1) : '-'}</p>
           </div>
-          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5">
+          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">R:R 비율 (2차)</p>
-            <p className="text-lg font-black">{result && result.rr2 > 0 ? '1 : ' + result.rr2.toFixed(1) : '-'}</p>
+            <p className="text-base md:text-lg font-black">{result && result.rr2 > 0 ? '1 : ' + result.rr2.toFixed(1) : '-'}</p>
           </div>
         </div>
 
@@ -209,7 +209,7 @@ export const RiskRewardCalculator: React.FC = () => {
             </div>
           </div>
           {result && (
-            <div className={`p-4 rounded-xl border font-medium text-xs flex items-center gap-3 ${result.rr1 >= 2 ? 'bg-blue-50 text-blue-700 border-blue-100' : 'bg-red-50 text-red-700 border-red-100'}`}>
+            <div className={`p-4 rounded-xl border text-sm leading-relaxed flex items-center gap-3 ${result.rr1 >= 2 ? 'bg-blue-50 text-blue-700 border-blue-100' : 'bg-red-50 text-red-700 border-red-100'}`}>
               <ShieldAlert size={16} />
               <p>
                 R:R 1:{result.rr1.toFixed(1)} — {result.rr1 >= 2 ? '권장 수준(1:2 이상) 충족. 진입 타당성 있습니다.' : '권장치(1:2) 미달. 목표가 상향 또는 손절가 조정을 검토하세요.'}

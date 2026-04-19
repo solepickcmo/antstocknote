@@ -309,7 +309,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
           </div>
           
           <div className="modal-footer">
-            <button type="button" className="btn-fintech-secondary" onClick={onClose} disabled={isSubmitting}>취소하고 돌아가기</button>
+            <button type="button" className="btn-fintech-secondary whitespace-nowrap" onClick={onClose} disabled={isSubmitting}>취소</button>
             <button type="submit" form="tradeForm" className="btn-fintech-primary" disabled={isSubmitting}>
               {isSubmitting ? '저장 중...' : '기록 저장'}
             </button>

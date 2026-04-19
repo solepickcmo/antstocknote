@@ -37,6 +37,9 @@ export const AnalysisPage: React.FC = () => {
       const { data, error } = await supabase
         .from('notes')
         .select('*, trades(name, ticker, traded_at, strategy_tag)')
+        // 대시보드 쪿어리와 동일한 조건 적용 — 빈 content 노트 제외
+        .not('content', 'is', null)
+        .neq('content', '')
         .order('created_at', { ascending: false });
 
       if (error) throw error;

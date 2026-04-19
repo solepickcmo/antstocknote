@@ -94,7 +94,7 @@ export const ValuationCalculator: React.FC = () => {
       </div>
 
       <div className="space-y-6">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
           <div className="space-y-1.5">
             <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">현재 주가 (원)</label>
             <input
@@ -157,36 +157,36 @@ export const ValuationCalculator: React.FC = () => {
 
         {/* 결과 섹션 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5">
+          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">현재 PER</p>
-            <p className="text-lg font-black">{result ? fmtNum(result.per, 1) + '배' : '-'}</p>
+            <p className="text-base md:text-lg font-black">{result ? fmtNum(result.per, 1) + '배' : '-'}</p>
             <p className="text-[9px] text-gray-400 font-medium">업종평균 {sectorPer}배</p>
           </div>
-          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5">
+          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">현재 PBR</p>
-            <p className="text-lg font-black">{result ? fmtNum(result.pbr, 2) + '배' : '-'}</p>
+            <p className="text-base md:text-lg font-black">{result ? fmtNum(result.pbr, 2) + '배' : '-'}</p>
             <p className="text-[9px] text-gray-400 font-medium">업종평균 {sectorPbr}배</p>
           </div>
-          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10">
+          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10 min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">PER 기준 적정가</p>
-            <p className="text-lg font-black text-amber-600 dark:text-amber-400">{result ? fmtKRW(result.fairPer) : '-'}</p>
+            <p className="text-base md:text-lg font-black text-amber-600 dark:text-amber-400">{result ? fmtKRW(result.fairPer) : '-'}</p>
           </div>
-          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10">
+          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10 min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">PBR 기준 적정가</p>
-            <p className="text-lg font-black text-amber-600 dark:text-amber-400">{result ? fmtKRW(result.fairPbr) : '-'}</p>
+            <p className="text-base md:text-lg font-black text-amber-600 dark:text-amber-400">{result ? fmtKRW(result.fairPbr) : '-'}</p>
           </div>
-          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5">
+          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">PEG 비율</p>
-            <p className="text-lg font-black">{result ? fmtNum(result.peg, 2) : '-'}</p>
+            <p className="text-base md:text-lg font-black">{result ? fmtNum(result.peg, 2) : '-'}</p>
             <p className="text-[9px] text-gray-400 font-medium">적정 (1~2)</p>
           </div>
-          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10 md:col-span-2">
+          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10 md:col-span-2 min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">종합 적정가 (평균)</p>
-            <p className="text-lg font-black text-amber-600 dark:text-amber-400">{result ? fmtKRW(result.fairAvg) : '-'}</p>
+            <p className="text-base md:text-lg font-black text-amber-600 dark:text-amber-400">{result ? fmtKRW(result.fairAvg) : '-'}</p>
           </div>
-          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5">
+          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">현재가 대비</p>
-            <p className={`text-lg font-black ${result && result.gap > 0 ? 'text-red-500' : 'text-green-500'}`}>
+            <p className={`text-base md:text-lg font-black ${result && result.gap > 0 ? 'text-red-500' : 'text-green-500'}`}>
               {result ? (result.gap > 0 ? '+' : '') + result.gap.toFixed(1) + '%' : '-'}
             </p>
             <p className="text-[9px] text-gray-400 font-medium">{result && result.gap > 15 ? '고평가 구간' : (result && result.gap < -15 ? '저평가 구간' : '적정 구간')}</p>
@@ -194,7 +194,7 @@ export const ValuationCalculator: React.FC = () => {
         </div>
 
         {result && (
-          <div className={`p-4 rounded-xl border font-medium text-xs flex items-center gap-3 ${Math.abs(result.gap) <= 15 ? 'bg-blue-50 text-blue-700 border-blue-100' : (result.gap < -15 ? 'bg-green-50 text-green-700 border-green-100' : 'bg-red-50 text-red-700 border-red-100')}`}>
+          <div className={`p-4 rounded-xl border text-sm leading-relaxed flex items-center gap-3 ${Math.abs(result.gap) <= 15 ? 'bg-blue-50 text-blue-700 border-blue-100' : (result.gap < -15 ? 'bg-green-50 text-green-700 border-green-100' : 'bg-red-50 text-red-700 border-red-100')}`}>
             <Info size={16} />
             <p>
               {Math.abs(result.gap) <= 15 ? '현재가가 종합 적정가 대비 ±15% 이내 적정 구간에 있습니다.' : (result.gap < -15 ? `종합 적정가 대비 ${Math.abs(result.gap).toFixed(1)}% 저평가. 장기 매수 관점에서 긍정적 구간입니다.` : `종합 적정가 대비 ${result.gap.toFixed(1)}% 고평가. 추가 매수보다 관망이 적절합니다.`)}

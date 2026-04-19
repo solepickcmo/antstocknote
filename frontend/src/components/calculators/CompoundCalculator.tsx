@@ -142,21 +142,21 @@ export const CompoundCalculator: React.FC = () => {
 
         {/* 결과 카드 섹션 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10">
+          <div className="bg-amber-50 dark:bg-amber-500/5 p-4 rounded-xl border border-amber-100 dark:border-amber-500/10 min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">최종 자산</p>
-            <p className="text-lg font-black text-amber-600 dark:text-amber-400">{fmtKRW(result.finalVal)}</p>
+            <p className="text-base md:text-lg font-black text-amber-600 dark:text-amber-400">{fmtKRW(result.finalVal)}</p>
           </div>
-          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5">
-            <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">총 투자원금</p>
-            <p className="text-lg font-black">{fmtKRW(result.invested)}</p>
+          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0">
+            <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">종 투자원금</p>
+            <p className="text-base md:text-lg font-black">{fmtKRW(result.invested)}</p>
           </div>
-          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5">
+          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">복리 수익금</p>
-            <p className="text-lg font-black text-green-500">+{fmtKRW(result.gain)}</p>
+            <p className="text-base md:text-lg font-black text-green-500">+{fmtKRW(result.gain)}</p>
           </div>
-          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5">
+          <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5 min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">수익 배수</p>
-            <p className="text-lg font-black text-amber-600 dark:text-amber-400">{fmtX(parseFloat(result.multiple))}</p>
+            <p className="text-base md:text-lg font-black text-amber-600 dark:text-amber-400">{fmtX(parseFloat(result.multiple))}</p>
           </div>
         </div>
 

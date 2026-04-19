@@ -6,7 +6,12 @@ import { exportTradesToCSV } from '../utils/exportUtils';
 import { format } from 'date-fns';
 import './HistoryPage.css';
 
-export const DesktopHistoryView: React.FC = () => {
+// onRecordClick: HistoryPage에서 주입되는 모달 열기 함수 (타입 안전성 확보)
+interface DesktopHistoryViewProps {
+  onRecordClick: () => void;
+}
+
+export const DesktopHistoryView: React.FC<DesktopHistoryViewProps> = ({ onRecordClick: _onRecordClick }) => {
   const { trades, fetchTrades, isLoading, error } = useTradeStore();
 
   useEffect(() => {

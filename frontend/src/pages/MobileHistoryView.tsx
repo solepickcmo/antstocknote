@@ -4,7 +4,12 @@ import { useTradeStore } from '../store/tradeStore';
 import { exportTradesToCSV } from '../utils/exportUtils';
 import './HistoryPage.css';
 
-export const MobileHistoryView: React.FC = () => {
+// onRecordClick: 기록하기 버튼 클릭 시 TradeModal을 여는 함수 (HistoryPage에서 주입)
+interface MobileHistoryViewProps {
+  onRecordClick: () => void;
+}
+
+export const MobileHistoryView: React.FC<MobileHistoryViewProps> = ({ onRecordClick }) => {
   const { trades, fetchTrades, isLoading, error } = useTradeStore();
   const [activeTab, setActiveTab] = useState<'all' | 'holdings'>('all');
 
@@ -92,7 +97,12 @@ export const MobileHistoryView: React.FC = () => {
           >
             <Download size={18} />
           </button>
-          <button className="btn-header-action">+ 기록</button>
+          <button 
+            className="btn-header-action min-h-[44px] whitespace-nowrap" 
+            onClick={onRecordClick}
+          >
+            + 기록
+          </button>
         </div>
       </header>
 

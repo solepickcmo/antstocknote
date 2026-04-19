@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../api/supabase';
 import './TradeModal.css';
 
@@ -14,6 +14,18 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  // textarea DOM 조작을 위한 ref - auto-resize에 사용
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // content가 바뀌었을 때 textarea 높이 재계산
+  // 높이를 'auto'로 리셋 후 scrollHeight를 앞으로 로직 적용해야 정확한 값이 나온다
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (el) {
+      el.style.height = 'auto';
+      el.style.height = el.scrollHeight + 'px';
+    }
+  }, [content]);
 
   useEffect(() => {
     if (isOpen) {
@@ -108,14 +120,16 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
           <div className="form-group full-width">
             <label id="label-content" htmlFor="noteContent">오답 내용</label>
             <textarea
+              ref={textareaRef}
               aria-label="오답 노트 내용 입력"
               id="noteContent"
               value={content}
               onChange={e => setContent(e.target.value)}
               placeholder="무엇이 아쉬웠는지, 다음에는 어떻게 다르게 행동할 것인지 적어보세요."
-              rows={5}
+              maxLength={1000}
               required
               aria-labelledby="label-content"
+              style={{ minHeight: '120px', resize: 'none', overflow: 'hidden' }}
             ></textarea>
           </div>
 
