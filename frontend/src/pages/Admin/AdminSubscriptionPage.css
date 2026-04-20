@@ -1,0 +1,172 @@
+.admin-container {
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.btn-refresh {
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  color: var(--ink);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-refresh:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.admin-filters {
+  background: var(--card-bg);
+  padding: 1.25rem;
+  border-radius: 1.5rem;
+  border: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+}
+
+.filter-chip {
+  padding: 0.4rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-chip.active {
+  background: var(--primary);
+  color: var(--ink);
+  border-color: var(--primary);
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.sub-card {
+  background: var(--card-bg);
+  border-radius: 1.5rem;
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s;
+}
+
+.sub-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.sub-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.user-info {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+}
+
+.status-badge {
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.6rem;
+  font-weight: 900;
+}
+
+.status-badge.pending { background: rgba(240, 185, 11, 0.2); color: #F0B90B; }
+.status-badge.active { background: rgba(29, 158, 117, 0.2); color: #1D9E75; }
+.status-badge.canceled { background: rgba(246, 70, 93, 0.2); color: #F6465D; }
+.status-badge.expired { background: rgba(255, 255, 255, 0.1); color: #848E9C; }
+
+.sub-card-body {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.tier-text.premium { color: var(--primary); font-weight: 800; }
+.tier-text.free { color: var(--text-muted); font-weight: 800; }
+
+.sub-card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.btn-approve, .btn-decline {
+  padding: 0.6rem;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-approve {
+  background: rgba(29, 158, 117, 0.1);
+  color: #1D9E75;
+  border: 1px solid rgba(29, 158, 117, 0.2);
+}
+
+.btn-approve:hover {
+  background: #1D9E75;
+  color: white;
+}
+
+.btn-decline {
+  background: rgba(246, 70, 93, 0.1);
+  color: #F6465D;
+  border: 1px solid rgba(246, 70, 93, 0.2);
+}
+
+.btn-decline:hover {
+  background: #F6465D;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+}

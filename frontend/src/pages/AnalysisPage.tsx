@@ -3,7 +3,9 @@ import { supabase } from '../api/supabase';
 import { useTradeStore } from '../store/tradeStore';
 import { AnalysisSummary } from '../components/analysis/AnalysisSummary';
 import { AnalysisStats } from '../components/analysis/AnalysisStats';
+import { EmotionAnalysis } from '../components/analysis/EmotionAnalysis';
 import { NoteModal } from '../components/NoteModal';
+import { SubscriptionSection } from '../components/subscription/SubscriptionSection';
 
 interface Note {
   id: string;
@@ -64,6 +66,9 @@ export const AnalysisPage: React.FC = () => {
         <h1 className="text-fintech-2xl font-fintech-black">매매 복기 / 분석</h1>
       </header>
 
+      {/* 구독 상태 및 업그레이드 안내 */}
+      <SubscriptionSection />
+
       {/* 요약 대시보드 (컴포넌트화) */}
       <AnalysisSummary 
         overallWinRate={stats.overallWinRate}
@@ -79,6 +84,7 @@ export const AnalysisPage: React.FC = () => {
             strategies={stats.strategyStats}
             mistakes={stats.mistakeStats}
           />
+          <EmotionAnalysis stats={stats.emotionStats || []} />
         </div>
 
         {/* 오답 노트 섹션 */}

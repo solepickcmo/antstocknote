@@ -1,16 +1,23 @@
+/* ===================================
+   NavBar — DESIGN.md v2.0 준수
+   - nav-item.active: Yellow 계열 (Blue 불가)
+   - action-btn: Binance Yellow 배경 + Ink 텍스트
+   - hover: Active Yellow (#D0980B), Blue 전환 없음
+=================================== */
+
 .navbar {
   width: var(--nav-width);
   height: 100vh;
   position: fixed;
   left: 0;
   top: 0;
-  background-color: var(--bg-white);
+  background-color: var(--bg-card); /* White 카드 표면 */
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   padding: 1.5rem 1rem;
   z-index: 100;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s ease;
 }
 
 .nav-brand {
@@ -25,80 +32,125 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-size: 1.25rem;
-  font-weight: 700;
   color: var(--text-main);
   letter-spacing: -0.02em;
 }
 
-.brand-img {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
+.brand-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
-.nav-brand-logo span {
-  color: var(--text-main);
+.user-tier-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  width: fit-content;
+  margin-top: 2px;
+  letter-spacing: 0.05em;
 }
 
+/* DESIGN.md: badge 배경은 Yellow 계열 또는 중립 */
+.user-tier-badge.free    { background-color: var(--text-meta); color: white; }
+.user-tier-badge.basic   { background-color: var(--primary); color: var(--primary-contrast); }
+.user-tier-badge.premium {
+  background: linear-gradient(135deg, #BA7517 0%, #D85A30 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(216, 90, 48, 0.2);
+}
+
+/* 테마 토글 버튼 — min-height 44px */
 .theme-toggle {
   cursor: pointer;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-pill);
+  padding: 0 1rem;
+  min-height: 44px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-secondary);
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
   border: 1px solid transparent;
 }
 
 .theme-toggle:hover {
-  background-color: var(--bg-card);
-  color: var(--primary-contrast);
+  background-color: var(--bg-main);
+  /* hover는 color 어두워짐 — Blue 전환 없음 (DESIGN.md §4 Nav) */
+  color: var(--text-main);
   border-color: var(--border);
-  transform: translateY(-1px);
+}
+
+.nav-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  margin-right: -0.5rem;
+  padding-right: 0.5rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .nav-group {
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
 }
+
+.nav-group.free { border-top: none; padding-top: 0; }
 
 .nav-group-title {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 800;
+  /* 메타데이터 레이블 — Slate 허용 범위 */
+  color: var(--text-meta);
   text-transform: uppercase;
-  margin-bottom: 0.75rem;
-  padding-left: 0.75rem;
-  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+  padding: 0 0.75rem;
+  letter-spacing: 0.1em;
 }
 
+.tier-tag {
+  font-size: 0.55rem;
+  padding: 2px 4px;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-meta);
+}
+
+.premium .nav-group-title { color: #D85A30; }
+.premium .tier-tag { border-color: #D85A30; color: #D85A30; }
+
+/* nav-item — min 44px 터치 타겟 */
 .nav-item {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1.25rem;
-  border-radius: var(--radius-pill);
+  padding: 0 1.25rem;
+  min-height: 44px;
+  border-radius: var(--radius-md);
   color: var(--text-secondary);
   font-weight: 600;
-  transition: all 0.2s ease;
+  font-size: 0.875rem; /* 14px/600 — DESIGN.md Nav 스펙 */
+  transition: background-color 0.2s ease, color 0.2s ease;
   margin-bottom: 0.25rem;
 }
 
 .nav-item:hover {
-  background-color: var(--bg-card);
-  color: var(--text-main);
+  background-color: var(--bg-main);
+  /* hover: 텍스트 어두워짐 — Blue 전환 없음 (DESIGN.md §4 Nav) */
+  color: #1A1A1A;
 }
 
+/* active: Yellow 계열로만 표시 (Blue 불가) */
 .nav-item.active {
-  background-color: rgba(59, 130, 246, 0.1);
-  color: var(--color-primary);
+  background-color: rgba(240, 185, 11, 0.1); /* Yellow 10% */
+  color: var(--primary);                      /* Binance Yellow */
   position: relative;
-  box-shadow: none;
 }
 
 .nav-item.active::before {
@@ -108,40 +160,53 @@
   top: 25%;
   height: 50%;
   width: 4px;
-  background-color: var(--primary);
+  background-color: var(--primary);          /* Yellow indicator */
   border-radius: var(--radius-pill);
 }
 
+/* 기록하기 액션 버튼 — Yellow 배경 + Ink 텍스트 */
 .nav-item.action-btn {
-  background-color: var(--primary);
-  color: #1E2026 !important;
+  background-color: var(--primary);          /* #F0B90B */
+  color: var(--primary-contrast) !important; /* #1E2026 Ink */
   font-weight: 700;
   margin-top: 0.5rem;
   justify-content: center;
-  border-radius: var(--radius-pill);
-  box-shadow: 0 4px 0px #D0980B, 0 6px 12px rgba(240, 185, 11, 0.2);
-  transform: translateY(-2px);
+  border-radius: 6px; /* 폼 내부 버튼 — 6px radius */
+  box-shadow: var(--shadow-soft);
 }
 
+/* hover: Active Yellow (#D0980B) — Blue 전환 절대 금지 */
 .nav-item.action-btn:hover {
-  background-color: var(--primary-hover);
-  transform: translateY(-3px);
-  box-shadow: 0 6px 0px #B0800B, 0 8px 16px rgba(240, 185, 11, 0.3);
+  background-color: var(--primary-hover);   /* #D0980B */
+  color: var(--primary-contrast) !important;
 }
 
 .nav-item.action-btn:active {
-  transform: translateY(1px);
-  box-shadow: 0 1px 0px #B0800B, 0 2px 4px rgba(240, 185, 11, 0.1);
+  background-color: var(--primary-active);  /* #B8840A */
 }
 
-.nav-item.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.nav-footer {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-top: 1px solid var(--border);
 }
 
-/* Dark mode specific adjustments */
+/* 로그아웃 — Crypto Red 직접 사용 (가격 데이터 아닌 위험 액션 강조) */
+.logout-btn {
+  color: var(--price-down) !important;
+}
+
+.logout-btn:hover {
+  background-color: rgba(246, 70, 93, 0.1) !important;
+}
+
+/* Dark Mode */
 [data-theme='dark'] .nav-item.active {
   background-color: rgba(240, 185, 11, 0.15);
+  color: var(--primary);
 }
 
 [data-theme='dark'] .nav-item.action-btn {

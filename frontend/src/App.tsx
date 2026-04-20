@@ -1,5 +1,6 @@
 import React, { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { NavBar } from './components/NavBar';
 import { useAuthStore } from './store/authStore';
@@ -19,6 +20,7 @@ const CalculatorPage = lazy(() => import('./pages/CalculatorPage').then(m => ({ 
 const LoginPage = lazy(() => import('./pages/Auth/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/Auth/RegisterPage'));
 const ResetPasswordPage = lazy(() => import('./pages/Auth/ResetPasswordPage').then(m => ({ default: m.ResetPasswordPage })));
+const AdminSubscriptionPage = lazy(() => import('./pages/Admin/AdminSubscriptionPage').then(m => ({ default: m.AdminSubscriptionPage })));
 
 const PageLoader = () => (
   <div className="flex items-center justify-center p-20">
@@ -81,7 +83,13 @@ const App: React.FC = () => {
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (session?.user) {
           setAuth(
-            { id: session.user.id, email: session.user.email!, nickname: session.user.user_metadata?.nickname || '사용자' },
+            { 
+              id: session.user.id, 
+              email: session.user.email!, 
+              nickname: session.user.user_metadata?.nickname || '사용자',
+              role: 'user',
+              isAdmin: false
+            },
             session.access_token
           );
         } else {
@@ -94,7 +102,13 @@ const App: React.FC = () => {
       const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
         if (session?.user) {
           setAuth(
-            { id: session.user.id, email: session.user.email!, nickname: session.user.user_metadata?.nickname || '사용자' },
+            { 
+              id: session.user.id, 
+              email: session.user.email!, 
+              nickname: session.user.user_metadata?.nickname || '사용자',
+              role: 'user',
+              isAdmin: false
+            },
             session.access_token
           );
         } else {
@@ -129,6 +143,7 @@ const App: React.FC = () => {
               <Route path="/holdings" element={<HoldingsPage />} />
               <Route path="/analysis" element={<AnalysisPage />} />
               <Route path="/calculator" element={<CalculatorPage />} />
+              <Route path="/admin/subscriptions" element={<AdminSubscriptionPage />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Route>
           </Routes>

@@ -1,3 +1,14 @@
+/* ===================================
+   HoldingsPage — DESIGN.md v2.0 준수
+   - chip.active: Yellow (Blue 불가)
+   - chip hover: Yellow border (Blue 불가)
+   - ticker-badge: Yellow 계열 (Blue 계열 제거)
+   - search-input focus: border #000
+   - 테이블 헤더: Slate(#848E9C), 12px/600
+   - 테이블 hover: #EEF0F2 (Blue없음)
+   - 숫자 열: tabular-nums, right-align
+=================================== */
+
 .holdings-page {
   display: flex;
   flex-direction: column;
@@ -24,9 +35,11 @@
 
 .add-btn {
   font-size: 0.875rem;
-  padding: 0.6rem 1.25rem;
+  padding: 0 1.25rem;
+  min-height: 44px; /* 터치 타겟 */
 }
 
+/* 필터 바 */
 .holdings-filters {
   display: flex;
   align-items: center;
@@ -36,19 +49,34 @@
   flex-wrap: wrap;
 }
 
+/* 검색 인풋 — min-height 44px, 10px 12px padding */
 .search-input {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--bg-card);
   border: 1px solid var(--border);
   color: var(--text-main);
-  padding: 0.6rem 1rem;
-  border-radius: var(--radius-lg);
-  font-size: 0.95rem;
+  padding: 10px 12px;           /* DESIGN.md 인풋 스펙 */
+  min-height: 44px;             /* 터치 타겟 */
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
   min-width: 250px;
+  transition: border-color 0.2s ease;
+  font-family: inherit;
 }
 
+.search-input::placeholder {
+  color: #6B7280; /* Body Accessible */
+}
+
+/* focus: border #000 — Blue 사용 금지 */
 .search-input:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: #000000;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .search-input:focus {
+  border-color: rgba(255,255,255,0.4);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
 }
 
 .filter-chips {
@@ -57,8 +85,12 @@
   flex-wrap: wrap;
 }
 
+/* chip — 기본 상태 */
 .chip {
-  padding: var(--space-2) var(--space-5);
+  padding: 0 var(--space-5);
+  min-height: 44px;             /* 터치 타겟 */
+  display: flex;
+  align-items: center;
   border-radius: var(--radius-pill);
   background-color: var(--bg-card);
   border: 1px solid var(--border);
@@ -66,30 +98,36 @@
   font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
+/* hover: Yellow border — Blue 불가 */
 .chip:hover {
-  background-color: var(--bg-white);
-  color: var(--primary-contrast);
+  background-color: var(--bg-main);
+  color: var(--text-main);
   border-color: var(--primary);
 }
 
+/* active: Yellow 배경 + Ink 텍스트 */
 .chip.active {
   background-color: var(--primary);
-  color: #1E2026;
+  color: var(--primary-contrast); /* Ink */
   border-color: var(--primary);
   box-shadow: 0 4px 10px rgba(240, 185, 11, 0.2);
 }
 
 .holdings-summary {
-  font-size: 0.9rem;
-  color: var(--text-muted);
+  font-size: 0.875rem;
+  color: var(--text-muted); /* Body Accessible */
 }
 
+/* ===================================
+   데이터 테이블 — DESIGN.md §5
+=================================== */
 .holdings-table-container {
   border-radius: var(--radius-md);
   overflow: hidden;
+  border: 0.5px solid var(--border);
 }
 
 .holdings-table {
@@ -97,46 +135,88 @@
   border-collapse: collapse;
 }
 
+/* 헤더 행 — Snow 배경, Slate 텍스트, 12px/600 */
 .holdings-table th {
   text-align: left;
-  padding: 0.75rem 1rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  border-bottom: 1px solid var(--border);
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  padding: 0 1rem;
+  height: 40px;                  /* DESIGN.md 헤더 행 40px */
+  font-size: 0.75rem;            /* 12px/600 */
+  font-weight: 600;
+  color: #848E9C;                /* Slate — 헤더 전용 허용 */
+  background-color: #F5F5F5;    /* Snow */
+  border-bottom: 1px solid #E6E8EA;
 }
 
+/* 숫자 열 헤더는 right-align */
+.holdings-table th.num-col {
+  text-align: right;
+}
+
+/* 데이터 행 — 48px, 교대 배경 */
 .holdings-table td {
-  padding: 1rem;
-  border-bottom: 1px solid var(--border);
+  padding: 0 1rem;
+  height: 48px;                  /* DESIGN.md 데이터 행 48px */
+  border-bottom: 1px solid #E6E8EA;
   vertical-align: middle;
+  font-size: 0.875rem;           /* 14px/500 */
+  font-weight: 500;
+  color: var(--text-main);
 }
 
-.table-row-hover:hover {
+/* 홀수 행: White, 짝수 행: Snow */
+.holdings-table tbody tr:nth-child(even) {
+  background-color: #F5F5F5; /* Snow */
+}
+
+.holdings-table tbody tr:nth-child(odd) {
+  background-color: #FFFFFF;
+}
+
+[data-theme='dark'] .holdings-table tbody tr:nth-child(even) {
+  background-color: rgba(255,255,255,0.02);
+}
+
+[data-theme='dark'] .holdings-table tbody tr:nth-child(odd) {
   background-color: var(--bg-card);
 }
 
-.font-mono {
-  font-family: 'Inter', monospace;
-  font-variant-numeric: tabular-nums;
+/* hover — #EEF0F2 (DESIGN.md §5 데이터 테이블) */
+.table-row-hover:hover {
+  background-color: #EEF0F2 !important;
 }
 
-.col-ticker { width: 12%; }
-.col-name { width: 45%; }
-.col-tags { width: 20%; }
-.col-price { width: 13%; }
-.col-qty { width: 10%; }
+[data-theme='dark'] .table-row-hover:hover {
+  background-color: rgba(255,255,255,0.05) !important;
+}
 
+/* 숫자 열 — tabular-nums, right-align */
+.font-mono {
+  font-family: 'Inter', Arial, monospace;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.col-ticker  { width: 12%; }
+.col-name    { width: 44%; }
+.col-tags    { width: 20%; }
+.col-price   { width: 14%; text-align: right; }
+.col-qty     { width: 10%; text-align: right; }
+
+/* ticker-badge — Yellow 계열 (Blue 계열 제거) */
 .ticker-badge {
   font-weight: 800;
-  color: var(--color-primary);
-  font-size: 0.875rem;
-  background: rgba(59, 130, 246, 0.08);
+  color: var(--primary-contrast);           /* Ink */
+  font-size: 0.8125rem;
+  background: rgba(240, 185, 11, 0.12);    /* Yellow 배경 */
   padding: 0.15rem 0.5rem;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(240, 185, 11, 0.25);
+}
+
+[data-theme='dark'] .ticker-badge {
+  color: var(--primary);
+  background: rgba(240, 185, 11, 0.15);
+  border-color: rgba(240, 185, 11, 0.3);
 }
 
 .name-wrapper strong {
@@ -145,9 +225,10 @@
   color: var(--text-main);
 }
 
+/* 날짜 — Slate(메타데이터 전용 허용) */
 .name-date {
   font-size: 0.75rem;
-  color: var(--text-secondary);
+  color: var(--text-meta); /* Slate */
 }
 
 .tags-wrapper {
@@ -157,13 +238,13 @@
 }
 
 .tag-chip {
-  font-size: 0.75rem;
+  font-size: 0.75rem;          /* 12px/600 Small 스펙 */
+  font-weight: 600;
   padding: 0.1rem 0.6rem;
   border-radius: var(--radius-pill);
   background-color: var(--bg-main);
   color: var(--text-secondary);
   border: 1px solid var(--border);
-  font-weight: 700;
 }
 
 .empty-state {

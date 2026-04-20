@@ -34,7 +34,13 @@ const LoginPage: React.FC = () => {
       
       if (data.session?.user) {
         setAuth(
-          { id: data.session.user.id, email: data.session.user.email!, nickname: data.session.user.user_metadata?.nickname || '사용자' },
+          { 
+            id: data.session.user.id, 
+            email: data.session.user.email!, 
+            nickname: data.session.user.user_metadata?.nickname || '사용자',
+            role: 'user',
+            isAdmin: false
+          },
           data.session.access_token
         );
       }

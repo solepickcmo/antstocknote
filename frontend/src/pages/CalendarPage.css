@@ -34,9 +34,10 @@
   transition: all 0.2s ease;
 }
 
+/* hover: 텍스트 어두워짐 — Blue/Yellow 전환 없음 */
 .nav-btn:hover {
   background-color: var(--bg-main);
-  color: var(--primary);
+  color: #1A1A1A;
 }
 
 .current-month-display {
@@ -99,13 +100,14 @@
   cursor: pointer;
 }
 
+/* hover: lift 금지 — shadow만 (DESIGN.md §9 Don't) */
 .calendar-cell:not(.empty):hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-hover);
 }
 
+/* selected: Yellow border */
 .calendar-cell.selected {
-  border-color: var(--primary);
+  border-color: var(--primary); /* Binance Yellow */
 }
 
 .calendar-cell.empty-bg {
@@ -196,12 +198,13 @@
   border-left: 3px solid transparent;
 }
 
+/* 가격 데이터 맥락 — Crypto Green/Red 정확한 값 */
 .border-buy {
-  border-left-color: #10B981;
+  border-left-color: #0ECB81; /* Crypto Green */
 }
 
 .border-sell {
-  border-left-color: #F43F5E;
+  border-left-color: #F6465D; /* Crypto Red */
 }
 
 .detail-trade-info {
@@ -216,11 +219,11 @@
 }
 
 .trade-type.buy {
-  color: #10B981;
+  color: #0ECB81; /* Crypto Green */
 }
 
 .trade-type.sell {
-  color: #F43F5E;
+  color: #F6465D; /* Crypto Red */
 }
 
 .trade-name {

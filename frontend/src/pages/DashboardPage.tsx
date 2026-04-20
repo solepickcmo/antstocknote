@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { MetricCard } from '../components/MetricCard';
+import { GoalTracker } from '../components/Dashboard/GoalTracker';
 import { AnalysisSummary } from '../components/analysis/AnalysisSummary';
 import { useTradeStore } from '../store/tradeStore';
 import { supabase } from '../api/supabase';
@@ -82,8 +83,10 @@ export const DashboardPage: React.FC = () => {
           </div>
         </section>
 
-        {/* 요약 카드만 별도로 표시 */}
-        <section className="flex flex-col gap-10">
+        {/* 대시보드 사이드바: 목표 트래커 & 요약 */}
+        <section className="flex flex-col gap-8">
+          <GoalTracker />
+          
           <div className="px-2">
              <h3 className="text-fintech-base font-fintech-bold mb-1">성과 분석 요약</h3>
              <p className="text-muted text-fintech-xs">최근 매매 성과를 한눈에 파악하세요.</p>

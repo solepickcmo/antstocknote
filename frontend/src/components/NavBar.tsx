@@ -1,93 +1,131 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Calendar, History, BarChart2, Users, Settings, PieChart, PlusSquare, Smartphone, LogOut, Calculator, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Calendar, History, BarChart2, Users, LogOut, Calculator, PieChart, PlusSquare, Smartphone, Sun, Moon, Shield } from 'lucide-react';
 import { useTradeStore } from '../store/tradeStore';
 import { useLayoutStore } from '../store/layoutStore';
 import { useAuthStore } from '../store/authStore';
+import { useTierStore } from '../store/tierStore';
+import { exportTradesToCSV } from '../utils/exportUtils';
 import { useThemeStore } from '../store/themeStore';
 import logo from '../assets/logo.png';
 import './NavBar.css';
 
 export const NavBar: React.FC = () => {
-  const setModalOpen = useTradeStore(state => state.setModalOpen);
-  const theme = useThemeStore(state => state.theme);
-  const toggleTheme = useThemeStore(state => state.toggleTheme);
+  const trades        = useTradeStore(state => state.trades);
+  const setModalOpen  = useTradeStore(state => state.setModalOpen);
+  const theme         = useThemeStore(state => state.theme);
+  const toggleTheme   = useThemeStore(state => state.toggleTheme);
   const toggleMobileMode = useLayoutStore(state => state.toggleMobileMode);
-  const navigate = useNavigate();
-  const logout = useAuthStore(state => state.logout);
+  const navigate      = useNavigate();
+  const logout        = useAuthStore(state => state.logout);
+  const user          = useAuthStore(state => state.user);
+  // user.tier 대신 tierStore에서 Tier 정보를 가져온다 (authStore에서 Tier 제거됨)
+  const tier          = useTierStore(state => state.tier);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
+  // v2.0: Free / Premium 2단계 메뉴 구조 (Basic 제거)
+  const menuGroups = [
+    {
+      id: 'free',
+      label: 'FREE',
+      items: [
+        { to: '/dashboard', label: '대시보드', icon: LayoutDashboard },
+        { to: '/history',   label: '매매 내역', icon: History },
+        { to: '/calendar',  label: '수익 캘린더', icon: Calendar },
+        { to: '/analysis',  label: '전략별 복기/분석', icon: BarChart2 },
+        { id: 'export', label: '내보내기 (Export)', icon: Smartphone },
+      ]
+    },
+    {
+      id: 'premium',
+      label: 'PREMIUM',
+      items: [
+        { to: '/holdings',   label: '보유 종목 분석', icon: PieChart },
+        { to: '/analysis',   label: '감정 × 수익 분석', icon: Users },
+        { to: '/calculator', label: '투자 계산기', icon: Calculator },
+        { id: 'community',   label: '커뮤니티 (개미의 집)', icon: PlusSquare },
+        ...(user?.isAdmin ? [{ to: '/admin/subscriptions', label: '구독 승인 관리', icon: Shield }] : []),
+      ]
+    }
+  ];
+
   return (
     <nav className="navbar">
       <div className="nav-brand">
         <div className="nav-brand-logo">
           <img src={logo} alt="AntStockNote Logo" className="brand-img" />
-          <span>AntStockNote</span>
+          <div className="flex flex-col">
+            <span className="brand-name">AntStockNote</span>
+            {/* tierStore에서 Tier 표시 — user 객체에서 tier 제거됨 */}
+            <span className={`user-tier-badge ${tier}`}>
+              {tier.toUpperCase()}
+            </span>
+          </div>
         </div>
         <div className="theme-toggle" onClick={() => toggleTheme()}>
-          {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+          {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
         </div>
       </div>
-      
-      <div className="nav-group">
-        <div className="nav-item action-btn" onClick={() => setModalOpen(true)} style={{ color: 'var(--ink)', marginBottom: '0.75rem' }}>
+
+      <div className="nav-scroll-area">
+        <div className="nav-item action-btn mb-6" onClick={() => setModalOpen(true)}>
           <PlusSquare size={18} />
-          <span>기록하기</span>
+          <span>매매 기록하기</span>
         </div>
-        <h3 className="nav-group-title">메인</h3>
-        <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-          <LayoutDashboard size={18} />
-          <span>대시보드</span>
-        </NavLink>
-        <NavLink to="/history" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-          <History size={18} />
-          <span>매매 내역</span>
-        </NavLink>
-        <NavLink to="/calendar" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-          <Calendar size={18} />
-          <span>수익 캘린더</span>
-        </NavLink>
+
+        {menuGroups.map((group) => (
+          <div key={group.id} className={`nav-group tier-section ${group.id}`}>
+            <h3 className="nav-group-title flex items-center justify-between">
+              {group.label}
+              <span className="tier-tag">{group.id === 'free' ? 'DEFAULT' : 'UPGRADE'}</span>
+            </h3>
+            {group.items.map((item) => {
+              if (item.label.includes('내보내기')) {
+                return (
+                  <button 
+                    key={item.label} 
+                    onClick={() => exportTradesToCSV(trades)}
+                    className="nav-item w-full text-left"
+                  >
+                    <item.icon size={18} />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              }
+              if ('to' in item && item.to) {
+                return (
+                  <NavLink 
+                    key={item.label} 
+                    to={item.to} 
+                    className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}
+                  >
+                    <item.icon size={18} />
+                    <span>{item.label}</span>
+                  </NavLink>
+                );
+              }
+              const disabled = 'disabled' in item && item.disabled;
+              return (
+                <div key={item.label} className={`nav-item ${disabled ? 'disabled' : ''}`}>
+                  <item.icon size={18} />
+                  <span>{item.label}</span>
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </div>
 
-      <div className="nav-group">
-        <h3 className="nav-group-title">분석</h3>
-        <NavLink to="/holdings" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-          <PieChart size={18} />
-          <span>보유 종목</span>
-        </NavLink>
-        <NavLink to="/analysis" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-          <BarChart2 size={18} />
-          <span>매매 복기</span>
-        </NavLink>
-        <NavLink to="/calculator" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-          <Calculator size={18} />
-          <span>계산기</span>
-        </NavLink>
-      </div>
-
-      <div className="nav-group">
-        <h3 className="nav-group-title">커뮤니티</h3>
-        <div className="nav-item disabled">
-          <Users size={18} />
-          <span>개미노트</span>
-        </div>
-      </div>
-
-      <div className="nav-group" style={{marginTop: 'auto'}}>
-        <h3 className="nav-group-title">도구</h3>
-        <div className="nav-item disabled">
-          <Settings size={18} />
-          <span>설정 / 도구</span>
-        </div>
-        <div className="nav-item action-btn" onClick={() => toggleMobileMode()} style={{ marginTop: '0.5rem' }}>
+      <div className="nav-footer">
+        <div className="nav-item action-btn" onClick={() => toggleMobileMode()}>
           <Smartphone size={18} />
           <span>모바일 뷰 전환</span>
         </div>
-        <div className="nav-item" onClick={handleLogout} style={{ marginTop: '0.5rem', color: '#ff4d4f', cursor: 'pointer' }}>
+        <div className="nav-item logout-btn" onClick={handleLogout}>
           <LogOut size={18} />
           <span>로그아웃</span>
         </div>

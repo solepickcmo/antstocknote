@@ -1,3 +1,12 @@
+/* ===================================
+   CalculatorPage — DESIGN.md v2.0 준수
+   - 인풋 focus: border #000 (Blue 불가)
+   - sim-section-divider: Yellow 유지 (아이콘/텍스트 강조)
+   - 결과 카드: Yellow border (primary)
+   - hover lift 금지 (transform 없음)
+   - min-height 44px 인풋
+=================================== */
+
 .calculator-page {
   display: flex;
   flex-direction: column;
@@ -39,8 +48,8 @@
 }
 
 .section-title h3 {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.375rem;  /* 22px — DESIGN.md H3 */
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -52,44 +61,61 @@
   gap: 0.4rem;
   background: var(--bg-card);
   color: var(--text-secondary);
-  padding: 0.4rem 0.8rem;
-  border-radius: var(--radius-sm);
+  padding: 0 0.8rem;
+  min-height: 36px;
+  border-radius: var(--radius-md);
   font-size: 0.8rem;
-  transition: all 0.2s;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .btn-reset:hover {
-  background: var(--border);
+  background: var(--bg-main);
   color: var(--text-main);
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 4px;             /* 레이블→인풋 4px */
 }
 
+/* 인풋 레이블 — Ink, 14px/500 */
 .input-group label {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-secondary);
+  font-size: 0.875rem;  /* 14px */
+  font-weight: 500;
+  color: var(--text-main); /* Ink */
 }
 
-.sim-select, .input-group input {
-  padding: 0.85rem 1.25rem;
+/* 인풋 — min-height 44px, padding 10px 12px */
+.sim-select,
+.input-group input {
+  padding: 10px 12px;
+  min-height: 44px;
   background-color: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-md); /* 8px */
   color: var(--text-main);
-  font-size: 0.95rem;
-  transition: all 0.2s;
+  font-size: 0.9375rem;
+  transition: border-color 0.2s ease;
 }
 
-.sim-select:focus, .input-group input:focus {
+/* focus: border #000 — Blue 사용 금지 */
+.sim-select:focus,
+.input-group input:focus {
   outline: none;
-  border-color: var(--primary);
-  background-color: var(--bg-white);
-  box-shadow: 0 0 0 2px rgba(240, 185, 11, 0.1);
+  border-color: #000000;
+  background-color: var(--bg-card);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .sim-select:focus,
+[data-theme='dark'] .input-group input:focus {
+  border-color: rgba(255,255,255,0.4);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
+}
+
+.input-group input::placeholder {
+  color: #6B7280; /* Body Accessible */
 }
 
 .sim-holding-info {
@@ -97,8 +123,9 @@
   flex-direction: column;
   gap: 0.75rem;
   padding: 1.25rem;
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: rgba(240, 185, 11, 0.03);
   border-radius: var(--radius-md);
+  border: 0.5px solid var(--border);
 }
 
 .sim-info-row {
@@ -108,14 +135,16 @@
 }
 
 .sim-info-label {
-  color: var(--text-secondary);
+  color: var(--text-muted); /* Body Accessible */
 }
 
 .sim-info-val {
   font-weight: 700;
   color: var(--text-main);
+  font-variant-numeric: tabular-nums; /* 숫자 정렬 */
 }
 
+/* 섹션 구분선 — Yellow 아이콘/강조 텍스트 (DESIGN.md Yellow=아이콘·테두리 허용) */
 .sim-section-divider {
   font-size: 0.75rem;
   font-weight: 800;
@@ -139,7 +168,7 @@
   padding: 1.25rem;
   background-color: var(--bg-card);
   border-radius: var(--radius-md);
-  border: 1px solid var(--border);
+  border: 0.5px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -148,7 +177,7 @@
 .watering-row-label {
   font-size: 0.8rem;
   font-weight: 800;
-  color: var(--text-secondary);
+  color: var(--text-meta);  /* Slate — 라벨/메타 */
   border-bottom: 1px solid var(--border);
   padding-bottom: 0.5rem;
 }
@@ -163,6 +192,7 @@
   padding: 1.25rem;
   border-radius: var(--radius-md);
   background: rgba(240, 185, 11, 0.03);
+  border: 0.5px solid rgba(240, 185, 11, 0.15);
 }
 
 .calc-info h4 {
@@ -180,7 +210,7 @@
 
 .calc-info li {
   font-size: 0.8rem;
-  color: var(--text-secondary);
+  color: var(--text-muted); /* Body Accessible */
   padding-left: 1rem;
   position: relative;
 }
@@ -192,7 +222,9 @@
   color: var(--primary);
 }
 
-/* Result Section */
+/* ===================================
+   Result Section
+=================================== */
 .calc-result-section {
   position: sticky;
   top: 2rem;
@@ -203,16 +235,18 @@
 
 .result-card {
   padding: 2rem;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-lg); /* 12px */
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  /* hover lift 금지 — shadow만 */
+  transition: box-shadow 0.2s ease;
 }
 
 .result-card .label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text-secondary);
+  font-size: 0.875rem; /* 14px/500 */
+  font-weight: 500;
+  color: var(--text-muted); /* Body Accessible */
 }
 
 .value-group {
@@ -225,6 +259,7 @@
   font-size: 2.25rem;
   font-weight: 800;
   letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
 }
 
 .value-group.large .val {
@@ -234,17 +269,19 @@
 .value-group .unit {
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--text-muted);
 }
 
+/* 상승/하락 테두리 — 가격 데이터 색상 사용 */
 .success-border {
-  border-left: 6px solid var(--success);
+  border-left: 6px solid var(--price-up);   /* Crypto Green */
 }
 
 .loss-border {
-  border-left: 6px solid var(--danger);
+  border-left: 6px solid var(--price-down); /* Crypto Red */
 }
 
+/* Primary glow — Yellow border */
 .primary-glow {
   background: var(--bg-card);
   border: 1px solid var(--primary);

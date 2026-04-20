@@ -1,21 +1,41 @@
+/* ===================================
+   HistoryPage — DESIGN.md v2.0 준수
+   - chip.active: Yellow
+   - tab-btn.active: Yellow border + Yellow 텍스트
+   - btn-export hover: Active Yellow, Ink 텍스트 유지
+   - badge-type.buy/sell: Crypto Green/Red (가격 맥락)
+   - trade-type.buy/sell: Crypto Green/Red
+   - desktop ticker chip: Yellow 계열
+   - 인풋 focus: border #000
+   - hover lift 금지
+=================================== */
+
 .history-page {
   padding-bottom: 2rem;
 }
 
-/* Desktop horizontal list style */
+/* ===================================
+   Desktop Row — 데이터 테이블 스타일
+=================================== */
 .desktop-row-item {
   display: grid !important;
   grid-template-columns: 60px 240px 140px 120px 80px 140px 1fr;
   align-items: center;
-  padding: 0.75rem 1.5rem !important;
+  padding: 0 1.5rem !important;
+  height: 48px;                   /* DESIGN.md 데이터 행 48px */
   gap: 1rem;
   border-bottom: 1px solid var(--border);
-  transition: all 0.2s;
+  transition: background-color 0.2s ease;
   background-color: transparent;
 }
 
+/* hover: #EEF0F2 — lift 없음 */
 .desktop-row-item:hover {
-  background-color: var(--bg-card);
+  background-color: #EEF0F2;
+}
+
+[data-theme='dark'] .desktop-row-item:hover {
+  background-color: rgba(255,255,255,0.04);
 }
 
 .desktop-row-item .trade-type {
@@ -25,8 +45,9 @@
   text-align: center;
 }
 
-.desktop-row-item .trade-type.buy { color: var(--success); }
-.desktop-row-item .trade-type.sell { color: var(--danger); }
+/* 가격 데이터 맥락 — Crypto Green/Red 사용 적합 */
+.desktop-row-item .trade-type.buy  { color: #0ECB81; }
+.desktop-row-item .trade-type.sell { color: #F6465D; }
 
 .desktop-row-item .trade-info-inline {
   display: flex;
@@ -40,17 +61,25 @@
   color: var(--text-main);
 }
 
+/* 데스크톱 티커 — Yellow 계열 (Blue 제거) */
 .desktop-row-item .trade-info-inline .ticker {
-  color: var(--primary-contrast);
+  color: var(--primary-contrast);           /* Ink */
   font-weight: 700;
   font-size: 0.8rem;
-  background: rgba(240, 185, 11, 0.1);
+  background: rgba(240, 185, 11, 0.12);    /* Yellow 배경 */
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-sm);
+  border: 1px solid rgba(240, 185, 11, 0.2);
 }
 
+[data-theme='dark'] .desktop-row-item .trade-info-inline .ticker {
+  color: var(--primary);
+  background: rgba(240, 185, 11, 0.15);
+}
+
+/* 날짜 — Slate 허용(메타데이터) */
 .desktop-row-item .trade-date {
-  color: var(--text-secondary);
+  color: var(--text-meta); /* Slate */
   font-size: 0.8rem;
   white-space: nowrap;
 }
@@ -62,9 +91,10 @@
   align-items: flex-end;
 }
 
+/* 상세 레이블 — Slate (메타 전용) */
 .desktop-row-item .detail-inline .label {
   font-size: 0.7rem;
-  color: var(--text-muted);
+  color: var(--text-meta);
   text-transform: uppercase;
   margin-bottom: 0.1rem;
 }
@@ -72,7 +102,7 @@
 .desktop-row-item .detail-inline .val {
   font-weight: 600;
   font-size: 0.9rem;
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: tabular-nums; /* 숫자 정렬 필수 */
 }
 
 .desktop-row-item .trade-actions-inline {
@@ -81,6 +111,9 @@
   margin-left: auto;
 }
 
+/* ===================================
+   History Header
+=================================== */
 .history-header {
   display: flex;
   justify-content: space-between;
@@ -89,43 +122,49 @@
 }
 
 .btn-header-action {
-  background-color: var(--bg-white);
+  background-color: var(--bg-card);
   color: var(--text-main);
-  padding: var(--space-2) var(--space-5);
+  padding: 0 var(--space-5);
+  min-height: 44px;             /* 터치 타겟 */
   border-radius: var(--radius-pill);
   font-size: 0.85rem;
   font-weight: 700;
   border: 1px solid var(--border);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .btn-header-action:hover {
-  background-color: var(--border);
+  background-color: var(--bg-main);
+  border-color: var(--text-meta);
 }
 
+/* 내보내기 버튼 — Yellow + Ink */
 .btn-export {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  background-color: var(--primary);
-  color: #1E2026;
-  padding: var(--space-3) var(--space-5);
+  background-color: var(--primary);         /* Binance Yellow */
+  color: var(--primary-contrast);           /* Ink */
+  padding: 0 var(--space-5);
+  min-height: 44px;
   border: none;
-  border-radius: var(--radius-pill);
-  font-weight: 800;
-  font-size: 0.9rem;
+  border-radius: 6px;                       /* 폼 내부 버튼 6px */
+  font-weight: 700;
+  font-size: 0.875rem;
   cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: var(--btn-shadow);
+  transition: background-color 0.2s ease;
 }
 
+/* hover: Active Yellow, Ink 유지 (white 전환 금지) */
 .btn-export:hover {
-  background-color: var(--primary-hover);
-  border-color: var(--primary-hover);
-  color: #fff;
+  background-color: var(--primary-hover);   /* #D0980B */
+  color: var(--primary-contrast);           /* Ink — NOT white */
 }
 
+/* ===================================
+   History Tabs — Yellow active
+=================================== */
 .history-tabs {
   display: flex;
   border-bottom: 1px solid var(--border);
@@ -134,31 +173,57 @@
 
 .tab-btn {
   flex: 1;
-  padding: 0.8rem;
+  padding: 0;
+  min-height: 44px;             /* 터치 타겟 */
   background: none;
   color: var(--text-muted);
   font-weight: 600;
   border-bottom: 2px solid transparent;
+  font-size: 0.9rem;
+  transition: color 0.2s ease, border-color 0.2s ease;
 }
 
+/* active: Yellow border + Yellow 텍스트 (Blue 불가) */
 .tab-btn.active {
   color: var(--primary);
   border-bottom-color: var(--primary);
 }
 
-/* All Trades */
+/* ===================================
+   Filters
+=================================== */
 .filters-bar-mobile {
   margin-bottom: 1rem;
 }
 
 .search-input {
   width: 100%;
-  padding: 0.8rem 1rem;
+  padding: 10px 12px;           /* DESIGN.md 인풋 스펙 */
+  min-height: 44px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
   background-color: var(--bg-card);
   color: var(--text-main);
   margin-bottom: 0.8rem;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  transition: border-color 0.2s ease;
+}
+
+.search-input::placeholder {
+  color: #6B7280; /* Body Accessible */
+}
+
+/* focus: border #000, Blue 불가 */
+.search-input:focus {
+  outline: none;
+  border-color: #000000;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .search-input:focus {
+  border-color: rgba(255,255,255,0.4);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
 }
 
 .filter-chips {
@@ -166,15 +231,18 @@
   gap: 0.5rem;
   overflow-x: auto;
   padding-bottom: 0.5rem;
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 .filter-chips::-webkit-scrollbar {
   display: none;
 }
 
 .chip {
-  padding: var(--space-2) var(--space-5);
+  padding: 0 var(--space-5);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
   font-size: 0.8rem;
@@ -182,10 +250,13 @@
   color: var(--text-muted);
   cursor: pointer;
   font-weight: 700;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
+
+/* active: Yellow + Ink */
 .chip.active {
   background-color: var(--primary);
-  color: #1E2026;
+  color: var(--primary-contrast);     /* Ink */
   border-color: var(--primary);
   box-shadow: 0 4px 10px rgba(240, 185, 11, 0.2);
 }
@@ -196,7 +267,9 @@
   margin-top: 0.5rem;
 }
 
-/* Trade Card */
+/* ===================================
+   Trade Card (Mobile)
+=================================== */
 .trade-card {
   padding: 1rem;
   margin-bottom: 0.8rem;
@@ -215,6 +288,7 @@
   font-weight: 600;
   margin-right: 0.3rem;
 }
+
 .trade-card-top .name {
   font-size: 1rem;
   font-weight: 600;
@@ -223,9 +297,12 @@
 .trade-price-group {
   text-align: right;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
-.trade-pnl.profit { color: var(--profit); }
-.trade-pnl.loss { color: var(--loss); }
+
+/* PnL — 가격 데이터 색상 */
+.trade-pnl.profit { color: var(--price-up); }
+.trade-pnl.loss   { color: var(--price-down); }
 
 .trade-card-mid {
   display: flex;
@@ -234,27 +311,41 @@
   font-size: 0.85rem;
 }
 
+/* badge-type — DESIGN.md: Buy = Crypto Green, Sell = Crypto Red */
 .badge-type {
-  padding: 0.1rem 0.4rem;
+  padding: 0.1rem 0.5rem;
   border-radius: 4px;
   font-size: 0.75rem;
   font-weight: 600;
 }
-.badge-type.buy { background: rgba(99,102,241,0.2); color: #818CF8; }
-.badge-type.sell { background: rgba(244,63,94,0.2); color: #FB7185; }
 
-.trade-date-tag {
-  color: var(--text-muted);
+.badge-type.buy  {
+  background: rgba(14, 203, 129, 0.15);   /* Crypto Green 배경 */
+  color: #0ECB81;                          /* Crypto Green */
 }
+
+.badge-type.sell {
+  background: rgba(246, 70, 93, 0.15);    /* Crypto Red 배경 */
+  color: #F6465D;                          /* Crypto Red */
+}
+
+/* 날짜 */
+.trade-date-tag {
+  color: var(--text-meta); /* Slate */
+}
+
 .ml-auto { margin-left: auto; }
 
-/* Holdings Tab */
+/* ===================================
+   Holdings Tab (Mobile)
+=================================== */
 .holdings-summary-banner {
   display: flex;
   margin-bottom: 1rem;
   padding: 1rem 0;
   border-radius: var(--radius-lg);
 }
+
 .summary-col {
   flex: 1;
   display: flex;
@@ -263,20 +354,26 @@
   justify-content: center;
   border-right: 1px solid var(--border);
 }
+
 .summary-col:last-child {
   border-right: none;
 }
+
+/* 레이블 — Slate (메타데이터) */
 .summary-col .label {
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: var(--text-meta);
   margin-bottom: 0.3rem;
 }
+
 .summary-col .val {
   font-size: 1.1rem;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
-.summary-col .val.profit { color: var(--profit); }
-.summary-col .val.loss { color: var(--loss); }
+
+.summary-col .val.profit { color: var(--price-up); }
+.summary-col .val.loss   { color: var(--price-down); }
 
 .holdings-subtext {
   font-size: 0.8rem;
@@ -284,7 +381,9 @@
   margin-bottom: 0.8rem;
 }
 
-/* Holding Card */
+/* ===================================
+   Holding Card (Mobile)
+=================================== */
 .holding-card {
   padding: 1.25rem 1rem;
   margin-bottom: 1rem;
@@ -296,31 +395,40 @@
   justify-content: space-between;
   align-items: flex-end;
 }
+
 .holding-top .ticker {
   font-size: 0.85rem;
   font-weight: bold;
   margin-right: 0.4rem;
+  color: var(--price-up); /* 보유 종목 — 가격 데이터 맥락 */
 }
+
 .holding-top .name {
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--text-main);
 }
+
 .holding-pnl-group {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 }
+
 .holding-pnl-group .val {
   font-size: 1.1rem;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
+
 .holding-pnl-group .pct {
   font-size: 0.85rem;
   margin-top: 2px;
+  font-variant-numeric: tabular-nums;
 }
-.profit { color: var(--profit); }
-.loss { color: var(--loss); }
+
+.profit { color: var(--price-up); }
+.loss   { color: var(--price-down); }
 
 .holding-mid {
   margin: 0.6rem 0;
@@ -329,28 +437,40 @@
 
 .holding-grid {
   display: flex;
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: rgba(240, 185, 11, 0.03);
   padding: 0.8rem;
   border-radius: var(--radius-sm);
   margin-bottom: 0.8rem;
 }
+
 .grid-cell {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
-.grid-cell.center { align-items: center; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+
+.grid-cell.center {
+  align-items: center;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
 .grid-cell.right { align-items: flex-end; }
+
+/* 셀 레이블 — Slate */
 .grid-cell .label {
   font-size: 0.7rem;
-  color: var(--text-muted);
+  color: var(--text-meta);
   margin-bottom: 0.2rem;
 }
+
 .grid-cell .val {
   font-size: 0.9rem;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
+/* 비중 바 */
 .weight-bar-container {
   display: flex;
   flex-wrap: wrap;
@@ -358,23 +478,27 @@
   margin-top: 1rem;
   position: relative;
 }
+
 .weight-label {
   font-size: 0.75rem;
   color: var(--text-muted);
 }
+
 .weight-val-small {
   font-size: 0.75rem;
   color: var(--text-muted);
   margin-left: auto;
 }
+
 .weight-track {
   width: 100%;
   height: 4px;
-  background-color: var(--bg-input);
+  background-color: var(--border);
   border-radius: 2px;
   margin-top: 0.4rem;
   overflow: hidden;
 }
+
 .weight-fill {
   height: 100%;
   border-radius: 2px;
