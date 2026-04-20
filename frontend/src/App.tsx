@@ -89,8 +89,8 @@ const App: React.FC = () => {
               id: session.user.id, 
               email: session.user.email!, 
               nickname: session.user.user_metadata?.nickname || '사용자',
-              role: 'user',
-              isAdmin: false
+              role: session.user.email === 'antstocknote@gmail.com' ? 'admin' : 'user',
+              isAdmin: session.user.email === 'antstocknote@gmail.com'
             },
             session.access_token
           );
@@ -108,8 +108,8 @@ const App: React.FC = () => {
               id: session.user.id, 
               email: session.user.email!, 
               nickname: session.user.user_metadata?.nickname || '사용자',
-              role: 'user',
-              isAdmin: false
+              role: session.user.email === 'antstocknote@gmail.com' ? 'admin' : 'user',
+              isAdmin: session.user.email === 'antstocknote@gmail.com'
             },
             session.access_token
           );

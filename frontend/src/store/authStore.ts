@@ -59,7 +59,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
 
     if (data) {
-      const profileData = data as { role: string; deleted_at: string | null };
+      const profileData = data as { role?: string; deleted_at: string | null };
       
       // ✅ 탈퇴 유효 기간 체크 (Soft Delete)
       if (profileData.deleted_at) {
@@ -71,12 +71,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set((state) => ({
         user: state.user ? { 
           ...state.user, 
-          role: data.role as 'user' | 'admin',
-          isAdmin: data.role === 'admin' || state.user.email === 'antstocknote@gmail.com'
+          role: (profileData.role || 'user') as 'user' | 'admin',
+          isAdmin: profileData.role === 'admin' || state.user.email === 'antstocknote@gmail.com'
         } : null
       }));
     } else {
-      // 프로필이 없는 경우 기본값 설정 (어드민 이메일 체크 포함)
+      // 프로필이 없는 경우 기본값 설정 (어드민 이메일 체크 포함 필수)
       set((state) => ({
         user: state.user ? { 
           ...state.user, 
