@@ -6,6 +6,7 @@ import { AnalysisStats } from '../components/analysis/AnalysisStats';
 import { EmotionAnalysis } from '../components/analysis/EmotionAnalysis';
 import { NoteModal } from '../components/NoteModal';
 import { SubscriptionSection } from '../components/subscription/SubscriptionSection';
+import { TierGate } from '../components/common/TierGate';
 
 interface Note {
   id: string;
@@ -84,7 +85,9 @@ export const AnalysisPage: React.FC = () => {
             strategies={stats.strategyStats}
             mistakes={stats.mistakeStats}
           />
-          <EmotionAnalysis stats={stats.emotionStats || []} />
+          <TierGate feature="emotion_analysis">
+            <EmotionAnalysis stats={stats.emotionStats || []} />
+          </TierGate>
         </div>
 
         {/* 오답 노트 섹션 */}

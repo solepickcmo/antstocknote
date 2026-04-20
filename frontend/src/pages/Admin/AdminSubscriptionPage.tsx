@@ -69,31 +69,28 @@ export const AdminSubscriptionPage: React.FC = () => {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 30);
 
-    const { error } = await supabase
-      .from('subscriptions')
-      .update({ 
-        status: 'active', 
-        tier: 'premium', 
-        expires_at: expiresAt.toISOString(),
-        updated_at: new Date().toISOString()
-      })
-      .eq('user_id', userId);
-
-    if (error) {
-      alert('승인 실패: ' + error.message);
+    // 새로 설계된 RPC (manage_premium_access) 호출
+    const { data, error } = await supabase.rpc('manage_premium_access', {
+      target_user_id: userId, 
+      sub_action: 'approve',
+      expires_at_val: expiresAt.toISOString()
+    });
+    
+    if (error || !data?.success) {
+      alert('승인 실패: ' + (error?.message || data?.error || '알 수 없는 오류'));
     } else {
       fetchSubscriptions();
     }
   };
 
   const handleDecline = async (userId: string) => {
-    const { error } = await supabase
-      .from('subscriptions')
-      .update({ status: 'canceled', updated_at: new Date().toISOString() })
-      .eq('user_id', userId);
-
-    if (error) {
-      alert('거절 실패: ' + error.message);
+    const { data, error } = await supabase.rpc('manage_premium_access', {
+      target_user_id: userId, 
+      sub_action: 'decline' 
+    });
+ 
+    if (error || !data?.success) {
+      alert('거절 실패: ' + (error?.message || data?.error || '알 수 없는 오류'));
     } else {
       fetchSubscriptions();
     }

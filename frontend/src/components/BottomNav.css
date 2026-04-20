@@ -14,12 +14,24 @@
   background-color: var(--bg-card);
   border-top: 1px solid var(--border);
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-start;
   align-items: center;
-  padding: 0 0.5rem;
+  padding: 0 1rem;
   z-index: 2000;
   box-shadow: rgba(32, 32, 37, 0.05) 0px -3px 5px 0px;
   transition: background-color 0.2s ease;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  gap: 0.5rem;
+}
+
+/* 스크롤바 숨기기 */
+.bottom-nav::-webkit-scrollbar {
+  display: none;
+}
+.bottom-nav {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .bottom-nav-item {
@@ -31,7 +43,8 @@
   text-decoration: none;
   font-size: 0.7rem;
   font-weight: 500;
-  flex: 1;
+  flex-shrink: 0;
+  flex-basis: 72px;
   min-height: 44px;             /* 터치 타겟 */
   justify-content: center;
 }
@@ -43,7 +56,8 @@
 }
 
 .bottom-nav-fab-container {
-  flex: 1;
+  flex-shrink: 0;
+  flex-basis: 72px;
   display: flex;
   flex-direction: column;
   align-items: center;

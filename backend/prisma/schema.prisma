@@ -19,6 +19,7 @@ model User {
   community_joined_at    DateTime?
   created_at             DateTime  @default(now())
   updated_at             DateTime  @default(now())
+  deleted_at             DateTime?
 
   trades Trade[]
   tags     Tag[]
@@ -45,6 +46,7 @@ model Trade {
   is_open      Boolean   @default(true)
   is_public    Boolean   @default(false)
   created_at   DateTime  @default(now())
+  deleted_at   DateTime?
 
   user    User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
   note    Note?
@@ -65,6 +67,7 @@ model Note {
   content      String?
   created_at   DateTime @default(now())
   updated_at   DateTime @default(now())
+  deleted_at   DateTime?
 
   trade Trade @relation(fields: [trade_id], references: [id], onDelete: Cascade)
 
@@ -91,4 +94,16 @@ model StockMaster {
 
   @@index([name(ops: raw("gin_trgm_ops"))], type: Gin)
   @@map("stock_master")
+}
+
+model Subscription {
+  user_id    String    @id
+  tier       String    // "free" | "premium"
+  status     String    // "active" | "pending" | "expired" | "canceled"
+  expires_at DateTime?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
+  deleted_at DateTime?
+
+  @@map("subscriptions")
 }

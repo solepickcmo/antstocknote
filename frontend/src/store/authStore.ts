@@ -49,7 +49,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   fetchProfile: async (userId: string) => {
     const { data, error } = await supabase
       .from('profiles')
-      .select('role')
+      .select('role, deleted_at')
       .eq('id', userId)
       .maybeSingle();
 
@@ -59,6 +59,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
 
     if (data) {
+      const profileData = data as { role: string; deleted_at: string | null };
+      
+      // ✅ 탈퇴 유효 기간 체크 (Soft Delete)
+      if (profileData.deleted_at) {
+        console.warn('[AuthStore] 탈퇴 처리된 계정입니다. 로그인을 차단합니다.');
+        get().logout();
+        return;
+      }
+
       set((state) => ({
         user: state.user ? { 
           ...state.user, 
@@ -106,17 +115,27 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const user = get().user;
     if (!user) return { success: false, error: 'User not found' };
 
-    // 1. 프로필 및 구독 데이터 삭제 (RLS 정책에 의해 본인 데이터 삭제 가능)
+    // 1. 프로필 및 유저 테이블에 탈퇴 일시 마킹
+    const deletedAt = new Date().toISOString();
+    
+    // profiles 테이블 업데이트
     const { error: profileError } = await supabase
       .from('profiles')
-      .delete()
+      .update({ deleted_at: deletedAt })
       .eq('id', user.id);
 
     if (profileError) {
-       console.error('[AuthStore] 탈퇴 중 오류 발생:', profileError.message);
+       console.error('[AuthStore] 탈퇴 처리 실패:', profileError.message);
+       return { success: false, error: profileError.message };
     }
 
-    // 2. 로그아웃 처리
+    // 2. 구독 상태 취소 및 탈퇴 마킹
+    await supabase
+      .from('subscriptions')
+      .update({ status: 'canceled', deleted_at: deletedAt })
+      .eq('user_id', user.id);
+
+    // 3. 즉시 로그아웃 (이후 로그인 시 deleted_at 체크로 차단됨)
     await get().logout();
     
     return { success: true };

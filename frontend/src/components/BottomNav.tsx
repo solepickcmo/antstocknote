@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { LayoutDashboard, History, Plus, BarChart2, User, LogOut, Monitor, Calculator, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, History, Plus, BarChart2, User, LogOut, Monitor, Calculator, Sun, Moon, Settings } from 'lucide-react';
 import { useTradeStore } from '../store/tradeStore';
 import { useAuthStore } from '../store/authStore';
 import { useLayoutStore } from '../store/layoutStore';
@@ -74,6 +74,13 @@ export const BottomNav: React.FC = () => {
         <User size={22} />
         <span>프로필</span>
       </NavLink>
+      <button 
+        className={`bottom-nav-item ${isSettingsOpen ? 'active' : ''}`}
+        onClick={() => setIsSettingsOpen(true)}
+      >
+        <Settings size={22} />
+        <span>설정</span>
+      </button>
     </nav>
 
     {isSettingsOpen && (

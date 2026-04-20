@@ -81,7 +81,7 @@ export class TradeService {
     const page = Number(filters.page || 0);
     const size = Number(filters.size || 20);
     
-    let whereClause: any = { user_id: userId };
+    let whereClause: any = { user_id: userId, deleted_at: null };
     if (filters.ticker) whereClause.ticker = filters.ticker;
     if (filters.strategyTag) whereClause.strategy_tag = filters.strategyTag;
     if (filters.emotionTag) whereClause.emotion_tag = filters.emotionTag;
@@ -115,7 +115,7 @@ export class TradeService {
     const dailyPnL: any[] = await prisma.$queryRaw`
       SELECT DATE(traded_at) as "date", SUM(pnl) as "daily_pnl"
       FROM trades
-      WHERE user_id = ${userId} AND type = 'sell' AND traded_at >= ${new Date(startDate)} AND traded_at < ${new Date(endDate)}
+      WHERE user_id = ${userId} AND type = 'sell' AND traded_at >= ${new Date(startDate)} AND traded_at < ${new Date(endDate)} AND deleted_at IS NULL
       GROUP BY DATE(traded_at)
     `;
 
