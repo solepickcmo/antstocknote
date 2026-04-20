@@ -11,6 +11,7 @@ interface UserSubscription {
   tier: 'free' | 'premium';
   status: 'active' | 'pending' | 'expired' | 'canceled';
   expires_at: string | null;
+  request_message: string | null; // 신청 메시지 추가
 }
 
 export const AdminSubscriptionPage: React.FC = () => {
@@ -201,6 +202,13 @@ export const AdminSubscriptionPage: React.FC = () => {
                     </span>
                   </div>
                 </div>
+
+                {sub.request_message && (
+                  <div className="sub-card-message">
+                    <p className="message-label">신청 메시지 / 입금자명</p>
+                    <p className="message-content">{sub.request_message}</p>
+                  </div>
+                )}
 
                 {sub.status === 'pending' && (
                   <div className="sub-card-actions">

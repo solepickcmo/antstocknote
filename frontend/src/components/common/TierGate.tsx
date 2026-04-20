@@ -25,9 +25,14 @@ export const TierGate: React.FC<TierGateProps> = ({ feature, children, fallback 
   // 신청하기 핸들러
   const handleRequest = async () => {
     if (!user) return;
+    
+    // Binance 스타일의 간단한 입력 유도
+    const msg = window.prompt('신청 사유 또는 입금자명을 입력해주세요.\n(예: 홍길동 / 입금완료)', '');
+    if (msg === null) return; // 취소 시 중단
+
     setIsSubmitting(true);
     try {
-      const result = await requestPremium(user.id);
+      const result = await requestPremium(user.id, msg);
       if (!result.success) {
         alert('신청 처리 중 오류가 발생했습니다: ' + result.error);
       }

@@ -42,7 +42,7 @@ interface TierState {
   canAccess: (feature: FeatureKey) => boolean;
   fetchTier: (userId: string) => Promise<void>;
   // 프리미엄 신청 (pending 상태 생성)
-  requestPremium: (userId: string) => Promise<{ success: boolean; error?: string }>;
+  requestPremium: (userId: string, message?: string) => Promise<{ success: boolean; error?: string }>;
 }
 
 // ─────────────────────────────────────────────
@@ -55,7 +55,7 @@ const PERMISSIONS: Record<FeatureKey, Tier[]> = {
   calendar:           ['free', 'premium'], // 수익 캘린더
   history_recent:     ['free', 'premium'], // 히스토리 최근 3개월 조회
   export_csv:         ['free', 'premium'], // CSV 다운로드
-  analysis:           ['free', 'premium'], // 기본 분석/복기
+  analysis:           ['premium'], // AI 복기 분석 (Premium 전용)
   theme_toggle:       ['free', 'premium'], // 다크/라이트 테마
 
   // ── Premium 전용 ────────────────────────────
@@ -132,13 +132,14 @@ export const useTierStore = create<TierState>((set, get) => ({
     });
   },
 
-  requestPremium: async (userId: string) => {
+  requestPremium: async (userId: string, message?: string) => {
     const { error } = await supabase
       .from('subscriptions')
       .upsert({ 
         user_id: userId, 
         tier: 'premium', 
         status: 'pending',
+        request_message: message, // 유저가 입력한 신청 메시지 저장
         updated_at: new Date().toISOString()
       });
 

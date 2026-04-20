@@ -145,7 +145,9 @@ const App: React.FC = () => {
               <Route path="/holdings" element={
                 <TierGate feature="history_date_range"><HoldingsPage /></TierGate>
               } />
-              <Route path="/analysis" element={<AnalysisPage />} />
+              <Route path="/analysis" element={
+                <TierGate feature="analysis"><AnalysisPage /></TierGate>
+              } />
               <Route path="/calculator" element={
                 <TierGate feature="calculators"><CalculatorPage /></TierGate>
               } />

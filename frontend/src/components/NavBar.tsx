@@ -1,13 +1,12 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Calendar, History, BarChart2, Users, LogOut, Calculator, PieChart, PlusSquare, Smartphone, Sun, Moon, Shield, User } from 'lucide-react';
+import { LayoutDashboard, Calendar, History, Users, LogOut, Calculator, PieChart, PlusSquare, Smartphone, Sun, Moon, Shield, User } from 'lucide-react';
 import { useTradeStore } from '../store/tradeStore';
 import { useLayoutStore } from '../store/layoutStore';
 import { useAuthStore } from '../store/authStore';
 import { useTierStore } from '../store/tierStore';
 import { exportTradesToCSV } from '../utils/exportUtils';
 import { useThemeStore } from '../store/themeStore';
-import logo from '../assets/logo.png';
 import './NavBar.css';
 
 export const NavBar: React.FC = () => {
@@ -36,8 +35,6 @@ export const NavBar: React.FC = () => {
         { to: '/dashboard', label: '대시보드', icon: LayoutDashboard },
         { to: '/history',   label: '매매 내역', icon: History },
         { to: '/calendar',  label: '수익 캘린더', icon: Calendar },
-        { to: '/analysis',  label: '전략별 복기/분석', icon: BarChart2 },
-        { id: 'export', label: '내보내기 (Export)', icon: Smartphone },
       ]
     },
     {
@@ -45,7 +42,7 @@ export const NavBar: React.FC = () => {
       label: 'PREMIUM',
       items: [
         { to: '/holdings',   label: '보유 종목 분석', icon: PieChart },
-        { to: '/analysis',   label: '감정 × 수익 분석', icon: Users },
+        { to: '/analysis',   label: 'AI 복기 분석', icon: Users },
         { to: '/calculator', label: '투자 계산기', icon: Calculator },
         { id: 'community',   label: '커뮤니티 (개미의 집)', icon: PlusSquare },
         ...(user?.isAdmin ? [{ to: '/admin/subscriptions', label: '구독 승인 관리', icon: Shield }] : []),
@@ -57,10 +54,9 @@ export const NavBar: React.FC = () => {
     <nav className="navbar">
       <div className="nav-brand">
         <div className="nav-brand-logo">
-          <img src={logo} alt="AntStockNote Logo" className="brand-img" />
           <div className="flex flex-col">
             <span className="brand-name">AntStockNote</span>
-            {/* tierStore에서 Tier 표시 — user 객체에서 tier 제거됨 */}
+            {/* tierStore에서 Tier 표시 */}
             <span className={`user-tier-badge ${tier}`}>
               {tier.toUpperCase()}
             </span>

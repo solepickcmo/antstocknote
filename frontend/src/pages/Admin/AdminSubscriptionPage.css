@@ -154,15 +154,34 @@
   color: white;
 }
 
-.btn-decline {
-  background: rgba(246, 70, 93, 0.1);
-  color: #F6465D;
-  border: 1px solid rgba(246, 70, 93, 0.2);
-}
-
 .btn-decline:hover {
   background: #F6465D;
   color: white;
+}
+
+/* 신청 메시지 스타일 추가 */
+.sub-card-message {
+  margin: 1rem 0 1.5rem 0;
+  padding: 1rem;
+  background: rgba(240, 185, 11, 0.05);
+  border-radius: 12px;
+  border: 1px dashed rgba(240, 185, 11, 0.3);
+}
+
+.message-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.message-content {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-main);
+  word-break: break-all;
 }
 
 .admin-search-input {
