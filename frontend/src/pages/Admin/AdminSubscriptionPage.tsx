@@ -40,7 +40,7 @@ export const AdminSubscriptionPage: React.FC = () => {
     // 2. profiles 가져오기 (이메일은 auth.users에 있으나, profiles에 연동된 경우 활용)
     const { data: profileData, error: profileError } = await supabase
       .from('profiles')
-      .select('id, nickname');
+      .select('id, nickname, email');
 
     if (profileError) console.error('Error fetching profiles:', profileError);
 
@@ -50,9 +50,7 @@ export const AdminSubscriptionPage: React.FC = () => {
       return {
         ...sub,
         nickname: profile?.nickname || 'Unknown',
-        // 이메일은 보안상 admin 기능으로 auth 데이터 조회가 필요할 수 있으나 
-        // 여기서는 profiles나 다른 메타데이터를 활용한다고 가정.
-        email: '---' 
+        email: profile?.email || 'Unknown'
       };
     });
 
@@ -101,9 +99,14 @@ export const AdminSubscriptionPage: React.FC = () => {
     }
   };
 
-  const filtered = subscriptions.filter(s => 
-    filterStatus === 'all' ? true : s.status === filterStatus
-  );
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filtered = subscriptions.filter(s => {
+    const matchesStatus = filterStatus === 'all' ? true : s.status === filterStatus;
+    const matchesSearch = s.nickname.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          s.email.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesStatus && matchesSearch;
+  });
 
   if (!user?.isAdmin) {
     return (
@@ -128,20 +131,35 @@ export const AdminSubscriptionPage: React.FC = () => {
       </div>
 
       <div className="admin-filters">
-        <div className="flex items-center gap-2">
-          <Filter size={16} className="text-muted" />
-          <span className="text-xs font-bold text-muted uppercase tracking-widest">필터링</span>
-        </div>
-        <div className="flex gap-2 mt-2">
-          {['all', 'pending', 'active', 'expired', 'canceled'].map(status => (
-            <button
-              key={status}
-              onClick={() => setFilterStatus(status)}
-              className={`filter-chip ${filterStatus === status ? 'active' : ''}`}
-            >
-              {status.toUpperCase()}
-            </button>
-          ))}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <Filter size={16} className="text-muted" />
+              <span className="text-xs font-bold text-muted uppercase tracking-widest">상태 필터</span>
+            </div>
+            <div className="flex gap-2">
+              {['all', 'pending', 'active', 'expired', 'canceled'].map(status => (
+                <button
+                  key={status}
+                  onClick={() => setFilterStatus(status)}
+                  className={`filter-chip ${filterStatus === status ? 'active' : ''}`}
+                >
+                  {status.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="search-box relative">
+            <Filter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+            <input 
+              type="text" 
+              placeholder="닉네임 또는 이메일 검색"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="admin-search-input"
+            />
+          </div>
         </div>
       </div>
 
@@ -165,7 +183,7 @@ export const AdminSubscriptionPage: React.FC = () => {
                     </div>
                     <div>
                       <h3 className="font-bold">{sub.nickname}</h3>
-                      <p className="text-[10px] text-muted">{sub.user_id.slice(0, 8)}...</p>
+                      <p className="text-[10px] text-muted">{sub.email}</p>
                     </div>
                   </div>
                   <span className={`status-badge ${sub.status}`}>

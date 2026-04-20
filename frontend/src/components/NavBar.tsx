@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Calendar, History, BarChart2, Users, LogOut, Calculator, PieChart, PlusSquare, Smartphone, Sun, Moon, Shield } from 'lucide-react';
+import { LayoutDashboard, Calendar, History, BarChart2, Users, LogOut, Calculator, PieChart, PlusSquare, Smartphone, Sun, Moon, Shield, User } from 'lucide-react';
 import { useTradeStore } from '../store/tradeStore';
 import { useLayoutStore } from '../store/layoutStore';
 import { useAuthStore } from '../store/authStore';
@@ -108,16 +108,27 @@ export const NavBar: React.FC = () => {
                   </NavLink>
                 );
               }
-              const disabled = 'disabled' in item && item.disabled;
-              return (
-                <div key={item.label} className={`nav-item ${disabled ? 'disabled' : ''}`}>
-                  <item.icon size={18} />
-                  <span>{item.label}</span>
-                </div>
-              );
+              return null;
             })}
           </div>
         ))}
+
+        <NavLink to="/calculator" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+          <Calculator size={20} />
+          <span>계산기</span>
+        </NavLink>
+        
+        <NavLink to="/profile" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+          <User size={20} />
+          <span>프로필</span>
+        </NavLink>
+
+        {user?.isAdmin && (
+          <NavLink to="/admin/subscriptions" className={({ isActive }) => `nav-item admin-item ${isActive ? 'active' : ''}`}>
+            <Shield size={20} />
+            <span>어드민 센터</span>
+          </NavLink>
+        )}
       </div>
 
       <div className="nav-footer">

@@ -26,6 +26,8 @@ interface AuthState {
   logout: () => void;
   setInitialized: (val: boolean) => void;
   fetchProfile: (userId: string) => Promise<void>;
+  updateNickname: (userId: string, newNickname: string) => Promise<{ success: boolean; error?: string }>;
+  withdraw: () => Promise<{ success: boolean; error?: string }>;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -82,4 +84,41 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   setInitialized: (val) => set({ isInitialized: val }),
+
+  updateNickname: async (userId: string, newNickname: string) => {
+    const { error } = await supabase
+      .from('profiles')
+      .update({ nickname: newNickname, updated_at: new Date().toISOString() })
+      .eq('id', userId);
+
+    if (error) {
+      console.error('[AuthStore] 닉네임 수정 실패:', error.message);
+      return { success: false, error: error.message };
+    }
+
+    set((state) => ({
+      user: state.user ? { ...state.user, nickname: newNickname } : null
+    }));
+    return { success: true };
+  },
+
+  withdraw: async () => {
+    const user = get().user;
+    if (!user) return { success: false, error: 'User not found' };
+
+    // 1. 프로필 및 구독 데이터 삭제 (RLS 정책에 의해 본인 데이터 삭제 가능)
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .delete()
+      .eq('id', user.id);
+
+    if (profileError) {
+       console.error('[AuthStore] 탈퇴 중 오류 발생:', profileError.message);
+    }
+
+    // 2. 로그아웃 처리
+    await get().logout();
+    
+    return { success: true };
+  },
 }));
