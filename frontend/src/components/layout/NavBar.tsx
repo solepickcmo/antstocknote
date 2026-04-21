@@ -1,12 +1,12 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Calendar, History, Users, LogOut, Calculator, PieChart, PlusSquare, Smartphone, Sun, Moon, Shield, User } from 'lucide-react';
-import { useTradeStore } from '../store/tradeStore';
-import { useLayoutStore } from '../store/layoutStore';
-import { useAuthStore } from '../store/authStore';
-import { useTierStore } from '../store/tierStore';
-import { exportTradesToCSV } from '../utils/exportUtils';
-import { useThemeStore } from '../store/themeStore';
+import { useTradeStore } from '../../store/tradeStore';
+import { useLayoutStore } from '../../store/layoutStore';
+import { useAuthStore } from '../../store/authStore';
+import { useTierStore } from '../../store/tierStore';
+import { exportTradesToCSV } from '../../utils/exportUtils';
+import { useThemeStore } from '../../store/themeStore';
 import './NavBar.css';
 
 export const NavBar: React.FC = () => {

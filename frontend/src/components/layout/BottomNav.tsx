@@ -2,11 +2,11 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { LayoutDashboard, History, Plus, BarChart2, User, LogOut, Monitor, Calculator, Sun, Moon, Settings } from 'lucide-react';
-import { useTradeStore } from '../store/tradeStore';
-import { useAuthStore } from '../store/authStore';
-import { useLayoutStore } from '../store/layoutStore';
-import { useThemeStore } from '../store/themeStore';
-import { supabase } from '../api/supabase';
+import { useTradeStore } from '../../store/tradeStore';
+import { useAuthStore } from '../../store/authStore';
+import { useLayoutStore } from '../../store/layoutStore';
+import { useThemeStore } from '../../store/themeStore';
+import { supabase } from '../../api/supabase';
 import './BottomNav.css';
 
 export const BottomNav: React.FC = () => {

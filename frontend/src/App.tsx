@@ -2,13 +2,13 @@ import React, { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { NavBar } from './components/NavBar';
+import { NavBar } from './components/layout/NavBar';
 import { useAuthStore } from './store/authStore';
 import { useTradeStore } from './store/tradeStore';
 import { useLayoutStore } from './store/layoutStore';
 import { useThemeStore } from './store/themeStore';
 import { TradeModal } from './components/TradeModal';
-import { BottomNav } from './components/BottomNav';
+import { BottomNav } from './components/layout/BottomNav';
 
 // Lazy load pages
 const DashboardPage = lazy(() => import('./pages/DashboardPage').then(m => ({ default: m.DashboardPage })));

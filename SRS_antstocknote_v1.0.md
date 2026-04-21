@@ -281,14 +281,14 @@
 | FR-084 | 커뮤니티 서비스를 중단하거나 삭제해도 메인 DB(users, trades, notes, tags 테이블)에 영향이 없어야 한다. | P3 | 🔲 미구현 |
 | FR-085 | 사용자는 탈퇴 시 모든 데이터를 안전하게 삭제할 수 있어야 한다. (DeleteAccountPage) | P1 | ✅ 완료 |
 
-### 4.10 다크/라이트 테마 전환 (미구현)
+### 4.10 다크/라이트 테마 전환
 
 | ID | 요구사항 | 우선순위 | 구현 상태 |
 |---|---|---|---|
-| FR-120 | 앱은 다크모드와 라이트모드 두 가지 테마를 지원해야 한다. | P2 | 🔲 미구현 |
-| FR-121 | 테마 전환은 페이지 새로고침 없이 즉시 UI에 반영되어야 한다. | P2 | 🔲 미구현 |
-| FR-122 | 선택한 테마는 `localStorage`에 저장되어 앱 재시작 시 자동 복원되어야 한다. | P2 | 🔲 미구현 |
-| FR-123 | 테마 상태는 Zustand `themeStore`에서 전역 관리한다. | P2 | 🔲 미구현 |
+| FR-120 | 앱은 다크모드와 라이트모드 두 가지 테마를 지원해야 한다. | P2 | ✅ 완료 |
+| FR-121 | 테마 전환은 페이지 새로고침 없이 즉시 UI에 반영되어야 한다. (`data-theme` 속성 방식) | P2 | ✅ 완료 |
+| FR-122 | 선택한 테마는 `localStorage`에 저장되어 앱 재시작 시 자동 복원되어야 한다. | P2 | ✅ 완료 |
+| FR-123 | 테마 상태는 Zustand `themeStore`에서 전역 관리한다. (`zustand/persist` 미들웨어 적용) | P2 | ✅ 완료 |
 
 ### 4.11 전체 매매내역 내보내기 (미구현)
 
@@ -462,10 +462,12 @@ CREATE TABLE daily_journals (
 -- 4. 구독 Tier 테이블 (v2.0.0 신규)
 CREATE TABLE subscriptions (
     user_id    UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-    tier       TEXT NOT NULL DEFAULT 'free' CHECK (tier IN ('free', 'basic', 'premium')),
+    tier       TEXT NOT NULL DEFAULT 'free' CHECK (tier IN ('free', 'premium')),
+    status     TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'pending', 'expired', 'canceled')),
     expires_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    deleted_at TIMESTAMP WITH TIME ZONE
 );
 
 -- 5. 월별 목표 손익 테이블 (v2.0.0 신규)
@@ -566,30 +568,17 @@ CREATE POLICY "Authenticated users can search stocks" ON stock_master
 | name | VARCHAR(50) | NOT NULL | 태그명 |
 | type | VARCHAR(20) | strategy / emotion | 태그 유형 |
 
-#### 5.1.7 daily_journals (일일 매매 루틴 - 미구현)
-
-| 컬럼명 | 타입 | 제약조건 | 설명 |
-|---|---|---|---|
-| id | BIGSERIAL | PK | 저널 ID |
-| user_id | UUID | FK -> users.id | 사용자 ID |
-| journal_date | DATE | NOT NULL | 활동 날짜 |
-| type | VARCHAR(10) | CHECK (pre/post) | 장 전/후 구분 |
-| plan_memo | TEXT | NULL | 매매 계획/복기 메모 |
-| mood_score | SMALLINT | 1~5 | 심리 점수 |
-| today_rule | TEXT | NULL | 오늘의 원칙 |
-| impulse_count | SMALLINT | DEFAULT 0 | 뇌동매매 횟수 |
-| plan_followed | BOOLEAN | NULL | 계획 준수 여부 |
-| created_at | TIMESTAMP | DEFAULT NOW() | 생성 시각 |
-
-#### 5.1.8 subscriptions (구독 Tier 관리 - 미구현)
+#### 5.1.8 subscriptions (구독 Tier 관리)
 
 | 컬럼명 | 타입 | 제약조건 | 설명 |
 |---|---|---|---|
 | user_id | UUID | PK, FK -> auth.users.id | 사용자 고유 ID |
-| tier | TEXT | free / basic / premium | 구독 등급 |
+| tier | TEXT | free / premium | 구독 등급 (Basic은 폐기) |
+| status | TEXT | active/pending/expired/canceled | 승인 상태 |
 | expires_at | TIMESTAMPTZ | NULL 허용 | 만료 시각 (NULL 시 무제한) |
 | created_at | TIMESTAMPTZ | DEFAULT NOW() | 최초 생성일시 |
 | updated_at | TIMESTAMPTZ | DEFAULT NOW() | 마지막 수정일시 |
+| deleted_at | TIMESTAMPTZ | NULL 허용 | Soft Delete 처리 시각 |
 
 #### 5.1.9 goals (월별 목표 관리 - 미구현)
 
@@ -601,8 +590,18 @@ CREATE POLICY "Authenticated users can search stocks" ON stock_master
 | target_pnl | DECIMAL(18,4) | NOT NULL | 목표 손익 금액 |
 | created_at | TIMESTAMPTZ | DEFAULT NOW() | 생성일시 |
 | updated_at | TIMESTAMPTZ | DEFAULT NOW() | 수정일시 |
-| name | VARCHAR(50) | NOT NULL | 태그명 |
-| type | ENUM | strategy / emotion, NOT NULL | 태그 유형 |
+
+#### 5.1.10 profiles (유저 프로필/역할)
+
+> `auth.users`를 보완하는 공개 테이블. 닉네임, 역할(admin/user) 등을 관리하며, Supabase Auth 가입 직후 트리거로 자동 생성된다.
+
+| 컬럼명 | 타입 | 제약조건 | 설명 |
+|---|---|---|---|
+| id | UUID | PK, FK → auth.users.id | 유저 식별자 |
+| email | TEXT | - | 유저 이메일 (Auth 연동) |
+| nickname | TEXT | - | 표시 명칭 |
+| role | TEXT | admin / user | 시스템 권한 |
+| deleted_at | TIMESTAMPTZ | NULL 허용 | Soft Delete 처리 시각 |
 
 #### 5.1.6 stock_master (종목 마스터 DB)
 
@@ -654,7 +653,8 @@ Supabase의 핵심 보안 모델로서 RLS 정책을 명시한다.
 - 수익 캘린더(**CalendarPage**)는 월 단위 달력 뷰를 기본으로 제공하며, 날짜별 PnL 색상 코딩을 적용해야 한다.
 - 대시보드의 수익금 추이 차트는 **AreaChart(recharts)**를 기본으로 사용한다.
 - PC 환경: 사이드 **NavBar** 컴포넌트를 표시하고, 모바일 환경: 하단 **BottomNav** 컴포넌트를 표시한다. 전환 기준은 `layoutStore.isMobileMode` 에서 관리한다.
-- 페이지별 라우팅: `/dashboard`, `/calendar`, `/history`, `/holdings`, `/analysis` 5개 주요 라우트를 제공한다.
+- 페이지별 라우팅: `/dashboard`, `/calendar`, `/history`, `/holdings`, `/analysis`, `/calculator`, `/profile` 7개 주요 라우트를 제공한다.
+- 관리자 라우팅: `/admin/subscriptions` — `authStore.isAdmin` 기반 접근 제어.
 - 인증 라우팅: `/login`, `/register`, `/reset-password` 를 제공하며, **AuthLayout**이 인증 상태에 따라 자동 리다이렉트를 처리한다.
 
 ### 6.2 API 인터페이스 (API Interface)

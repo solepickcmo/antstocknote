@@ -22,40 +22,13 @@ export const AdminSubscriptionPage: React.FC = () => {
 
   const fetchSubscriptions = async () => {
     setLoading(true);
-    // profiles와 subscriptions를 조인하여 유저 이메일/닉네임까지 가져온다.
-    // 참고: Supabase에서 단순 쿼리로 수행하거나 RPC를 사용할 수 있음.
-    // 여기서는 subscriptions를 먼저 가져오고 profiles 정보와 합친다.
-    
-    // 1. subscriptions 가져오기
-    const { data: subData, error: subError } = await supabase
-      .from('subscriptions')
-      .select('*')
-      .order('updated_at', { ascending: false });
-
-    if (subError) {
-      console.error('Error fetching subscriptions:', subError);
+    const { data, error } = await supabase.rpc('get_admin_subscriptions');
+    if (error || !data?.success) {
+      console.error('구독 목록 조회 실패:', error?.message || data?.error);
       setLoading(false);
       return;
     }
-
-    // 2. profiles 가져오기 (이메일은 auth.users에 있으나, profiles에 연동된 경우 활용)
-    const { data: profileData, error: profileError } = await supabase
-      .from('profiles')
-      .select('id, nickname, email');
-
-    if (profileError) console.error('Error fetching profiles:', profileError);
-
-    // 3. 데이터 결합
-    const merged = subData.map((sub: any) => {
-      const profile = profileData?.find(p => p.id === sub.user_id);
-      return {
-        ...sub,
-        nickname: profile?.nickname || 'Unknown',
-        email: profile?.email || 'Unknown'
-      };
-    });
-
-    setSubscriptions(merged);
+    setSubscriptions(data.data ?? []);
     setLoading(false);
   };
 
