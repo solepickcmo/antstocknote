@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { MetricCard } from '../components/MetricCard';
 import { GoalTracker } from '../components/Dashboard/GoalTracker';
 import { AnalysisSummary } from '../components/analysis/AnalysisSummary';
 import { useTradeStore } from '../store/tradeStore';
-import { supabase } from '../api/supabase';
+import { useNotesCount } from '../hooks/useNotesCount';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
 export const DashboardPage: React.FC = () => {
@@ -16,24 +16,13 @@ export const DashboardPage: React.FC = () => {
     fetchTrades();
   }, [fetchTrades]);
 
-  // Store에서 분석 데이터 가져오기
   const stats = useMemo(() => getAnalysisStats(), [trades, getAnalysisStats]);
   const chartData = useMemo(() => getChartData(7), [trades, getChartData]);
 
   // AnalysisPage와 동일한 쿼리 조건으로 오답노트 카운트 실시간 조회
-  // content IS NOT NULL AND content != '' 조건 적용해 빈 노트는 제외
-  const [notesCount, setNotesCount] = useState(0);
-  useEffect(() => {
-    const fetchNotesCount = async () => {
-      const { count } = await supabase
-        .from('notes')
-        .select('id', { count: 'exact', head: true })
-        .not('content', 'is', null)
-        .neq('content', '');
-      setNotesCount(count ?? 0);
-    };
-    fetchNotesCount();
-  }, []);
+  // DB 연동 및 비즈니스 로직을 UI 컴포넌트 외부(Custom Hook)로 격리하여 
+  // 유지보수성 및 단위 테스트 구성을 용이하게 설계합니다.
+  const notesCount = useNotesCount();
 
   return (
     <div className="dashboard-page animate-fade-in pb-20">
