@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { supabase } from '../api/supabase';
 import './TradeModal.css';
 
@@ -87,7 +88,7 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
     }
   };
 
-  return (
+  return createPortal(
     <div className="modal-overlay">
       <div className="modal-container glass-panel" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
@@ -141,6 +142,7 @@ export const NoteModal: React.FC<NoteModalProps> = ({ isOpen, onClose, onSuccess
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

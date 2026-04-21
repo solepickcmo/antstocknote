@@ -220,7 +220,7 @@ a {
   margin-left: var(--nav-width);
   max-width: 1200px;
   margin-right: auto;
-  transition: all 0.2s ease;
+  transition: margin-left 0.2s ease, padding 0.2s ease;
 }
 
 @media (min-width: 768px) {
