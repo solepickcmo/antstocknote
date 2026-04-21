@@ -40,7 +40,7 @@ export const loadStockMasterCSV = (): Promise<StockData[]> => {
     return cachedStockMasterPromise;
   }
   
-  console.log('[CSV] Fetching stock master data...');
+  // console.log('[CSV] Fetching stock master data...');
   
   // 로컬 CSV 파일 읽기 (보안 패치 예외 적용: 종목 마스터 데이터는 직접 읽기 허용)
   cachedStockMasterPromise = fetch('/all_stock_master.csv?v=' + new Date().getTime())
@@ -53,7 +53,7 @@ export const loadStockMasterCSV = (): Promise<StockData[]> => {
       const decoder = new TextDecoder('utf-8');
       const text = decoder.decode(arrayBuffer);
       
-      console.log(`[CSV] Data loaded: ${text.length} characters`);
+      // console.log(`[CSV] Data loaded: ${text.length} characters`);
 
       // HTML 반환 여부 체크 (Vercel rewrite 등으로 인한 오류 방지)
       if (text.trim().startsWith('<!DOCTYPE html>') || text.trim().startsWith('<html')) {
@@ -63,7 +63,7 @@ export const loadStockMasterCSV = (): Promise<StockData[]> => {
       const lines = text.split(/\r?\n/);
       const stocks: StockData[] = [];
       
-      console.log(`[CSV] Parsing ${lines.length} lines...`);
+      // console.log(`[CSV] Parsing ${lines.length} lines...`);
       
       // Skip header
       for (let i = 1; i < lines.length; i++) {
@@ -90,7 +90,7 @@ export const loadStockMasterCSV = (): Promise<StockData[]> => {
         }
       }
       
-      console.log(`[CSV] Load complete! Found ${stocks.length} stocks.`);
+      // console.log(`[CSV] Load complete! Found ${stocks.length} stocks.`);
       return stocks;
     })
     .catch((error) => {

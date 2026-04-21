@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTradeStore } from '../store/tradeStore';
-import { useTagStore } from '../store/tagStore';
 import { loadStockMasterCSV } from '../utils/csv';
 import type { StockData } from '../utils/csv';
+import './TradeModal.css';
 
 // 기본 헬퍼: 현재 시간을 KST(UTC+9) 문자열로 변환 (datetime-local 형식)
 const getKSTNow = () => {
@@ -46,9 +46,6 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
     memo: '',
     isPublic: false
   });
-
-  // 매수/매도 유형에 따라 필터링된 고정 태그 목록 가져오기
-  const { strategyTags, emotionTags } = useTagStore(formData.type);
 
   // 모달 열릴 때 날짜를 현재 KST 시각으로 초기화
   useEffect(() => {
@@ -100,7 +97,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
           s.nameEn.toLowerCase().includes(lowerQuery)
         ).slice(0, 20); // Limit to top 20 results
         
-        console.log(`[Search] query: "${query}", found: ${filtered.length} stocks`);
+        // console.log(`[Search] query: "${query}", found: ${filtered.length} stocks`);
         
         setStockResults(filtered);
         if (filtered.length > 0) {
@@ -191,25 +188,17 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-container" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>매매 기록 추가</h2>
+          <h2>새 매매 기록</h2>
           <button className="close-x" onClick={onClose} aria-label="닫기">&times;</button>
         </div>
         
         {error && <div className="modal-error">{error}</div>}
         
         <form id="tradeForm" onSubmit={handleSubmit} className="trade-form">
-          <div className="segment-control">
-            <button type="button" className={`segment-btn buy ${formData.type === 'buy' ? 'active text-white' : ''}`} onClick={() => setFormData((prev: any) => ({...prev, type: 'buy', strategyTag: '', emotionTag: ''}))}>
-              BUY <span className={formData.type === 'buy' ? 'text-white' : ''}>매수</span>
-            </button>
-            <button type="button" className={`segment-btn sell ${formData.type === 'sell' ? 'active text-white' : ''}`} onClick={() => setFormData((prev: any) => ({...prev, type: 'sell', strategyTag: '', emotionTag: ''}))}>
-              SELL <span className={formData.type === 'sell' ? 'text-white' : ''}>매도</span>
-            </button>
-          </div>
           <div className="form-row" ref={dropdownRef}>
             <div className="form-group autocomplete-container">
               <label className="label-fintech" id="label-ticker" htmlFor="ticker">종목코드</label>
-              <input aria-label="종목 코드 입력" id="ticker" type="text" name="ticker" value={formData.ticker} onChange={handleChange} required placeholder="005930" autoComplete="off" onFocus={() => { setActiveInput('ticker'); if(formData.ticker) searchStocks(formData.ticker); }} aria-labelledby="label-ticker" />
+              <input aria-label="종목 코드 입력" id="ticker" type="text" name="ticker" className="input-fintech" value={formData.ticker} onChange={handleChange} required placeholder="005930" autoComplete="off" onFocus={() => { setActiveInput('ticker'); if(formData.ticker) searchStocks(formData.ticker); }} aria-labelledby="label-ticker" />
               {showStockDropdown && activeInput === 'ticker' && stockResults.length > 0 && (
                 <ul className="autocomplete-dropdown">
                   {stockResults.map((stock: StockData) => (
@@ -227,7 +216,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
             </div>
             <div className="form-group autocomplete-container">
               <label className="label-fintech" id="label-stockName" htmlFor="stockName">종목명</label>
-              <input aria-label="종목명 입력" id="stockName" type="text" name="name" value={formData.name} onChange={handleChange} required placeholder="삼성전자" autoComplete="off" onFocus={() => { setActiveInput('name'); if(formData.name) searchStocks(formData.name); }} aria-labelledby="label-stockName" />
+              <input aria-label="종목명 입력" id="stockName" type="text" name="name" className="input-fintech" value={formData.name} onChange={handleChange} required placeholder="애플" autoComplete="off" onFocus={() => { setActiveInput('name'); if(formData.name) searchStocks(formData.name); }} aria-labelledby="label-stockName" />
               {showStockDropdown && activeInput === 'name' && stockResults.length > 0 && (
                 <ul className="autocomplete-dropdown">
                   {stockResults.map((stock: StockData) => (
@@ -247,66 +236,48 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
           
           <div className="form-row">
             <div className="form-group">
+              <label className="label-fintech" id="label-type" htmlFor="type">유형</label>
+              <select aria-label="매매 유형 선택" id="type" name="type" className="input-fintech" value={formData.type} onChange={handleChange} required aria-labelledby="label-type">
+                <option value="buy">매수 (Buy)</option>
+                <option value="sell">매도 (Sell)</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="label-fintech" id="label-tradedAt" htmlFor="tradedAt">체결 일시</label>
+              <input aria-label="체결 일시 선택" id="tradedAt" type="datetime-local" name="tradedAt" className="input-fintech" value={formData.tradedAt} onChange={handleChange} required aria-labelledby="label-tradedAt" />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
               <label className="label-fintech" id="label-price" htmlFor="price">단가 (Price)</label>
-              <input aria-label="매수가격(단가) 입력" id="price" type="number" step="1" name="price" value={formData.price} onChange={handleChange} required placeholder="70000" aria-labelledby="label-price" />
+              <input aria-label="매수가격(단가) 입력" id="price" type="number" step="any" name="price" className="input-fintech" value={formData.price} onChange={handleChange} required placeholder="70000" aria-labelledby="label-price" />
             </div>
             <div className="form-group">
               <label className="label-fintech" id="label-quantity" htmlFor="quantity">수량 (Quantity)</label>
-              <input aria-label="매수수량 입력" id="quantity" type="number" step="0.00000001" name="quantity" value={formData.quantity} onChange={handleChange} required placeholder="10" aria-labelledby="label-quantity" />
+              <input aria-label="매수수량 입력" id="quantity" type="number" step="any" name="quantity" className="input-fintech" value={formData.quantity} onChange={handleChange} required placeholder="10" aria-labelledby="label-quantity" />
             </div>
           </div>
 
-          <div className="form-row-single">
+          <div className="form-row">
             <div className="form-group">
-              <label className="label-fintech" id="label-totalAmount" htmlFor="totalAmount">총 체결금액</label>
-              <input id="totalAmount" type="text" readOnly value={(Number(formData.price) * Number(formData.quantity)).toLocaleString()} className="readonly-input highlight" aria-labelledby="label-totalAmount" />
+              <label className="label-fintech" id="label-strategyTag" htmlFor="strategyTag">전략 태그 (선택)</label>
+              <input aria-label="전략 태그 입력" id="strategyTag" type="text" name="strategyTag" className="input-fintech" value={formData.strategyTag} onChange={handleChange} placeholder="e.g. 추세추종" aria-labelledby="label-strategyTag" />
             </div>
-          </div>
-          <div className="form-row-single">
             <div className="form-group">
-              <label className="label-fintech" id="label-tradedAt" htmlFor="tradedAt">체결 일시</label>
-              <input aria-label="체결 일시 선택" id="tradedAt" type="datetime-local" name="tradedAt" value={formData.tradedAt} onChange={handleChange} required aria-labelledby="label-tradedAt" />
-            </div>
-          </div>
-          
-          
-          <div className="form-group block-group">
-            <label className="section-label">전략 태그</label>
-            <div className="tag-selector">
-              {strategyTags.map((tag) => (
-                <div key={tag.id} className="tag-chip-container">
-                  <button 
-                    type="button" 
-                    className={`sel-chip ${formData.strategyTag === tag.name ? 'active' : ''}`}
-                    onClick={() => setFormData((prevFormData: any) => ({...prevFormData, strategyTag: prevFormData.strategyTag === tag.name ? '' : tag.name}))}
-                  >
-                     {tag.name}
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="form-group block-group">
-            <label className="section-label">감정 태그</label>
-            <div className="tag-selector">
-              {emotionTags.map((tag) => (
-                <div key={tag.id} className="tag-chip-container">
-                  <button 
-                    type="button" 
-                    className={`sel-chip ${formData.emotionTag === tag.name ? 'active' : ''}`}
-                    onClick={() => setFormData((prevFormData: any) => ({...prevFormData, emotionTag: prevFormData.emotionTag === tag.name ? '' : tag.name}))}
-                  >
-                     {tag.name}
-                  </button>
-                </div>
-              ))}
+              <label className="label-fintech" id="label-emotionTag" htmlFor="emotionTag">감정 태그 (선택)</label>
+              <input aria-label="감정 태그 입력" id="emotionTag" type="text" name="emotionTag" className="input-fintech" value={formData.emotionTag} onChange={handleChange} placeholder="e.g. 확신" aria-labelledby="label-emotionTag" />
             </div>
           </div>
 
           <div className="form-group">
             <label className="label-fintech" id="label-memo" htmlFor="memo">자유 메모 (선택)</label>
-            <textarea aria-label="자유 메모 입력" id="memo" name="memo" value={formData.memo} onChange={handleChange} placeholder="매매에 대한 생각이나 근거를 기록하세요." rows={3} aria-labelledby="label-memo"></textarea>
+            <textarea aria-label="자유 메모 입력" id="memo" name="memo" className="input-fintech" value={formData.memo} onChange={handleChange} placeholder="매매에 대한 생각이나 근거를 기록하세요." rows={3} aria-labelledby="label-memo"></textarea>
+          </div>
+          
+          <div className="form-group checkbox-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '8px', marginTop: '16px', marginBottom: '16px' }}>
+            <input type="checkbox" id="isPublic" name="isPublic" checked={formData.isPublic} onChange={handleChange} style={{ width: '16px', height: '16px', minHeight: 'auto' }} />
+            <label htmlFor="isPublic" style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-main)', cursor: 'pointer', marginBottom: 0 }}>커뮤니티에 공개하기</label>
           </div>
           
           <div className="modal-footer">
