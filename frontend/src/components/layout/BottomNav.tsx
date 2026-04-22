@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { LayoutDashboard, History, Plus, BarChart2, User, LogOut, Monitor, Calculator, Sun, Moon, Settings } from 'lucide-react';
+import { LayoutDashboard, History, Plus, BarChart2, User, LogOut, Monitor, Calculator, Sun, Moon, Settings, BookOpen } from 'lucide-react';
 import { useTradeStore } from '../../store/tradeStore';
 import { useAuthStore } from '../../store/authStore';
 import { useLayoutStore } from '../../store/layoutStore';
@@ -96,6 +96,9 @@ export const BottomNav: React.FC = () => {
           </button>
           <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/calculator'); }}>
             <Calculator size={18} /> 투자 시뮬레이터
+          </button>
+          <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/principles'); }}>
+            <BookOpen size={18} /> 투자 원칙
           </button>
           <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); setMobileMode(false); }}>
             <Monitor size={18} /> PC 화면으로 보기

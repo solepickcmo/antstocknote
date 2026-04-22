@@ -22,6 +22,7 @@ const RegisterPage = lazy(() => import('./pages/Auth/RegisterPage'));
 const ResetPasswordPage = lazy(() => import('./pages/Auth/ResetPasswordPage').then(m => ({ default: m.ResetPasswordPage })));
 const AdminSubscriptionPage = lazy(() => import('./pages/Admin/AdminSubscriptionPage').then(m => ({ default: m.AdminSubscriptionPage })));
 const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
+const PrinciplesPage = lazy(() => import('./pages/PrinciplesPage').then(m => ({ default: m.PrinciplesPage })));
 import { TierGate } from './components/common/TierGate';
 
 const PageLoader = () => (
@@ -152,6 +153,7 @@ const App: React.FC = () => {
                 <TierGate feature="calculators"><CalculatorPage /></TierGate>
               } />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/principles" element={<PrinciplesPage />} />
               <Route path="/admin/subscriptions" element={<AdminSubscriptionPage />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Route>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Calendar, History, Users, LogOut, Calculator, PieChart, PlusSquare, Smartphone, Sun, Moon, Shield, User } from 'lucide-react';
+import { LayoutDashboard, Calendar, History, Users, LogOut, Calculator, PieChart, PlusSquare, Smartphone, Sun, Moon, Shield, User, BookOpen } from 'lucide-react';
 import { useTradeStore } from '../../store/tradeStore';
 import { useLayoutStore } from '../../store/layoutStore';
 import { useAuthStore } from '../../store/authStore';
@@ -35,6 +35,7 @@ export const NavBar: React.FC = () => {
         { to: '/dashboard', label: '대시보드', icon: LayoutDashboard },
         { to: '/history',   label: '매매 내역', icon: History },
         { to: '/calendar',  label: '수익 캘린더', icon: Calendar },
+        { to: '/principles',label: '투자 원칙', icon: BookOpen },
       ]
     },
     {

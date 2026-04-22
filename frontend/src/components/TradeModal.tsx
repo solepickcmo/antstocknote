@@ -4,6 +4,8 @@ import { useTradeStore } from '../store/tradeStore';
 import { loadStockMasterCSV } from '../utils/csv';
 import type { StockData } from '../utils/csv';
 import { useTagStore } from '../store/tagStore';
+import { usePrincipleStore } from '../store/principleStore';
+import { PrincipleCheckModal } from './PrincipleCheckModal';
 import './TradeModal.css';
 
 // 기본 헬퍼: 현재 시간을 KST(UTC+9) 문자열로 변환 (datetime-local 형식)
@@ -48,13 +50,17 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
   });
 
   const { strategyTags, emotionTags } = useTagStore(formData.type);
+  // 원칙 확인 모달 상태 및 원칙 로드
+  const { fetchPrinciples } = usePrincipleStore();
+  const [isPrincipleCheckOpen, setIsPrincipleCheckOpen] = useState(false);
 
-  // 모달 열릴 때 날짜를 현재 KST 시각으로 초기화
+  // 모달이 열릴 때 최신 원칙을 로드해서 PrincipleCheckModal에서 바로 사용할 수 있게 함
   useEffect(() => {
     if (isOpen) {
+      fetchPrinciples();
       setFormData((prev: any) => ({ ...prev, tradedAt: getKSTNow() }));
     }
-  }, [isOpen]);
+  }, [isOpen, fetchPrinciples]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -171,6 +177,30 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
+  /**
+   * 저장 버튼 클릭 시 PrincipleCheckModal을 먼저 열어 원칙 확인 후 실제 저장을 실행한다.
+   * 왜 handleSaveClick인가:
+   * - handleSubmit을 직접 호출하면 원칙 확인 단계를 건너뜀
+   * - 이 함수가 '게이트키퍼' 역할을 하여 항상 원칙 확인 → 저장 순서를 보장
+   */
+  const handleSaveClick = () => {
+    // 기본 유효성 검사 (폼 제출 전 확인)
+    if (!formData.ticker || !formData.name) {
+      setError('종목을 선택해주세요.');
+      return;
+    }
+    if (!formData.price || Number(formData.price) <= 0) {
+      setError('단가를 입력해주세요.');
+      return;
+    }
+    if (!formData.quantity || Number(formData.quantity) <= 0) {
+      setError('수량을 입력해주세요.');
+      return;
+    }
+    setError('');
+    setIsPrincipleCheckOpen(true);
+  };
+
   const totalAmount = Number(formData.price || 0) * Number(formData.quantity || 0);
 
   return createPortal(
@@ -180,7 +210,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
           <h2>매매 내역</h2>
           <div className="header-actions">
             <button className="text-btn cancel" onClick={onClose}>취소</button>
-            <button className="text-btn save" onClick={() => handleSubmit()} disabled={isSubmitting}>
+            <button className="text-btn save" onClick={handleSaveClick} disabled={isSubmitting}>
               {isSubmitting ? '...' : '저장'}
             </button>
           </div>
@@ -358,6 +388,16 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
       </div>
+
+      {/* 원칙 확인 모달 — TradeModal 위에 표시 (z-index: 3000) */}
+      <PrincipleCheckModal
+        isOpen={isPrincipleCheckOpen}
+        onConfirm={() => {
+          setIsPrincipleCheckOpen(false);
+          handleSubmit(); // 원칙 확인 후 실제 거래 저장 실행
+        }}
+        onCancel={() => setIsPrincipleCheckOpen(false)}
+      />
     </div>,
     document.body
   );

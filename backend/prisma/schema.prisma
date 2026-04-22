@@ -107,3 +107,17 @@ model Subscription {
 
   @@map("subscriptions")
 }
+
+model InvestmentPrinciple {
+  id         String   @id @default(uuid())
+  user_id    String
+  order_num  Int            // 원칙 순서 (1~5)
+  content    String         // 원칙 내용
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // user_id + order_num 조합이 유일해야 함 (동일 순번 중복 불가)
+  @@unique([user_id, order_num])
+  @@index([user_id])
+  @@map("investment_principles")
+}
