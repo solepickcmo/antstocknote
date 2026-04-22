@@ -59,8 +59,15 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
     if (isOpen) {
       fetchPrinciples();
       setFormData((prev: any) => ({ ...prev, tradedAt: getKSTNow() }));
+    } else {
+      // 모달이 닫힐 때 내부 상태들을 초기화하여 다음 번 열릴 때 깨끗한 상태 유지
+      setIsPrincipleCheckOpen(false);
+      setError('');
     }
   }, [isOpen, fetchPrinciples]);
+
+  // ✅ [수정] 모달이 닫혀있으면 아무것도 렌더링하지 않음
+  if (!isOpen) return null;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
