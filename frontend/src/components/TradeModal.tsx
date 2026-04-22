@@ -66,9 +66,6 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
     }
   }, [isOpen, fetchPrinciples]);
 
-  // ✅ [수정] 모달이 닫혀있으면 아무것도 렌더링하지 않음
-  if (!isOpen) return null;
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   
@@ -209,6 +206,9 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
   };
 
   const totalAmount = Number(formData.price || 0) * Number(formData.quantity || 0);
+
+  // ✅ [수정] 모든 Hook 호출 이후, 렌더링 직전에 조기 리턴을 배치합니다.
+  if (!isOpen) return null;
 
   return createPortal(
     <div className="modal-overlay" onClick={onClose}>
