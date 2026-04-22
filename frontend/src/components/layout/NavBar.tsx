@@ -44,7 +44,7 @@ export const NavBar: React.FC = () => {
       items: [
         { to: '/holdings',   label: '보유 종목 분석', icon: PieChart },
         { to: '/analysis',   label: 'AI 복기 분석', icon: Users },
-        { to: '/calculator', label: '투자 계산기', icon: Calculator },
+        { to: '/calculator', label: '투자 시뮬레이터', icon: Calculator },
         { id: 'community',   label: '커뮤니티 (개미의 집)', icon: PlusSquare },
         { to: '/stock-analysis', label: '종목 분석 기록', icon: BarChart3 },
         ...(user?.isAdmin ? [{ to: '/admin/subscriptions', label: '구독 승인 관리', icon: Shield }] : []),
@@ -111,22 +111,10 @@ export const NavBar: React.FC = () => {
           </div>
         ))}
 
-        <NavLink to="/calculator" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-          <Calculator size={20} />
-          <span>계산기</span>
-        </NavLink>
-        
         <NavLink to="/profile" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
           <User size={20} />
           <span>프로필</span>
         </NavLink>
-
-        {user?.isAdmin && (
-          <NavLink to="/admin/subscriptions" className={({ isActive }) => `nav-item admin-item ${isActive ? 'active' : ''}`}>
-            <Shield size={20} />
-            <span>어드민 센터</span>
-          </NavLink>
-        )}
       </div>
 
       <div className="nav-footer">
