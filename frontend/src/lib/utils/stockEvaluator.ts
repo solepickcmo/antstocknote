@@ -1,96 +1,91 @@
 /**
  * stockEvaluator.ts
- * 저평가 우량주 7개 지표 평가 로직 (순수 함수 모음)
+ * 텐배거(Ten-bagger) 시뮬레이터 핵심 로직 (100점 만점 시스템)
  *
- * 왜 순수 함수로 분리했는가:
- * - UI와 비즈니스 로직을 완전히 분리해 독립적으로 테스트 가능
- * - 지표 추가/변경 시 이 파일만 수정하면 됨
- * - orchestration.md §7: 재무 계산 로직은 필수 단위 테스트 대상
+ * [개편 내역]
+ * 1. 성장성 중심 채점 (50%): EPS 증가율(30점), 매출액 증가율(20점)
+ * 2. 수익성 중심 채점 (30%): ROE(20점), 영업이익률(10점)
+ * 3. 안정성 중심 채점 (20%): 부채비율(10점), 유보율(10점)
  */
 
 export interface StockMetrics {
-  per: number;            // 주가수익비율(PER)
-  pbr: number;            // 주가순자산비율(PBR)
-  roe: number;            // 자기자본이익률(ROE, %)
-  roic: number;           // 투하자본수익률(ROIC, %)
-  operatingMargin: number; // 영업이익률(%)
-  debtRatio: number;      // 부채비율(%)
-  dividendYield: number;  // 배당수익률(%)
+  epsGrowth: number;       // EPS 증가율 (%)
+  revenueGrowth: number;   // 매출액 증가율 (%)
+  roe: number;             // 자기자본이익률 (%)
+  operatingMargin: number; // 영업이익률 (%)
+  debtRatio: number;       // 부채비율 (%)
+  retentionRate: number;   // 유보율 (%)
 }
 
 export interface MetricScore {
   key: keyof StockMetrics;
   label: string;
   value: number;
-  score: 0 | 1 | 2;
-  maxScore: 2;
+  score: number;
+  maxScore: number;
   unit: string;
-  remark: string; // 점수 판정 이유 (e.g. "10 이하: 2점")
+  remark: string;
+  category: 'growth' | 'profitability' | 'stability';
 }
 
 export interface EvaluationResult {
   metricScores: MetricScore[];
   totalScore: number;
-  maxPossibleScore: number; // 항상 14
-  grade: 'undervalued' | 'fair' | 'overvalued';
+  maxPossibleScore: number; // 항상 100
+  grade: 'excellent' | 'good' | 'caution';
   gradeLabel: string;
-  gradeColor: string;       // Tailwind 색상 클래스
+  gradeColor: string;
   gradeEmoji: string;
   gradeDescription: string;
 }
 
 // ─────────────────────────────────────────────
-// 개별 지표 채점 함수 (0~2점)
+// 개별 지표 채점 로직 (가중치 반영)
 // ─────────────────────────────────────────────
 
-/** PER: 낮을수록 저평가 */
-const scorePer = (val: number): 0 | 1 | 2 => {
-  if (val <= 0) return 0; // 음수 PER은 적자 기업
-  if (val < 10) return 2;
-  if (val <= 20) return 1;
+/** EPS 증가율 (30점): 텐배거의 심장 */
+const scoreEpsGrowth = (val: number): number => {
+  if (val >= 20) return 30;
+  if (val >= 10) return 15;
+  if (val > 0)   return 5;
   return 0;
 };
 
-/** PBR: 낮을수록 자산 대비 저평가 */
-const scorePbr = (val: number): 0 | 1 | 2 => {
-  if (val <= 0) return 0;
-  if (val < 1) return 2;
-  if (val <= 2) return 1;
+/** 매출액 증가율 (20점): 성장의 증거 */
+const scoreRevenueGrowth = (val: number): number => {
+  if (val >= 15) return 20;
+  if (val >= 7)  return 10;
+  if (val > 0)   return 3;
   return 0;
 };
 
-/** ROE: 높을수록 자본 효율성이 좋음 */
-const scoreRoe = (val: number): 0 | 1 | 2 => {
-  if (val >= 15) return 2;
-  if (val >= 10) return 1;
+/** ROE (20점): 효율적인 복리 머신 */
+const scoreRoe = (val: number): number => {
+  if (val >= 15) return 20;
+  if (val >= 10) return 10;
+  if (val >= 5)  return 5;
   return 0;
 };
 
-/** ROIC: 높을수록 투하자본을 잘 활용 */
-const scoreRoic = (val: number): 0 | 1 | 2 => {
-  if (val >= 15) return 2;
-  if (val >= 10) return 1;
+/** 영업이익률 (10점): 경제적 해자 */
+const scoreOperatingMargin = (val: number): number => {
+  if (val >= 15) return 10;
+  if (val >= 10) return 5;
+  if (val >= 5)  return 2;
   return 0;
 };
 
-/** 영업이익률: 높을수록 수익 창출력 우수 */
-const scoreOperatingMargin = (val: number): 0 | 1 | 2 => {
-  if (val >= 10) return 2;
-  if (val >= 5) return 1;
+/** 부채비율 (10점): 재무 건전성 (낮을수록 좋음) */
+const scoreDebtRatio = (val: number): number => {
+  if (val <= 100) return 10;
+  if (val <= 200) return 5;
   return 0;
 };
 
-/** 부채비율: 낮을수록 재무 건전성 높음 */
-const scoreDebtRatio = (val: number): 0 | 1 | 2 => {
-  if (val < 100) return 2;
-  if (val <= 200) return 1;
-  return 0;
-};
-
-/** 배당수익률: 높을수록 주주 환원 친화적 */
-const scoreDividendYield = (val: number): 0 | 1 | 2 => {
-  if (val >= 3) return 2;
-  if (val >= 1) return 1;
+/** 유보율 (10점): 투자를 위한 탄약 (높을수록 좋음) */
+const scoreRetentionRate = (val: number): number => {
+  if (val >= 1000) return 10;
+  if (val >= 500)  return 5;
   return 0;
 };
 
@@ -102,129 +97,123 @@ interface MetricMeta {
   key: keyof StockMetrics;
   label: string;
   unit: string;
-  scoreFn: (val: number) => 0 | 1 | 2;
-  remarks: [string, string, string]; // [2점 기준, 1점 기준, 0점 기준]
+  maxScore: number;
+  category: 'growth' | 'profitability' | 'stability';
+  scoreFn: (val: number) => number;
+  getRemark: (score: number, max: number) => string;
 }
 
 const METRIC_META: MetricMeta[] = [
   {
-    key: 'per',
-    label: 'PER (주가수익비율)',
-    unit: '배',
-    scoreFn: scorePer,
-    remarks: ['10 미만: 저평가', '10~20: 적정', '20 초과 또는 음수: 고평가'],
+    key: 'epsGrowth',
+    label: 'EPS 증가율',
+    unit: '%',
+    maxScore: 30,
+    category: 'growth',
+    scoreFn: scoreEpsGrowth,
+    getRemark: (s, m) => s === m ? '폭발적 성장 중' : s >= 15 ? '양호한 비실 성장' : '이익 성장 정체',
   },
   {
-    key: 'pbr',
-    label: 'PBR (주가순자산비율)',
-    unit: '배',
-    scoreFn: scorePbr,
-    remarks: ['1 미만: 순자산 이하 매수 기회', '1~2: 적정 수준', '2 초과: 고평가'],
+    key: 'revenueGrowth',
+    label: '매출액 증가율',
+    unit: '%',
+    maxScore: 20,
+    category: 'growth',
+    scoreFn: scoreRevenueGrowth,
+    getRemark: (s, m) => s === m ? '강력한 외형 확장' : s >= 10 ? '평균 이상의 성장' : '성장 모멘텀 부족',
   },
   {
     key: 'roe',
-    label: 'ROE (자기자본이익률)',
+    label: 'ROE',
     unit: '%',
+    maxScore: 20,
+    category: 'profitability',
     scoreFn: scoreRoe,
-    remarks: ['15% 이상: 우량 수익성', '10~15%: 평균 수준', '10% 미만: 낮은 수익성'],
-  },
-  {
-    key: 'roic',
-    label: 'ROIC (투하자본수익률)',
-    unit: '%',
-    scoreFn: scoreRoic,
-    remarks: ['15% 이상: 자본 배분 우수', '10~15%: 적정', '10% 미만: 자본 비효율'],
+    getRemark: (s, m) => s === m ? '최상급 복리 머신' : s >= 10 ? '평균적 수익성' : '자본 효율성 낮음',
   },
   {
     key: 'operatingMargin',
     label: '영업이익률',
     unit: '%',
+    maxScore: 10,
+    category: 'profitability',
     scoreFn: scoreOperatingMargin,
-    remarks: ['10% 이상: 높은 수익 창출력', '5~10%: 보통', '5% 미만: 낮은 마진'],
+    getRemark: (s, m) => s === m ? '높은 경제적 해자' : s >= 5 ? '보통 수준 마진' : '낮은 이익률',
   },
   {
     key: 'debtRatio',
     label: '부채비율',
     unit: '%',
+    maxScore: 10,
+    category: 'stability',
     scoreFn: scoreDebtRatio,
-    remarks: ['100% 미만: 재무 우량', '100~200%: 보통', '200% 초과: 과부채 위험'],
+    getRemark: (s, m) => s === m ? '매우 건전한 재무' : s >= 5 ? '관리 가능한 부채' : '재무 위험 주의',
   },
   {
-    key: 'dividendYield',
-    label: '배당수익률',
+    key: 'retentionRate',
+    label: '유보율',
     unit: '%',
-    scoreFn: scoreDividendYield,
-    remarks: ['3% 이상: 주주 환원 우수', '1~3%: 보통', '1% 미만: 배당 미흡'],
+    maxScore: 10,
+    category: 'stability',
+    scoreFn: scoreRetentionRate,
+    getRemark: (s, m) => s === m ? '넉넉한 투자 실탄' : s >= 5 ? '안정적 자금력' : '자금 여력 부족',
   },
 ];
-
-// ─────────────────────────────────────────────
-// 등급 판정 함수
-// ─────────────────────────────────────────────
-
-/** 총점(0~14) → 등급 판정 */
-const determineGrade = (
-  total: number
-): Pick<EvaluationResult, 'grade' | 'gradeLabel' | 'gradeColor' | 'gradeEmoji' | 'gradeDescription'> => {
-  if (total >= 11) {
-    return {
-      grade: 'undervalued',
-      gradeLabel: '저평가 우량주',
-      gradeColor: 'text-emerald-500',
-      gradeEmoji: '🟢',
-      gradeDescription: '7개 핵심 지표 모두에서 우수한 점수를 기록했습니다. 현재 주가가 내재 가치 대비 저평가된 우량 기업일 가능성이 높습니다. 장기 투자 관점에서 긍정적으로 검토할 수 있습니다.',
-    };
-  }
-  if (total >= 7) {
-    return {
-      grade: 'fair',
-      gradeLabel: '적정 평가',
-      gradeColor: 'text-amber-500',
-      gradeEmoji: '🟡',
-      gradeDescription: '전반적으로 적정한 수준의 밸류에이션을 보입니다. 일부 지표에서 개선 여지가 있으며, 추가 분석과 함께 신중한 접근이 필요합니다.',
-    };
-  }
-  return {
-    grade: 'overvalued',
-    gradeLabel: '고평가 또는 주의',
-    gradeColor: 'text-red-500',
-    gradeEmoji: '🔴',
-    gradeDescription: '다수의 지표에서 낮은 점수를 기록했습니다. 현재 주가가 내재 가치 대비 고평가되어 있거나, 재무 건전성에 문제가 있을 수 있습니다. 투자 전 면밀한 실사(Due Diligence)가 필요합니다.',
-  };
-};
 
 // ─────────────────────────────────────────────
 // 메인 평가 함수
 // ─────────────────────────────────────────────
 
-/**
- * 7개 지표를 입력받아 종합 평가 결과를 반환한다.
- * 각 지표마다 0~2점, 총 14점 만점으로 채점한다.
- */
 export const evaluateStock = (metrics: StockMetrics): EvaluationResult => {
   const metricScores: MetricScore[] = METRIC_META.map((meta) => {
     const value = metrics[meta.key];
     const score = meta.scoreFn(value);
-    const remarkIndex = score === 2 ? 0 : score === 1 ? 1 : 2;
-
     return {
       key: meta.key,
       label: meta.label,
       value,
       score,
-      maxScore: 2,
+      maxScore: meta.maxScore,
       unit: meta.unit,
-      remark: meta.remarks[remarkIndex],
+      remark: meta.getRemark(score, meta.maxScore),
+      category: meta.category,
     };
   });
 
   const totalScore = metricScores.reduce((sum, m) => sum + m.score, 0);
-  const gradeInfo = determineGrade(totalScore);
+
+  let gradeInfo: Pick<EvaluationResult, 'grade' | 'gradeLabel' | 'gradeColor' | 'gradeEmoji' | 'gradeDescription'>;
+
+  if (totalScore >= 85) {
+    gradeInfo = {
+      grade: 'excellent',
+      gradeLabel: '텐배거 유망주',
+      gradeColor: 'text-emerald-500',
+      gradeEmoji: '🚀',
+      gradeDescription: '성장성, 수익성, 안정성 삼박자를 모두 갖춘 텐배거 후보입니다. 특히 이익의 성장 폭이 주가를 끌어올리는 강력한 엔진 역할을 할 것으로 기대됩니다.',
+    };
+  } else if (totalScore >= 60) {
+    gradeInfo = {
+      grade: 'good',
+      gradeLabel: '우량 성장주',
+      gradeColor: 'text-amber-500',
+      gradeEmoji: '📈',
+      gradeDescription: '견고한 성장을 보여주는 우량 기업입니다. 일부 지표에서 보완이 필요하지만, 장기적으로 우상향할 가능성이 높은 비즈니스 모델을 가졌습니다.',
+    };
+  } else {
+    gradeInfo = {
+      grade: 'caution',
+      gradeLabel: '주의 요망',
+      gradeColor: 'text-red-500',
+      gradeEmoji: '⚠️',
+      gradeDescription: '현재 성장 모멘텀이 둔화되었거나 재무 안정성이 낮습니다. 리스크 관리가 최우선이며, 성장의 증거가 확실해질 때까지 신중한 접근이 필요합니다.',
+    };
+  }
 
   return {
     metricScores,
     totalScore,
-    maxPossibleScore: 14,
+    maxPossibleScore: 100,
     ...gradeInfo,
   };
 };
