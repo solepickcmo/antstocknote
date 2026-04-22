@@ -8,7 +8,7 @@ import {
 } from 'recharts';
 import { Info, RotateCcw, TrendingUp, BarChart3, ShieldCheck, ArrowRight } from 'lucide-react';
 import { evaluateStock } from '../../lib/utils/stockEvaluator';
-import type { StockMetrics, MetricScore } from '../../lib/utils/stockEvaluator';
+import type { MetricScore } from '../../lib/utils/stockEvaluator';
 
 // ─────────────────────────────────────────────
 // 헬퍼: 콤마나 단위가 포함된 문자열을 숫자로 파싱
@@ -75,7 +75,6 @@ const MetricScoreCard: React.FC<{ metric: MetricScore }> = ({ metric }) => {
 
 export const QualityStockEvaluator: React.FC = () => {
   const [state, setState] = useState(INITIAL_STATE);
-  const [activeHint, setActiveHint] = useState<string | null>(null);
 
   const handleInputChange = (key: keyof typeof INITIAL_STATE, val: string) => {
     setState(prev => ({ ...prev, [key]: val }));
