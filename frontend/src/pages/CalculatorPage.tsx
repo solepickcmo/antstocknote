@@ -1,26 +1,26 @@
 import React, { useState } from 'react';
 import { CompoundCalculator } from '../components/calculators/CompoundCalculator';
 import { DividendCalculator } from '../components/calculators/DividendCalculator';
-import { ValuationCalculator } from '../components/calculators/ValuationCalculator';
+import { QualityStockEvaluator } from '../components/calculators/QualityStockEvaluator';
 import { RiskRewardCalculator } from '../components/calculators/RiskRewardCalculator';
-import { Calculator, TrendingUp, DollarSign, BarChart3, Scale } from 'lucide-react';
+import { Calculator, TrendingUp, DollarSign, Star, Scale } from 'lucide-react';
 
 // TierGate 목업 (추후 주석 제거로 활성화 가능)
 /*
 import { TierGate } from '../components/TierGate';
 */
 
-type TabId = 'compound' | 'dividend' | 'valuation' | 'rr';
+type TabId = 'compound' | 'dividend' | 'quality' | 'rr';
 
 const TABS = [
   { id: 'compound', label: '복리 수익률', icon: <TrendingUp size={16} /> },
   { id: 'dividend', label: '배당 수익률', icon: <DollarSign size={16} /> },
-  { id: 'valuation', label: '적정 주가', icon: <BarChart3 size={16} /> },
+  { id: 'quality', label: '우량주 평가', icon: <Star size={16} /> },
   { id: 'rr', label: '리스크 비율', icon: <Scale size={16} /> },
 ] as const;
 
 export const CalculatorPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabId>('compound');
+  const [activeTab, setActiveTab] = useState<TabId>('quality');
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 animate-fade-in pb-32">
@@ -58,7 +58,7 @@ export const CalculatorPage: React.FC = () => {
         
         {activeTab === 'compound' && <CompoundCalculator />}
         {activeTab === 'dividend' && <DividendCalculator />}
-        {activeTab === 'valuation' && <ValuationCalculator />}
+        {activeTab === 'quality' && <QualityStockEvaluator />}
         {activeTab === 'rr' && <RiskRewardCalculator />}
         
         {/* </TierGate> */}
