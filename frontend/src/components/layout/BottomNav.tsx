@@ -100,6 +100,9 @@ export const BottomNav: React.FC = () => {
           <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/principles'); }}>
             <BookOpen size={18} /> 투자 원칙
           </button>
+          <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/stock-analysis'); }}>
+            <BarChart2 size={18} /> 종목 분석 기록
+          </button>
           <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); setMobileMode(false); }}>
             <Monitor size={18} /> PC 화면으로 보기
           </button>

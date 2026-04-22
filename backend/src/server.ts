@@ -37,6 +37,7 @@ import analysisRoutes from './routes/analysis.routes';
 import stockRoutes from './routes/stock.routes';
 import authRoutes from './routes/auth.routes';
 import principleRoutes from './routes/principle.routes';
+import stockAnalysisRoutes from './routes/stockAnalysis.routes';
 
 app.use('/api/v1/trades', tradeRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
@@ -46,6 +47,7 @@ app.use('/api/v1/analysis', analysisRoutes);
 app.use('/api/v1/stocks', stockRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/principles', principleRoutes);
+app.use('/api/v1/stock-analyses', stockAnalysisRoutes);
 
 // BigInt JSON 직렬화 전역 설정
 (BigInt.prototype as any).toJSON = function () {

@@ -121,3 +121,20 @@ model InvestmentPrinciple {
   @@index([user_id])
   @@map("investment_principles")
 }
+
+model StockAnalysis {
+  id            String   @id @default(uuid())
+  user_id       String
+  ticker        String?  // 보유 종목 연동 (nullable: 비보유 종목도 기록 가능)
+  stock_name    String?
+  title         String
+  content       String   // 분석 본문 (plain text or markdown)
+  analysis_date DateTime @default(now())
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  // user_id + ticker 조합으로 종목별 분석 검색 최적화
+  @@index([user_id, ticker])
+  @@index([user_id, analysis_date(sort: Desc)])
+  @@map("stock_analyses")
+}

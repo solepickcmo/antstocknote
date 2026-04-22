@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Calendar, History, Users, LogOut, Calculator, PieChart, PlusSquare, Smartphone, Sun, Moon, Shield, User, BookOpen } from 'lucide-react';
+import { LayoutDashboard, Calendar, History, Users, LogOut, Calculator, PieChart, PlusSquare, Smartphone, Sun, Moon, Shield, User, BookOpen, BarChart3 } from 'lucide-react';
 import { useTradeStore } from '../../store/tradeStore';
 import { useLayoutStore } from '../../store/layoutStore';
 import { useAuthStore } from '../../store/authStore';
@@ -46,6 +46,7 @@ export const NavBar: React.FC = () => {
         { to: '/analysis',   label: 'AI 복기 분석', icon: Users },
         { to: '/calculator', label: '투자 계산기', icon: Calculator },
         { id: 'community',   label: '커뮤니티 (개미의 집)', icon: PlusSquare },
+        { to: '/stock-analysis', label: '종목 분석 기록', icon: BarChart3 },
         ...(user?.isAdmin ? [{ to: '/admin/subscriptions', label: '구독 승인 관리', icon: Shield }] : []),
       ]
     }

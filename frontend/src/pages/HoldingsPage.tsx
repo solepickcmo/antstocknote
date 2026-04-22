@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTradeStore } from '../store/tradeStore';
 import './HoldingsPage.css';
-import { Plus } from 'lucide-react';
+import { Plus, FileText } from 'lucide-react';
 import { format } from 'date-fns';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { StockAnalysisModal } from '../components/StockAnalysisModal';
 
 const COLORS = [
   '#378ADD', '#1D9E75', '#BA7517', '#D85A30',
@@ -15,6 +16,17 @@ export const HoldingsPage: React.FC = () => {
   const trades = useTradeStore(state => state.trades);
   const setModalOpen = useTradeStore(state => state.setModalOpen);
   const [filter, setFilter] = useState('보유중');
+
+  // 종목 분석 모달 상태
+  const [analysisModalOpen, setAnalysisModalOpen] = useState(false);
+  const [analysisTicker, setAnalysisTicker] = useState('');
+  const [analysisStockName, setAnalysisStockName] = useState('');
+
+  const openAnalysisModal = (ticker: string, name: string) => {
+    setAnalysisTicker(ticker);
+    setAnalysisStockName(name);
+    setAnalysisModalOpen(true);
+  };
 
   useEffect(() => {
     fetchTrades();
@@ -105,6 +117,7 @@ export const HoldingsPage: React.FC = () => {
   }, [holdings]);
 
   return (
+    <>
     <div className="holdings-page animate-fade-in">
       <header className="holdings-header">
         <div className="title-group">
@@ -179,6 +192,7 @@ export const HoldingsPage: React.FC = () => {
               <th className="col-tags">태그</th>
               <th className="col-price text-right">평균단가</th>
               <th className="col-qty text-right">보유수량</th>
+              <th className="col-action text-center">분석</th>
             </tr>
           </thead>
           <tbody>
@@ -215,6 +229,16 @@ export const HoldingsPage: React.FC = () => {
                   <td className="col-qty text-right font-mono">
                     {h.quantity.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 4 })}
                   </td>
+                  <td className="col-action text-center">
+                    <button
+                      onClick={() => openAnalysisModal(h.ticker, h.name)}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold bg-amber-50 dark:bg-amber-500/10 text-amber-500 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-500/20 transition-colors"
+                      aria-label={`${h.name} 분석 기록`}
+                    >
+                      <FileText size={12} />
+                      분석
+                    </button>
+                  </td>
                 </tr>
               ))
             )}
@@ -222,5 +246,14 @@ export const HoldingsPage: React.FC = () => {
         </table>
       </div>
     </div>
+
+      {/* 종목 분석 모달 */}
+      <StockAnalysisModal
+        isOpen={analysisModalOpen}
+        onClose={() => setAnalysisModalOpen(false)}
+        presetTicker={analysisTicker}
+        presetStockName={analysisStockName}
+      />
+    </>
   );
 };
