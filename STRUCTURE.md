@@ -35,7 +35,9 @@ frontend/src/
 ├── hooks/           # 비즈니스 로직 및 데이터 패칭을 담당하는 Custom Hooks
 │   # 🚨 DB 접근(Supabase Query) 및 복잡한 리액트 외부 연동 로직은 반드시 이곳 또는 store로 분리
 ├── lib/             # 순수 함수 유틸리티 (테스트 대상, 외부 의존성 없음)
-│   └── utils/       # PnL 계산(calcPnl) 등 핵심 비즈니스 계산 순수 함수
+│   └── utils/       # 핵심 비즈니스 계산 순수 함수
+│       ├── calcPnl.ts      # 매매 손익 계산
+│       └── stockEvaluator.ts # 저평가 우량주 7개 지표 채점 (Feature 2)
 ├── utils/           # UI/헬퍼 유틸리티 (포맷팅, CSV 파싱, 내보내기 등 사이드이펙트 허용)
 │   # calcFormat.ts, csv.ts, exportUtils.ts 등 lib/utils/와 구분
 ├── pages/           # 라우팅 라우트에서 연결되는 최상위 페이지 컴포넌트
@@ -44,7 +46,7 @@ frontend/src/
 ├── store/           # Zustand 전역 상태 관리 (인증, 테마, 글로벌 도메인 데이터)
 │   # authStore(인증/역할), tradeStore(매매/PnL), tierStore(구독 등급 게이팅),
 │   # layoutStore(PC/모바일 전환), themeStore(라이트/다크 테마), tagStore(태그 목록),
-│   # goalStore(월별 목표 손익) — 새 Store 추가 시 이곳에 명시
+│   # goalStore(월별 목표 손익), principleStore(투자 원칙), stockAnalysisStore(종목 분석) — 새 Store 추가 시 이곳에 명시
 ├── App.tsx          # 최상위 라우터 및 글로벌 프로바이더 구성
 └── index.css        # Tailwind 설정 및 글로벌 스타일 (가능하면 유틸리티 클래스 위주 활용)
 ```
@@ -86,7 +88,9 @@ backend/src/
   - `HoldingsPage` (`/holdings`): 실시간 보유 종목 현황 및 관리
   - `HistoryPage` (`/history`): 과거 매매 기록 (`DesktopHistoryView` / `MobileHistoryView` 뷰 분기 포함)
   - `AnalysisPage` (`/analysis`): 수익 분석 차트 및 심리/전략 통계
-  - `CalculatorPage` (`/calculator`): 복리/배당/적정주가/손익비 계산기 4종
+  - `PrinciplesPage` (`/principles`): 개인 투자 원칙 관리 (Feature 1)
+  - `StockAnalysisPage` (`/stock-analysis`): 종목별 심층 분석 기록 (Feature 3)
+  - `CalculatorPage` (`/calculator`): 복리/배당/적정주가/손익비/저평가우량주 계산기
   - `ProfilePage` (`/profile`): 닉네임 수정 및 회원 탈퇴 등 계정 관리
   - `AdminSubscriptionPage` (`/admin/subscriptions`): 관리자 전용 구독 승인 및 관리
 - **위치**: `src/pages/`
@@ -95,7 +99,7 @@ backend/src/
 특정 도메인에 특화되어 복잡한 UI 세트로 구성된 독립적인 단위입니다. 
 - **주요 모듈**:
   - `analysis/*`: `EmotionAnalysis`, `AnalysisStats` 등 수익 분석 핵심 모듈
-  - `calculators/*`: `CompoundCalculator`, `DividendCalculator` 등 개별 계산기 모듈
+  - `calculators/*`: `CompoundCalculator`, `QualityStockEvaluator` 등 개별 계산기 모듈
   - `Dashboard/*`: `GoalTracker` (투자 목표 트래킹)
   - `subscription/*`: `SubscriptionSection` (구독 상품 안내 및 연동)
   - `layout/*`: `NavBar` (PC 사이드 네비게이션), `BottomNav` (모바일 전용 하단 바)
@@ -105,6 +109,7 @@ backend/src/
 어떤 도메인에서든 범용적으로 사용될 수 있는 가장 작은 UI 조각들입니다.
 - **공통 컴포넌트**: `common/TierGate` (유료 기능 접근 제한 패널)
 - **독립 UI**: `MetricCard` (지표 카드), `TagChip` (태그 칩), `TradeModal` (입력 폼)
+- **기능 모달**: `PrincipleCheckModal` (매매 전 원칙 확인), `StockAnalysisModal` (종목 분석 작성)
 - **위치**: `src/components/` (루트 또는 `common/`)
 
 ---
