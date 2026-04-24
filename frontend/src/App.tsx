@@ -24,6 +24,7 @@ const AdminSubscriptionPage = lazy(() => import('./pages/Admin/AdminSubscription
 const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
 const PrinciplesPage = lazy(() => import('./pages/PrinciplesPage').then(m => ({ default: m.PrinciplesPage })));
 const StockAnalysisPage = lazy(() => import('./pages/StockAnalysisPage').then(m => ({ default: m.StockAnalysisPage })));
+const LandingPage = lazy(() => import('./pages/LandingPage').then(m => ({ default: m.LandingPage })));
 import { TierGate } from './components/common/TierGate';
 
 const PageLoader = () => (
@@ -75,6 +76,7 @@ const App: React.FC = () => {
   const setAuth = useAuthStore(state => state.setAuth);
   const setInitialized = useAuthStore(state => state.setInitialized);
   const isInitialized = useAuthStore(state => state.isInitialized);
+  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const theme = useThemeStore(state => state.theme);
 
   useEffect(() => {
@@ -133,6 +135,8 @@ const App: React.FC = () => {
       <BrowserRouter>
         <Suspense fallback={<PageLoader />}>
           <Routes>
+            <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
+
             <Route element={<AuthLayout />}>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
@@ -140,7 +144,6 @@ const App: React.FC = () => {
             </Route>
             
             <Route element={<ProtectedLayout />}>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/calendar" element={<CalendarPage />} />
               <Route path="/history" element={<HistoryPage />} />

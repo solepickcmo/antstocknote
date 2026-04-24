@@ -44,9 +44,6 @@ describe('canAccessFeature', () => {
     expect(canAccessFeature('history_date_range', 'free')).toBe(false);
   });
 
-  it('free: 목표 손익 트래킹(goal_tracking) 접근 불가', () => {
-    expect(canAccessFeature('goal_tracking', 'free')).toBe(false);
-  });
 
   it('free: 감정×수익 분석(emotion_analysis) 접근 불가', () => {
     expect(canAccessFeature('emotion_analysis', 'free')).toBe(false);
@@ -74,9 +71,6 @@ describe('canAccessFeature', () => {
     expect(canAccessFeature('history_date_range', 'premium')).toBe(true);
   });
 
-  it('premium: 목표 손익 트래킹(goal_tracking) 접근 가능', () => {
-    expect(canAccessFeature('goal_tracking', 'premium')).toBe(true);
-  });
 
   it('premium: 감정×수익 분석(emotion_analysis) 접근 가능', () => {
     expect(canAccessFeature('emotion_analysis', 'premium')).toBe(true);
@@ -86,9 +80,6 @@ describe('canAccessFeature', () => {
     expect(canAccessFeature('ai_analysis', 'premium')).toBe(true);
   });
 
-  it('premium: 투자 목표 설정(investment_goal) 접근 가능', () => {
-    expect(canAccessFeature('investment_goal', 'premium')).toBe(true);
-  });
 
   it('premium: 커뮤니티(community) 접근 가능', () => {
     expect(canAccessFeature('community', 'premium')).toBe(true);

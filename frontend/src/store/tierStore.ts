@@ -18,11 +18,9 @@ export type FeatureKey =
   | 'export_csv'
   | 'analysis'
   | 'theme_toggle'
-  | 'goal_tracking'
   | 'emotion_analysis'
   | 'csv_bulk_upload'
   | 'ai_analysis'
-  | 'investment_goal'
   | 'investment_rule'
   | 'community';
 
@@ -61,11 +59,9 @@ const PERMISSIONS: Record<FeatureKey, Tier[]> = {
   // ── Premium 전용 ────────────────────────────
   history_date_range: ['premium'],         // 히스토리 기간 직접 설정
   calculators:        ['premium'],         // 계산기 4종
-  goal_tracking:      ['premium'],         // 목표 손익 설정 + 트래킹
   emotion_analysis:   ['premium'],         // 감정×수익 상관 분석
   csv_bulk_upload:    ['premium'],         // CSV 일괄 업로드
   ai_analysis:        ['premium'],         // AI 고급 분석
-  investment_goal:    ['premium'],         // 투자 목표 설정
   investment_rule:    ['premium'],         // 투자 원칙 설정
   community:          ['premium'],         // 커뮤니티 기능
 };
