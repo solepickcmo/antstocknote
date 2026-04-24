@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
 import { MetricCard } from '../components/MetricCard';
-import { AnalysisSummary } from '../components/analysis/AnalysisSummary';
 import { useTradeStore } from '../store/tradeStore';
 import { useNotesCount } from '../hooks/useNotesCount';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
@@ -104,32 +103,6 @@ export const DashboardPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Tier 3: 상세 분석 리포트 */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="card-fintech p-8 flex flex-col justify-between">
-          <div>
-            <h3 className="text-xl font-bold mb-2">상세 성과 분석</h3>
-            <p className="text-muted text-sm mb-6 leading-relaxed">
-              전략별 승률, 감정 상태에 따른 수익 변화 등 데이터를 기반으로 매매 습관을 교정하세요.
-            </p>
-          </div>
-          <AnalysisSummary 
-            overallWinRate={stats.overallWinRate}
-            overallAvgPnl={stats.overallAvgPnl}
-            notesCount={notesCount}
-            totalTradesCount={stats.totalTrades}
-          />
-        </div>
-
-        <div className="card-fintech bg-primary/5 border-primary/20 p-8 flex flex-col justify-center items-center text-center">
-          <div className="mb-6">
-            <span className="bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2 inline-block">Pro Report</span>
-            <h4 className="text-xl font-black mt-2">상세 분석 리포트를 확인하세요</h4>
-            <p className="text-muted text-sm mt-3 max-w-xs mx-auto">내 매매 전략의 강점과 약점을 데이터로 증명하고 수익성을 개선하세요.</p>
-          </div>
-          <a href="/analysis" className="btn-fintech-primary py-4 px-10 text-sm font-bold shadow-lg shadow-primary/25">리포트 전체 보기</a>
-        </div>
-      </section>
     </div>
   );
 };

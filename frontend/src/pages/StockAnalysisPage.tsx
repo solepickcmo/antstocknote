@@ -59,11 +59,11 @@ export const StockAnalysisPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 animate-fade-in pb-32">
+    <div className="max-w-4xl mx-auto px-6 py-8 animate-fade-in pb-32">
       {/* 헤더 */}
       <header className="flex justify-between items-start mb-8">
         <div className="space-y-1">
-          <h1 className="text-3xl font-black tracking-tight">종목 분석 기록</h1>
+          <h1 className="text-3xl font-black tracking-tight">종목 분석</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
             총 {total}개의 분석 기록
           </p>

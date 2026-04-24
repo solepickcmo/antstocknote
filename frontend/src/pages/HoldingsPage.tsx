@@ -121,7 +121,7 @@ export const HoldingsPage: React.FC = () => {
     <div className="holdings-page animate-fade-in">
       <header className="holdings-header">
         <div className="title-group">
-          <h1>보유 종목</h1>
+          <h1>종목 분석</h1>
           <p className="text-muted text-sm">현재 보유 중인 포트폴리오 현황입니다.</p>
         </div>
         <div className="header-actions">

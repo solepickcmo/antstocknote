@@ -9,6 +9,7 @@ import { useLayoutStore } from './store/layoutStore';
 import { useThemeStore } from './store/themeStore';
 import { TradeModal } from './components/TradeModal';
 import { BottomNav } from './components/layout/BottomNav';
+import { useTierStore } from './store/tierStore';
 
 // Lazy load pages
 const DashboardPage = lazy(() => import('./pages/DashboardPage').then(m => ({ default: m.DashboardPage })));
@@ -98,6 +99,7 @@ const App: React.FC = () => {
             },
             session.access_token
           );
+          useTierStore.getState().fetchTier(session.user.id);
         } else {
           setAuth(null, null);
         }
@@ -117,6 +119,7 @@ const App: React.FC = () => {
             },
             session.access_token
           );
+          useTierStore.getState().fetchTier(session.user.id);
         } else {
           setAuth(null, null);
         }
