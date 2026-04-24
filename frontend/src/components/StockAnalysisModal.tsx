@@ -252,7 +252,7 @@ export const StockAnalysisModal: React.FC<StockAnalysisModalProps> = ({
           {/* 종목 검색 (수정 모드에서는 비활성) */}
           {!isEditMode && (
             <div className="space-y-1.5" ref={dropdownRef}>
-              <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+              <label htmlFor="analysis-ticker-id" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
                 종목 (선택)
               </label>
               <div className="relative">
@@ -263,7 +263,7 @@ export const StockAnalysisModal: React.FC<StockAnalysisModalProps> = ({
                   value={ticker}
                   onChange={(e) => handleTickerChange(e.target.value)}
                   aria-label="종목 검색"
-                  id="stock-analysis-ticker-input"
+                  id="analysis-ticker-id"
                 />
                 <Search size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none" />
 
@@ -313,7 +313,7 @@ export const StockAnalysisModal: React.FC<StockAnalysisModalProps> = ({
 
           {/* 제목 */}
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+            <label htmlFor="analysis-title-id" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
               제목 <span className="text-red-400">*</span>
             </label>
             <input
@@ -323,13 +323,13 @@ export const StockAnalysisModal: React.FC<StockAnalysisModalProps> = ({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               aria-label="분석 제목"
-              id="stock-analysis-title-input"
+              id="analysis-title-id"
             />
           </div>
 
           {/* 본문 */}
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
+            <label htmlFor="analysis-content-id" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
               <FileText size={12} />
               분석 내용 <span className="text-red-400">*</span>
             </label>
@@ -340,7 +340,7 @@ export const StockAnalysisModal: React.FC<StockAnalysisModalProps> = ({
               value={content}
               onChange={(e) => setContent(e.target.value)}
               aria-label="분석 내용"
-              id="stock-analysis-content-input"
+              id="analysis-content-id"
             />
             <p className="text-[10px] text-gray-300 dark:text-gray-600 text-right">
               {content.length}자
@@ -349,7 +349,7 @@ export const StockAnalysisModal: React.FC<StockAnalysisModalProps> = ({
 
           {/* 분석 날짜 */}
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+            <label htmlFor="analysis-date-id" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
               분석 날짜
             </label>
             <input
@@ -357,7 +357,7 @@ export const StockAnalysisModal: React.FC<StockAnalysisModalProps> = ({
               className="input-fintech h-11"
               value={analysisDate}
               onChange={(e) => setAnalysisDate(e.target.value)}
-              aria-label="분석 날짜"
+              id="analysis-date-id"
             />
           </div>
         </div>

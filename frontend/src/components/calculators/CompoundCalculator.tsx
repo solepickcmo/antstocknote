@@ -77,26 +77,30 @@ export const CompoundCalculator: React.FC = () => {
         {/* 입력 섹션 */}
         <div className="grid grid-cols-1 gap-4">
           <div className="space-y-1.5 grow">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">초기 투자금</label>
+            <label htmlFor="calc-principal-id" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">초기 투자금</label>
             <div className="relative">
               <input
+                id="calc-principal-id"
                 type="text"
                 className="input-fintech h-12 pr-12 text-right font-bold text-lg"
                 value={principalStr}
                 onChange={(e) => setPrincipalStr(fmtInput(e.target.value))}
+                aria-label="초기 투자금 설정"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">원</span>
             </div>
           </div>
 
           <div className="space-y-1.5 grow">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">월 적립금</label>
+            <label htmlFor="calc-monthly-id" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">월 적립금</label>
             <div className="relative">
               <input
+                id="calc-monthly-id"
                 type="text"
                 className="input-fintech h-12 pr-12 text-right font-bold text-lg"
                 value={monthlyStr}
                 onChange={(e) => setMonthlyStr(fmtInput(e.target.value))}
+                aria-label="월 적립금 설정"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">원</span>
             </div>
@@ -107,10 +111,11 @@ export const CompoundCalculator: React.FC = () => {
         <div className="space-y-6 pt-4">
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">연 수익률</label>
+              <label htmlFor="calc-rate-id" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">연 수익률</label>
               <span className="font-bold text-lg text-right min-w-[48px]">{rate}%</span>
             </div>
             <input
+              id="calc-rate-id"
               type="range"
               min="1"
               max="50"
@@ -118,15 +123,17 @@ export const CompoundCalculator: React.FC = () => {
               className="w-full h-1.5 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
               value={rate}
               onChange={(e) => setRate(parseFloat(e.target.value))}
+              aria-label="연 수익률 슬라이더"
             />
           </div>
 
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">투자 기간</label>
+              <label htmlFor="calc-years-id" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">투자 기간</label>
               <span className="font-bold text-lg text-right min-w-[48px]">{years}년</span>
             </div>
             <input
+              id="calc-years-id"
               type="range"
               min="1"
               max="40"
@@ -134,6 +141,7 @@ export const CompoundCalculator: React.FC = () => {
               className="w-full h-1.5 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
               value={years}
               onChange={(e) => setYears(parseInt(e.target.value))}
+              aria-label="투자 기간 슬라이더"
             />
           </div>
         </div>

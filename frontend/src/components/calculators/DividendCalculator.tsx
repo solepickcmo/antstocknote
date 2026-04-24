@@ -86,52 +86,62 @@ export const DividendCalculator: React.FC = () => {
       <div className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">종목명</label>
+            <label htmlFor="div-name-id" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">종목명</label>
             <input
+              id="div-name-id"
               type="text"
               className="input-fintech h-12 font-bold"
               value={stockName}
               onChange={(e) => setStockName(e.target.value)}
               placeholder="예: 삼성전자"
+              aria-label="종목명 입력"
             />
           </div>
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">현재 주가 (원)</label>
+            <label htmlFor="div-price-id" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">현재 주가 (원)</label>
             <input
+              id="div-price-id"
               type="text"
               className="input-fintech h-12 text-right font-bold"
               value={priceStr}
               onChange={(e) => setPriceStr(fmtInput(e.target.value))}
+              aria-label="현재 주가 입력"
             />
           </div>
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">주당 배당금 (원/년)</label>
+            <label htmlFor="div-dps-id" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">주당 배당금 (원/년)</label>
             <input
+              id="div-dps-id"
               type="text"
               className="input-fintech h-12 text-right font-bold"
               value={dpsStr}
               onChange={(e) => setDpsStr(fmtInput(e.target.value))}
+              aria-label="주당 배당금 입력"
             />
           </div>
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">보유 주수</label>
+            <label htmlFor="div-quantity-id" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">보유 주수</label>
             <input
+              id="div-quantity-id"
               type="text"
               className="input-fintech h-12 text-right font-bold"
               value={quantityStr}
               onChange={(e) => setQuantityStr(fmtInput(e.target.value))}
+              aria-label="보유 주수 입력"
             />
           </div>
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">배당소득세율 (%)</label>
+          <label htmlFor="div-tax-id" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">배당소득세율 (%)</label>
           <div className="relative">
             <input
+              id="div-tax-id"
               type="number"
               className="input-fintech h-12 pr-16 text-right font-bold"
               value={taxRate}
               onChange={(e) => setTaxRate(parseFloat(e.target.value))}
+              aria-label="배당소득세율 설정"
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-[10px] font-medium">%(기본 15.4%)</span>
           </div>
@@ -139,16 +149,18 @@ export const DividendCalculator: React.FC = () => {
 
         <div className="space-y-3 pt-2">
           <div className="flex justify-between items-center">
-            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">재투자 기간</label>
+            <label htmlFor="div-reinvest-id" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">재투자 기간</label>
             <span className="font-bold text-lg text-right min-w-[48px]">{reinvestYears}년</span>
           </div>
           <input
+            id="div-reinvest-id"
             type="range"
             min="1"
             max="40"
             className="w-full h-1.5 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-slate-800 dark:accent-primary-contrast"
             value={reinvestYears}
             onChange={(e) => setReinvestYears(parseInt(e.target.value))}
+            aria-label="재투자 기간 슬라이더"
           />
         </div>
 
