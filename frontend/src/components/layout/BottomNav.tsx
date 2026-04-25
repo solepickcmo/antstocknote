@@ -70,10 +70,6 @@ export const BottomNav: React.FC = () => {
         <BarChart2 size={22} />
         <span>복기</span>
       </NavLink>
-      <NavLink to="/profile" className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}>
-        <User size={22} />
-        <span>프로필</span>
-      </NavLink>
       <button 
         className={`bottom-nav-item ${isSettingsOpen ? 'active' : ''}`}
         onClick={() => setIsSettingsOpen(true)}
@@ -94,6 +90,9 @@ export const BottomNav: React.FC = () => {
               <><Sun size={18} /> 라이트 모드 켜기</>
             )}
           </button>
+          <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/profile'); }}>
+            <User size={18} /> 내 프로필 관리
+          </button>
           <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/calculator'); }}>
             <Calculator size={18} /> 투자 시뮬레이터
           </button>
@@ -102,6 +101,9 @@ export const BottomNav: React.FC = () => {
           </button>
           <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/stock-analysis'); }}>
             <BarChart2 size={18} /> 종목 분석 기록
+          </button>
+          <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/community'); }}>
+            <Plus size={18} /> 커뮤니티 (개미의 집)
           </button>
           <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); setMobileMode(false); }}>
             <Monitor size={18} /> PC 화면으로 보기

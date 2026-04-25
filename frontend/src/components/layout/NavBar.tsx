@@ -45,7 +45,7 @@ export const NavBar: React.FC = () => {
         { to: '/holdings',   label: '종목 분석', icon: PieChart },
         { to: '/analysis',   label: 'AI 복기 분석', icon: Users },
         { to: '/calculator', label: '투자 시뮬레이터', icon: Calculator },
-        { id: 'community',   label: '커뮤니티 (개미의 집)', icon: PlusSquare },
+        { to: '/community',  label: '커뮤니티 (개미의 집)', icon: PlusSquare },
         { to: '/stock-analysis', label: '종목 분석 기록', icon: BarChart3 },
         ...(user?.isAdmin ? [{ to: '/admin/subscriptions', label: '구독 승인 관리', icon: Shield }] : []),
       ]
