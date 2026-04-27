@@ -6,6 +6,7 @@ import { PostCreateModal } from '../components/community/PostCreateModal';
 import { MessageSquare, Heart, Clock, User as UserIcon, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { HelpTooltip } from '../components/ui/HelpTooltip';
 
 export const CommunityPage: React.FC = () => {
   const { posts, isLoadingPosts, fetchPosts, myProfile, fetchMyProfile } = useCommunityStore();
@@ -24,7 +25,10 @@ export const CommunityPage: React.FC = () => {
       <div className="p-6 max-w-4xl mx-auto min-h-screen">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">개미의 집 커뮤니티</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+              개미의 집 커뮤니티
+              <HelpTooltip content="프리미엄 전용 커뮤니티입니다. 다른 투자자들과 매매 기록, 분석, 인사이트를 자유롭게 나누고 소통해보세요!" iconSize={24} className="ml-2" />
+            </h1>
             <p className="text-gray-500 mt-1">다른 개미들의 투자 철학과 매매 내역을 살펴보세요.</p>
           </div>
           <button 

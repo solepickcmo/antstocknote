@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Calendar, History, Users, LogOut, Calculator, PieChart, PlusSquare, Smartphone, Sun, Moon, Shield, User, BookOpen, BarChart3 } from 'lucide-react';
+import { LayoutDashboard, Calendar, History, Users, LogOut, Calculator, PieChart, PlusSquare, Smartphone, Sun, Moon, Shield, User, BookOpen, BarChart3, HelpCircle } from 'lucide-react';
 import { useTradeStore } from '../../store/tradeStore';
 import { useLayoutStore } from '../../store/layoutStore';
 import { useAuthStore } from '../../store/authStore';
@@ -114,6 +114,10 @@ export const NavBar: React.FC = () => {
         <NavLink to="/profile" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
           <User size={20} />
           <span>프로필</span>
+        </NavLink>
+        <NavLink to="/support" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+          <HelpCircle size={20} />
+          <span>고객센터 / 도움말</span>
         </NavLink>
       </div>
 

@@ -6,6 +6,7 @@ import type { StockData } from '../utils/csv';
 import { useTagStore } from '../store/tagStore';
 import { usePrincipleStore } from '../store/principleStore';
 import { PrincipleCheckModal } from './PrincipleCheckModal';
+import { HelpTooltip } from './ui/HelpTooltip';
 import './TradeModal.css';
 
 // 기본 헬퍼: 현재 시간을 KST(UTC+9) 문자열로 변환 (datetime-local 형식)
@@ -214,7 +215,10 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-container trade-modal-v2" onClick={e => e.stopPropagation()}>
         <div className="modal-header header-inline">
-          <h2>매매 내역</h2>
+          <h2 className="flex items-center">
+            매매 내역
+            <HelpTooltip content="매수/매도한 종목을 기록합니다. 기록된 데이터는 성과 분석의 기초가 됩니다." className="ml-1" iconSize={20} />
+          </h2>
           <div className="header-actions">
             <button className="text-btn cancel" onClick={onClose}>취소</button>
             <button className="text-btn save" onClick={handleSaveClick} disabled={isSubmitting}>
@@ -248,7 +252,10 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
 
           <div className="form-grid" ref={dropdownRef}>
             <div className="form-group autocomplete-container">
-              <label htmlFor="trade-ticker-id">종목코드</label>
+              <label htmlFor="trade-ticker-id" className="flex items-center">
+                종목코드
+                <HelpTooltip content="종목코드나 종목명을 입력하면 자동완성으로 쉽게 찾을 수 있습니다." />
+              </label>
               <input 
                 id="trade-ticker-id"
                 type="text" 
@@ -276,7 +283,9 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
               )}
             </div>
             <div className="form-group autocomplete-container">
-              <label htmlFor="trade-name-id">종목명</label>
+              <label htmlFor="trade-name-id" className="flex items-center">
+                종목명
+              </label>
               <input 
                 id="trade-name-id"
                 type="text" 
@@ -305,7 +314,10 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="trade-price-id">단가 (Price)</label>
+              <label htmlFor="trade-price-id" className="flex items-center">
+                단가 (Price)
+                <HelpTooltip content="1주당 체결된 가격을 입력합니다." />
+              </label>
               <input 
                 id="trade-price-id"
                 type="number" 
@@ -356,7 +368,10 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
 
           {/* 전략 태그 */}
           <div className="tag-section">
-            <label>전략 태그</label>
+            <label className="flex items-center">
+              전략 태그
+              <HelpTooltip content="태그를 잘 기록해두면, 나중에 내게 가장 수익률이 좋은 전략/감정을 분석할 수 있습니다." />
+            </label>
             <div className="tag-list">
               {strategyTags.map(tag => (
                 <button

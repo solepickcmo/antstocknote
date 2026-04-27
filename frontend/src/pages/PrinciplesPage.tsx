@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Plus, Trash2, Save, BookOpen, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { usePrincipleStore } from '../store/principleStore';
 
+import { HelpTooltip } from '../components/ui/HelpTooltip';
+
 // ─────────────────────────────────────────────
 // 원칙은 최대 5개
 // ─────────────────────────────────────────────
@@ -91,7 +93,10 @@ export const PrinciplesPage: React.FC = () => {
             <BookOpen size={28} />
           </div>
           <div>
-            <h1 className="text-3xl font-black tracking-tight">나의 투자 원칙</h1>
+            <h1 className="text-3xl font-black tracking-tight flex items-center">
+              나의 투자 원칙
+              <HelpTooltip content="투자 시 감정에 휘둘리지 않도록 나만의 매매 원칙을 세우고 관리하세요. 매매 기록 시 자동으로 체크리스트가 표시됩니다." className="ml-2" iconSize={24} />
+            </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
               매매 전 확인하는 나만의 투자 철학을 최대 5개까지 작성하세요
             </p>

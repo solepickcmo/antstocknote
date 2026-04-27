@@ -4,6 +4,7 @@ import { DividendCalculator } from '../components/calculators/DividendCalculator
 import { QualityStockEvaluator } from '../components/calculators/QualityStockEvaluator';
 import { RiskRewardCalculator } from '../components/calculators/RiskRewardCalculator';
 import { Calculator, TrendingUp, DollarSign, Star, Scale } from 'lucide-react';
+import { HelpTooltip } from '../components/ui/HelpTooltip';
 
 // TierGate 목업 (추후 주석 제거로 활성화 가능)
 /*
@@ -28,8 +29,11 @@ export const CalculatorPage: React.FC = () => {
         <div className="inline-flex p-3 rounded-2xl bg-amber-500/10 text-amber-500 mb-2">
           <Calculator size={32} />
         </div>
-        <h1 className="text-3xl font-black tracking-tight">투자 시뮬레이터</h1>
-        <p className="text-gray-500 font-medium">다양한 관점에서 분석하고 최적의 진입 시점을 결정하세요</p>
+        <h1 className="text-3xl font-black tracking-tight flex items-center justify-center">
+          투자 시뮬레이터
+          <HelpTooltip content="투자 시뮬레이터를 통해 복리/배당 기대 수익을 계산하고, 우량주를 선별하거나 진입 전 손익비를 점검해보세요." iconSize={24} className="ml-2" />
+        </h1>
+        <p className="text-gray-500 font-medium mt-2">다양한 관점에서 분석하고 최적의 진입 시점을 결정하세요</p>
       </header>
 
       {/* 탭 내비게이션 */}

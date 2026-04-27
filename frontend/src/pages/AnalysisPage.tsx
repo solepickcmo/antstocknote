@@ -7,6 +7,7 @@ import { EmotionAnalysis } from '../components/analysis/EmotionAnalysis';
 import { NoteModal } from '../components/NoteModal';
 import { SubscriptionSection } from '../components/subscription/SubscriptionSection';
 import { TierGate } from '../components/common/TierGate';
+import { HelpTooltip } from '../components/ui/HelpTooltip';
 
 interface Note {
   id: string;
@@ -64,7 +65,10 @@ export const AnalysisPage: React.FC = () => {
   return (
     <div className="analysis-page animate-fade-in pb-20">
       <header className="page-header analysis-header mb-12">
-        <h1 className="text-fintech-2xl font-fintech-black">매매 복기 / 분석</h1>
+        <h1 className="text-fintech-2xl font-fintech-black flex items-center">
+          매매 복기 / 분석
+          <HelpTooltip content="전략 및 감정 태그별 승률을 분석하고, 오답 노트를 작성하여 투자 습관을 개선할 수 있는 공간입니다." iconSize={24} className="ml-2" />
+        </h1>
       </header>
 
       {/* 구독 상태 및 업그레이드 안내 */}
@@ -94,7 +98,10 @@ export const AnalysisPage: React.FC = () => {
         <div className="space-y-6">
           <section className="notes-section">
             <div className="flex justify-between items-center mb-8 bg-primary/5 p-4 rounded-xl border border-primary/10">
-              <h2 className="text-fintech-base font-fintech-black primary-text">오답 노트</h2>
+              <h2 className="text-fintech-base font-fintech-black primary-text flex items-center">
+                오답 노트
+                <HelpTooltip content="실패한 매매나 복기가 필요한 매매를 기록하여 다음 투자에 참고하세요." className="ml-1" />
+              </h2>
               <button 
                 className="btn-fintech-primary py-2 px-4 text-xs shadow-md shadow-primary/10" 
                 onClick={() => setIsNoteModalOpen(true)}

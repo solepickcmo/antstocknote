@@ -9,6 +9,7 @@ import {
 import { Info, RotateCcw, TrendingUp, BarChart3, ShieldCheck, ArrowRight } from 'lucide-react';
 import { evaluateStock } from '../../lib/utils/stockEvaluator';
 import type { MetricScore } from '../../lib/utils/stockEvaluator';
+import { HelpTooltip } from '../ui/HelpTooltip';
 
 // ─────────────────────────────────────────────
 // 헬퍼: 콤마나 단위가 포함된 문자열을 숫자로 파싱
@@ -121,6 +122,7 @@ export const QualityStockEvaluator: React.FC = () => {
         <div className="space-y-1">
           <h2 className="text-xl font-bold flex items-center gap-2">
             🚀 텐배거(Ten-bagger) 시큘레이터 <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full uppercase tracking-tighter font-black">Pro</span>
+            <HelpTooltip content="성장성, 수익성, 안정성 지표를 종합하여 100점 만점으로 주식을 평가합니다. 70점 이상이면 우량주 후보로 검토해볼 수 있습니다." />
           </h2>
           <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
             재무제표의 실제 수치를 입력하세요. 콤마(,)가 포함된 텍스트도 그대로 파싱됩니다.

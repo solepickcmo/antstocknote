@@ -5,6 +5,7 @@ import { Plus, FileText } from 'lucide-react';
 import { format } from 'date-fns';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { StockAnalysisModal } from '../components/StockAnalysisModal';
+import { HelpTooltip } from '../components/ui/HelpTooltip';
 
 const COLORS = [
   '#378ADD', '#1D9E75', '#BA7517', '#D85A30',
@@ -121,8 +122,11 @@ export const HoldingsPage: React.FC = () => {
     <div className="holdings-page animate-fade-in">
       <header className="holdings-header">
         <div className="title-group">
-          <h1>종목 분석</h1>
-          <p className="text-muted text-sm">현재 보유 중인 포트폴리오 현황입니다.</p>
+          <h1 className="flex items-center">
+            종목 분석
+            <HelpTooltip content="현재 보유 중인 포트폴리오의 비중과 주요 종목들의 분석 기록을 관리할 수 있습니다." iconSize={24} className="ml-2" />
+          </h1>
+          <p className="text-muted text-sm mt-1">현재 보유 중인 포트폴리오 현황입니다.</p>
         </div>
         <div className="header-actions">
           <button className="add-btn btn-primary" onClick={() => setModalOpen(true)}>

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useTradeStore } from '../store/tradeStore';
 import './CalendarPage.css';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { HelpTooltip } from '../components/ui/HelpTooltip';
 
 export const CalendarPage: React.FC = () => {
   const fetchTrades = useTradeStore(state => state.fetchTrades);
@@ -95,7 +96,10 @@ export const CalendarPage: React.FC = () => {
   return (
     <div className="calendar-page animate-fade-in">
       <header className="page-header calendar-header-top">
-        <h1>수익 캘린더</h1>
+        <h1 className="flex items-center">
+          수익 캘린더
+          <HelpTooltip content="날짜별 수익과 손실을 달력 형태로 보여줍니다. 거래일 기준 승률과 일평균 손익을 확인해보세요." iconSize={24} className="ml-2" />
+        </h1>
         <div className="month-navigation">
           <button onClick={handlePrevMonth} className="nav-btn">
             <ChevronLeft size={16} /> 

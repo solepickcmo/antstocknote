@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { LayoutDashboard, History, Plus, BarChart2, User, LogOut, Monitor, Calculator, Sun, Moon, Settings, BookOpen } from 'lucide-react';
+import { LayoutDashboard, History, Plus, BarChart2, User, LogOut, Monitor, Calculator, Sun, Moon, Settings, BookOpen, HelpCircle } from 'lucide-react';
 import { useTradeStore } from '../../store/tradeStore';
 import { useAuthStore } from '../../store/authStore';
 import { useLayoutStore } from '../../store/layoutStore';
@@ -104,6 +104,9 @@ export const BottomNav: React.FC = () => {
           </button>
           <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/community'); }}>
             <Plus size={18} /> 커뮤니티 (개미의 집)
+          </button>
+          <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/support'); }}>
+            <HelpCircle size={18} /> 고객센터 / 도움말
           </button>
           <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); setMobileMode(false); }}>
             <Monitor size={18} /> PC 화면으로 보기

@@ -3,6 +3,8 @@ import { Search, Info } from 'lucide-react';
 import { fmtKRW, fmtNum, fmtInput, parseRaw } from '../../utils/calcFormat';
 import { useHoldingsSelector } from '../../hooks/useHoldingsSelector';
 
+import { HelpTooltip } from '../ui/HelpTooltip';
+
 export const ValuationCalculator: React.FC = () => {
   const { currentHoldings } = useHoldingsSelector();
   
@@ -58,7 +60,10 @@ export const ValuationCalculator: React.FC = () => {
     <div className="card-fintech p-6 space-y-8 animate-fade-in bg-white dark:bg-bg-card">
       <div className="flex justify-between items-start">
         <div className="space-y-1">
-          <h2 className="text-xl font-bold">적정 주가 계산기 (PER · PBR)</h2>
+          <h2 className="text-xl font-bold flex items-center gap-2">
+            적정 주가 계산기 (PER · PBR)
+            <HelpTooltip content="PER(수익가치)과 PBR(자산가치)을 기준으로 기업의 적정 주가를 산출합니다. 현재가가 적정가 대비 어느 위치에 있는지 시각적으로 보여줍니다." />
+          </h2>
           <p className="text-xs text-gray-500 font-medium">현재 주가가 고평가인지 저평가인지 두 가지 기준으로 판단합니다</p>
         </div>
         <div className="relative">

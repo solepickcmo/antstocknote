@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Download, Lock } from 'lucide-react';
 import { TagChip } from '../components/TagChip';
+import { HelpTooltip } from '../components/ui/HelpTooltip';
 import { useTradeStore } from '../store/tradeStore';
 import { useTierStore } from '../store/tierStore';
 import { exportTradesToCSV } from '../utils/exportUtils';
@@ -55,8 +56,11 @@ export const DesktopHistoryView: React.FC<DesktopHistoryViewProps> = ({ onRecord
     <div className="history-page animate-fade-in desktop-history">
       <header className="page-header">
         <div className="title-group">
-          <h1>매매 내역</h1>
-          <p className="text-muted text-sm">기록된 모든 매수/매도 내역을 확인하세요.</p>
+          <h1 className="flex items-center">
+            매매 내역
+            <HelpTooltip content="지금까지 기록한 모든 매수/매도 내역을 최신순으로 확인하고, 태그 및 기간별로 검색할 수 있습니다." className="ml-2" iconSize={24} />
+          </h1>
+          <p className="text-muted text-sm mt-1">기록된 모든 매수/매도 내역을 확인하세요.</p>
         </div>
         <button
           className="btn-export"

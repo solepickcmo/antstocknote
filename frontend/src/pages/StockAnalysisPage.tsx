@@ -5,6 +5,8 @@ import { ko } from 'date-fns/locale';
 import { useStockAnalysisStore, type StockAnalysis } from '../store/stockAnalysisStore';
 import { StockAnalysisModal } from '../components/StockAnalysisModal';
 
+import { HelpTooltip } from '../components/ui/HelpTooltip';
+
 export const StockAnalysisPage: React.FC = () => {
   const { analyses, total, isLoading, error, fetchAnalyses } = useStockAnalysisStore();
 
@@ -63,7 +65,10 @@ export const StockAnalysisPage: React.FC = () => {
       {/* 헤더 */}
       <header className="flex justify-between items-start mb-8">
         <div className="space-y-1">
-          <h1 className="text-3xl font-black tracking-tight">종목 분석</h1>
+          <h1 className="text-3xl font-black tracking-tight flex items-center">
+            종목 분석 기록
+            <HelpTooltip content="관심 종목이나 보유 종목에 대한 정밀 분석 내용을 기록하고 보관할 수 있습니다." className="ml-2" iconSize={24} />
+          </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
             총 {total}개의 분석 기록
           </p>

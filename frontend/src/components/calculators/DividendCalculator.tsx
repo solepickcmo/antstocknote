@@ -3,6 +3,8 @@ import { Target, Info, Search } from 'lucide-react';
 import { fmtKRW, fmtPct, fmtInput, parseRaw } from '../../utils/calcFormat';
 import { useHoldingsSelector } from '../../hooks/useHoldingsSelector';
 
+import { HelpTooltip } from '../ui/HelpTooltip';
+
 export const DividendCalculator: React.FC = () => {
   const { currentHoldings } = useHoldingsSelector();
   
@@ -48,7 +50,10 @@ export const DividendCalculator: React.FC = () => {
     <div className="card-fintech p-6 space-y-8 animate-fade-in bg-white dark:bg-bg-card">
       <div className="flex justify-between items-start">
         <div className="space-y-1">
-          <h2 className="text-xl font-bold">배당 수익률 계산기</h2>
+          <h2 className="text-xl font-bold flex items-center gap-2">
+            배당 수익률 계산기
+            <HelpTooltip content="주당 배당금과 주가를 입력하여 시가 배당률과 세후 실수령액을 계산합니다. 배당금을 전액 재투자했을 때의 장기 복리 효과도 확인할 수 있습니다." />
+          </h2>
           <p className="text-xs text-gray-500 font-medium">세후 실수령 배당금과 재투자 시 복리 효과를 계산합니다</p>
         </div>
         <div className="relative">

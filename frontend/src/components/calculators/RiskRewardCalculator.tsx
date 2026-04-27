@@ -3,6 +3,8 @@ import { Search, Info, ShieldAlert } from 'lucide-react';
 import { fmtKRW, fmtPct, fmtInput, parseRaw } from '../../utils/calcFormat';
 import { useHoldingsSelector } from '../../hooks/useHoldingsSelector';
 
+import { HelpTooltip } from '../ui/HelpTooltip';
+
 export const RiskRewardCalculator: React.FC = () => {
   const { currentHoldings } = useHoldingsSelector();
   
@@ -66,7 +68,10 @@ export const RiskRewardCalculator: React.FC = () => {
     <div className="card-fintech p-6 space-y-8 animate-fade-in bg-white dark:bg-bg-card">
       <div className="flex justify-between items-start">
         <div className="space-y-1">
-          <h2 className="text-xl font-bold">손절·목표가 리스크 비율 계산기 (R:R)</h2>
+          <h2 className="text-xl font-bold flex items-center gap-2">
+            손절·목표가 리스크 비율 계산기 (R:R)
+            <HelpTooltip content="손익비(Risk:Reward)를 계산하여 매매의 기대값이 플러스인지 확인합니다. 권장 비율은 1:2 이상이며, 이에 따른 손익분기 승률도 함께 보여줍니다." />
+          </h2>
           <p className="text-xs text-gray-500 font-medium">진입가 대비 손절가·목표가 비율로 매매 진입 타당성을 판단합니다</p>
         </div>
         <div className="relative">

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Download } from 'lucide-react';
 import { useTradeStore } from '../store/tradeStore';
 import { exportTradesToCSV } from '../utils/exportUtils';
+import { HelpTooltip } from '../components/ui/HelpTooltip';
 import './HistoryPage.css';
 
 // onRecordClick: 기록하기 버튼 클릭 시 TradeModal을 여는 함수 (HistoryPage에서 주입)
@@ -91,7 +92,10 @@ export const MobileHistoryView: React.FC<MobileHistoryViewProps> = ({ onRecordCl
   return (
     <div className="history-page animate-fade-in">
       <header className="page-header history-header">
-        <h1>매매 내역</h1>
+        <h1 className="flex items-center">
+          매매 내역
+          <HelpTooltip content="기록된 모든 매수/매도 내역을 최신순으로 확인하고 보관합니다." iconSize={20} className="ml-1" />
+        </h1>
         <div style={{ display: 'flex', gap: '8px' }}>
           <button 
             className="btn-header-action secondary" 

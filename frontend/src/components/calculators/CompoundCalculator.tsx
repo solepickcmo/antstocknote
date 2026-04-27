@@ -12,6 +12,8 @@ import {
 import { Info } from 'lucide-react';
 import { fmtKRW, fmtX, fmtInput, parseRaw } from '../../utils/calcFormat';
 
+import { HelpTooltip } from '../ui/HelpTooltip';
+
 // TierGate 대신 주석 처리된 구조 유지
 // const TierGate: React.FC<{ children: React.ReactNode }> = ({ children }) => <>{children}</>;
 
@@ -69,6 +71,7 @@ export const CompoundCalculator: React.FC = () => {
       <div className="space-y-1">
         <h2 className="text-xl font-bold flex items-center gap-2">
           복리 수익률 계산기
+          <HelpTooltip content="초기 투자금과 매월 적립금을 기준으로 복리 수익률을 시뮬레이션합니다. '72의 법칙'을 통해 자산이 2배가 되는 기간도 확인할 수 있습니다." />
         </h2>
         <p className="text-xs text-gray-500 font-medium">연복리 기준 최종 자산과 기간별 성장 흐름을 확인합니다</p>
       </div>

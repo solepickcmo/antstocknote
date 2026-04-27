@@ -26,6 +26,7 @@ const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ defaul
 const PrinciplesPage = lazy(() => import('./pages/PrinciplesPage').then(m => ({ default: m.PrinciplesPage })));
 const StockAnalysisPage = lazy(() => import('./pages/StockAnalysisPage').then(m => ({ default: m.StockAnalysisPage })));
 const CommunityPage = lazy(() => import('./pages/CommunityPage').then(m => ({ default: m.CommunityPage })));
+const SupportPage = lazy(() => import('./pages/SupportPage').then(m => ({ default: m.SupportPage })));
 const LandingPage = lazy(() => import('./pages/LandingPage').then(m => ({ default: m.LandingPage })));
 import { TierGate } from './components/common/TierGate';
 
@@ -164,6 +165,7 @@ const App: React.FC = () => {
               <Route path="/principles" element={<PrinciplesPage />} />
               <Route path="/stock-analysis" element={<StockAnalysisPage />} />
               <Route path="/community" element={<CommunityPage />} />
+              <Route path="/support" element={<SupportPage />} />
               <Route path="/admin/subscriptions" element={<AdminSubscriptionPage />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Route>
