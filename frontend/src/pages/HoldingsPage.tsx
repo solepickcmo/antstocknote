@@ -113,8 +113,8 @@ export const HoldingsPage: React.FC = () => {
     // 단일 누적 막대를 위한 형식으로 변환
     const data: any = { name: 'Portfolio' };
     holdings.forEach((h) => {
-      // 6자리 숫자인 경우 한국 종목으로 판단하여 종목명 사용, 그 외에는 티커 사용
-      const label = /^\d{6}$/.test(h.ticker) ? h.name : h.ticker;
+      // 숫자로만 된 티커(종목코드)인 경우 종목명 사용, 그 외에는 티커 사용
+      const label = /^\d+$/.test(h.ticker) && h.name ? h.name : h.ticker;
       data[label] = h.currentValue;
     });
     return [data];
@@ -174,7 +174,7 @@ export const HoldingsPage: React.FC = () => {
                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                   />
                   {holdings.map((h, index) => {
-                    const label = /^\d{6}$/.test(h.ticker) ? h.name : h.ticker;
+                    const label = /^\d+$/.test(h.ticker) && h.name ? h.name : h.ticker;
                     return (
                       <Bar 
                         key={label} 
@@ -191,7 +191,7 @@ export const HoldingsPage: React.FC = () => {
             {/* 종목명 병기 (우측 하단) */}
             <div className="flex flex-wrap justify-end gap-x-2 gap-y-2 mt-2 px-2">
               {holdings.map((h, index) => {
-                const label = /^\d{6}$/.test(h.ticker) ? h.name : h.ticker;
+                const label = /^\d+$/.test(h.ticker) && h.name ? h.name : h.ticker;
                 return (
                   <div key={label} className="flex items-center gap-1.5">
                     <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>

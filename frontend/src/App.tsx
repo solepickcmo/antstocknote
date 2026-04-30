@@ -2,6 +2,7 @@ import React, { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 
 import { ErrorBoundary } from './components/ErrorBoundary';
+// v2.2: 사이드바 명칭 및 포트폴리오 종목명 표시 개선 적용 완료
 import { NavBar } from './components/layout/NavBar';
 import { useAuthStore } from './store/authStore';
 import { useTradeStore } from './store/tradeStore';
