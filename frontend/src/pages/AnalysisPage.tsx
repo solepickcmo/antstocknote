@@ -64,7 +64,7 @@ export const AnalysisPage: React.FC = () => {
 
   return (
     <div className="analysis-page animate-fade-in pb-20">
-      <header className="page-header analysis-header mb-12">
+      <header className="page-header analysis-header mb-2">
         <h1 className="text-fintech-2xl font-fintech-black flex items-center">
           매매 복기 / 분석
           <HelpTooltip content="전략 및 감정 태그별 승률을 분석하고, 오답 노트를 작성하여 투자 습관을 개선할 수 있는 공간입니다." iconSize={24} className="ml-2" />
@@ -82,9 +82,9 @@ export const AnalysisPage: React.FC = () => {
         totalTradesCount={stats.totalTrades}
       />
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-2">
-        {/* 통계 섹션 (컴포넌트화) */}
-        <div className="xl:col-span-2 space-y-2">
+      <div className="grid grid-cols-1 gap-2">
+        {/* 분석 요약 섹션 */}
+        <div className="xl:col-span-3">
           <AnalysisStats 
             strategies={stats.strategyStats}
             mistakes={stats.mistakeStats}
@@ -92,61 +92,6 @@ export const AnalysisPage: React.FC = () => {
           <TierGate feature="emotion_analysis">
             <EmotionAnalysis stats={stats.emotionStats || []} />
           </TierGate>
-        </div>
-
-        {/* 오답 노트 섹션 */}
-        <div className="space-y-6">
-          <section className="notes-section">
-            <div className="flex justify-between items-center mb-8 bg-primary/5 p-4 rounded-xl border border-primary/10">
-              <h2 className="text-fintech-base font-fintech-black primary-text flex items-center">
-                오답 노트
-                <HelpTooltip content="실패한 매매나 복기가 필요한 매매를 기록하여 다음 투자에 참고하세요." className="ml-1" />
-              </h2>
-              <button 
-                className="btn-fintech-primary py-2 px-4 text-xs shadow-md shadow-primary/10" 
-                onClick={() => setIsNoteModalOpen(true)}
-              >
-                노트 작성하기
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              {isLoadingNotes ? (
-                <div className="animate-pulse space-y-4">
-                  {[1, 2].map(i => <div key={i} className="h-24 bg-card rounded-xl"></div>)}
-                </div>
-              ) : (
-                <>
-                  {visibleNotes.map(n => (
-                    <div className="card-fintech group hover:border-primary/40 hover:shadow-lg transition-all p-6 bg-white" key={n.id}>
-                      <div className="flex justify-between items-center mb-4">
-                        <span className="bg-primary/10 text-primary px-2.5 py-1 rounded-md text-[10px] font-extrabold border border-primary/20 tracking-tight">
-                          {n.trades?.strategy_tag || '태그 없음'}
-                        </span>
-                        <span className="text-[10px] text-muted font-medium">
-                          {n.trades?.traded_at ? new Date(n.trades.traded_at).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }) : ''}
-                        </span>
-                      </div>
-                      <h4 className="text-fintech-base font-fintech-black mb-3">{n.trades?.name}</h4>
-                      <p className="text-fintech-xs text-secondary leading-relaxed line-clamp-3 group-hover:line-clamp-none transition-all duration-300">
-                        {n.content}
-                      </p>
-                    </div>
-                  ))}
-                  {notes.length === 0 && <p className="text-muted text-center py-8">기록된 노트가 없습니다.</p>}
-                </>
-              )}
-            </div>
-
-            {notes.length > visibleNotesCount && (
-              <button
-                className="w-full mt-4 py-2 text-fintech-xs text-muted hover:text-primary transition-colors flex items-center justify-center gap-2"
-                onClick={() => setVisibleNotesCount(prev => prev + 4)}
-              >
-                더 보기 ↓
-              </button>
-            )}
-          </section>
         </div>
       </div>
 

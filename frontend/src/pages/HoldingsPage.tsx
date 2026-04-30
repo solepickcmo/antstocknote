@@ -190,7 +190,7 @@ export const HoldingsPage: React.FC = () => {
               </ResponsiveContainer>
             </div>
             {/* 종목명 병기 (우측 하단) */}
-            <div className="flex flex-wrap justify-end gap-x-4 gap-y-2 mt-4 px-2">
+            <div className="flex flex-wrap justify-end gap-x-2 gap-y-2 mt-2 px-2">
               {holdings.map((h, index) => {
                 const isOverseas = h.market !== 'KRX';
                 const label = isOverseas ? h.ticker : h.name;

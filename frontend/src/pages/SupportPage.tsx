@@ -30,14 +30,14 @@ export const SupportPage: React.FC = () => {
 
   return (
     <div className="page-container max-w-3xl mx-auto">
-      <div className="flex items-center mb-6">
+      <div className="flex items-center mb-2">
         <h1 className="page-title mb-0">도움말 및 자주 묻는 질문</h1>
         <HelpTooltip content="가장 많이 접수된 질문들과 고객센터 연락처를 안내하는 페이지입니다." />
       </div>
 
-      <div className="bg-card rounded-xl p-6 border border-border/50 mb-8">
-        <h2 className="text-lg font-bold mb-4 font-body">자주 묻는 질문 (FAQ)</h2>
-        <div className="space-y-3">
+      <div className="bg-card rounded-xl p-2 border border-border/50 mb-2">
+        <h2 className="text-lg font-bold mb-2 font-body">자주 묻는 질문 (FAQ)</h2>
+        <div className="space-y-2">
           {FAQS.map((faq, index) => (
             <div key={index} className="border border-border rounded-lg overflow-hidden">
               <button
@@ -61,12 +61,12 @@ export const SupportPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-card rounded-xl p-6 border border-border/50">
-        <div className="flex items-center mb-4">
+      <div className="bg-card rounded-xl p-2 border border-border/50">
+        <div className="flex items-center mb-2">
           <Mail className="text-primary mr-2" size={20} />
           <h2 className="text-lg font-bold font-body">이메일 문의</h2>
         </div>
-        <p className="text-gray-400 text-sm mb-6 leading-relaxed">
+        <p className="text-gray-400 text-sm mb-2 leading-relaxed">
           서비스 이용 중 불편한 점이나 추가 기능 제안이 있으신가요?<br />
           아래 이메일로 연락주시면 최대한 빠르게 답변해 드리겠습니다.
         </p>

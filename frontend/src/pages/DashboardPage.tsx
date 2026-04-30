@@ -38,8 +38,9 @@ export const DashboardPage: React.FC = () => {
       </header>
 
       {/* Tier 1: 성과분석 요약 */}
-      <section className="mb-12">
+      <section className="mb-2">
         <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-2">
           <h3 className="text-lg font-bold flex items-center">
             성과 분석 요약
             <HelpTooltip content="지금까지 기록한 매매 데이터를 바탕으로 계산된 종합 성과입니다." className="ml-1" />
@@ -80,8 +81,8 @@ export const DashboardPage: React.FC = () => {
       </section>
 
       {/* Tier 2: 수익금 추이 */}
-      <section className="card-fintech mb-12">
-        <div className="flex justify-between items-center mb-6">
+      <section className="card-fintech mb-2">
+        <div className="flex justify-between items-center mb-2">
           <h3 className="text-lg font-bold flex items-center">
             수익금 추이 (최근 7일)
             <HelpTooltip content="최근 일주일간의 일별 누적 수익금 흐름을 시각적으로 보여줍니다." className="ml-1" />
