@@ -58,7 +58,7 @@ export const BottomNav: React.FC = () => {
         <span>홈</span>
       </NavLink>
       {/* 2. 포트폴리오 (내 포트폴리오) */}
-      <NavLink to="/stock-analysis" className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}>
+      <NavLink to="/holdings" className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}>
         <BarChart2 size={22} />
         <span>포트폴리오</span>
       </NavLink>

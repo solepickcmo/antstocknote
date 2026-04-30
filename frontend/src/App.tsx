@@ -152,9 +152,7 @@ const App: React.FC = () => {
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/calendar" element={<CalendarPage />} />
               <Route path="/history" element={<HistoryPage />} />
-              <Route path="/holdings" element={
-                <TierGate feature="history_date_range"><HoldingsPage /></TierGate>
-              } />
+              <Route path="/holdings" element={<HoldingsPage />} />
               <Route path="/analysis" element={<AnalysisPage />} />
               <Route path="/calculator" element={
                 <TierGate feature="calculators"><CalculatorPage /></TierGate>
