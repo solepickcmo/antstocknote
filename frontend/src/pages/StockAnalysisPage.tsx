@@ -39,10 +39,18 @@ export const StockAnalysisPage: React.FC = () => {
   }, [analyses, searchQuery]);
 
   // 종목별 티커 목록 (필터 칩용)
+  // KRX 종목은 종목코드 대신 종목명으로 표시 (예: '006400' → '삼성SDI')
   const tickerList = useMemo(() => {
-    const seen = new Set<string>();
-    analyses.forEach((a) => { if (a.ticker) seen.add(a.ticker); });
-    return Array.from(seen);
+    const seen = new Map<string, string>(); // ticker -> 표시명
+    analyses.forEach((a) => {
+      if (a.ticker && !seen.has(a.ticker)) {
+        // KRX 종목은 숫자만 있으면 종목코드이므로 종목명 우선 표시
+        const isKrxCode = /^\d+$/.test(a.ticker);
+        const displayName = isKrxCode && a.stock_name ? a.stock_name : a.ticker;
+        seen.set(a.ticker, displayName);
+      }
+    });
+    return Array.from(seen.entries()); // [ticker, displayName][]
   }, [analyses]);
 
   const openCreate = () => {
@@ -66,7 +74,7 @@ export const StockAnalysisPage: React.FC = () => {
       <header className="flex justify-between items-start mb-8">
         <div className="space-y-1">
           <h1 className="text-3xl font-black tracking-tight flex items-center">
-            종목 분석 기록
+            내 포트폴리오
             <HelpTooltip content="관심 종목이나 보유 종목에 대한 정밀 분석 내용을 기록하고 보관할 수 있습니다." className="ml-2" iconSize={24} />
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
@@ -110,17 +118,17 @@ export const StockAnalysisPage: React.FC = () => {
             >
               전체
             </button>
-            {tickerList.map((t) => (
+            {tickerList.map(([ticker, displayName]) => (
               <button
-                key={t}
-                onClick={() => setTickerFilter(tickerFilter === t ? '' : t)}
+                key={ticker}
+                onClick={() => setTickerFilter(tickerFilter === ticker ? '' : ticker)}
                 className={`shrink-0 px-3 py-1.5 text-xs font-bold rounded-full transition-colors ${
-                  tickerFilter === t
+                  tickerFilter === ticker
                     ? 'bg-amber-500 text-white'
                     : 'bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10'
                 }`}
               >
-                {t}
+                {displayName}
               </button>
             ))}
             {tickerFilter && (
@@ -181,10 +189,18 @@ export const StockAnalysisPage: React.FC = () => {
                     {/* 종목 뱃지 */}
                     {analysis.ticker && (
                       <div className="flex items-center gap-2">
-                        <span className="text-[11px] font-black px-2 py-0.5 bg-amber-500/10 text-amber-500 rounded-md">
-                          {analysis.ticker}
-                        </span>
-                        {analysis.stock_name && (
+                        {/* KRX 종목(숫자 코드)은 종목명으로, 해외 종목은 코드 그대로 표시 */}
+                        {/^\d+$/.test(analysis.ticker) && analysis.stock_name ? (
+                          <span className="text-[11px] font-black px-2 py-0.5 bg-amber-500/10 text-amber-500 rounded-md">
+                            {analysis.stock_name}
+                          </span>
+                        ) : (
+                          <span className="text-[11px] font-black px-2 py-0.5 bg-amber-500/10 text-amber-500 rounded-md">
+                            {analysis.ticker}
+                          </span>
+                        )}
+                        {/* 해외 종목의 경우 종목명도 추가로 표시 */}
+                        {!/^\d+$/.test(analysis.ticker) && analysis.stock_name && (
                           <span className="text-[11px] text-gray-400">{analysis.stock_name}</span>
                         )}
                       </div>

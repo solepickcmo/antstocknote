@@ -51,25 +51,30 @@ export const BottomNav: React.FC = () => {
 
   return (
     <>
-      <nav className="bottom-nav">
+    <nav className="bottom-nav">
+      {/* 1. 홈 */}
       <NavLink to="/dashboard" className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}>
         <LayoutDashboard size={22} />
         <span>홈</span>
       </NavLink>
-      <NavLink to="/history" className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}>
-        <History size={22} />
-        <span>매매 내역</span>
+      {/* 2. 포트폴리오 (내 포트폴리오) */}
+      <NavLink to="/stock-analysis" className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}>
+        <BarChart2 size={22} />
+        <span>포트폴리오</span>
       </NavLink>
+      {/* 3. 기록하기 (FAB 버튼) */}
       <div className="bottom-nav-fab-container">
         <button className="bottom-nav-fab" onClick={() => setModalOpen(true)}>
           <Plus size={24} color="#fff" />
         </button>
         <span className="fab-label">기록</span>
       </div>
-      <NavLink to="/analysis" className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}>
-        <BarChart2 size={22} />
-        <span>복기</span>
+      {/* 4. 매매내역 */}
+      <NavLink to="/history" className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}>
+        <History size={22} />
+        <span>매매내역</span>
       </NavLink>
+      {/* 5. 설정 */}
       <button 
         className={`bottom-nav-item ${isSettingsOpen ? 'active' : ''}`}
         onClick={() => setIsSettingsOpen(true)}

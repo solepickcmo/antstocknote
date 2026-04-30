@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Download } from 'lucide-react';
-import { useTradeStore } from '../store/tradeStore';
+import { Download, FileText, Tag } from 'lucide-react';
+import { useTradeStore, type Trade } from '../store/tradeStore';
 import { exportTradesToCSV } from '../utils/exportUtils';
 import { HelpTooltip } from '../components/ui/HelpTooltip';
 import './HistoryPage.css';
@@ -16,6 +16,8 @@ export const MobileHistoryView: React.FC<MobileHistoryViewProps> = ({ onRecordCl
   const isLoading = useTradeStore(state => state.isLoading);
   const error = useTradeStore(state => state.error);
   const [activeTab, setActiveTab] = useState<'all' | 'holdings'>('all');
+  // 선택된 거래 상세 표시 (null이면 닫혀 있음)
+  const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
 
   useEffect(() => {
     fetchTrades();
@@ -151,11 +153,21 @@ export const MobileHistoryView: React.FC<MobileHistoryViewProps> = ({ onRecordCl
             {error && <div className="p-4 text-center text-red-500">{error}</div>}
             
             {trades.map((trade: any) => (
-              <div key={trade.id} className="trade-card glass-panel">
+              <div 
+                key={trade.id} 
+                className="trade-card glass-panel"
+                onClick={() => setSelectedTrade(prev => prev?.id === trade.id ? null : trade)}
+                style={{ cursor: 'pointer' }}
+              >
                 <div className="trade-card-top">
                   <div>
-                    <span className="ticker">{trade.ticker}</span>
-                    <span className="name">{trade.name}</span>
+                    {/* KRX 종목(숫자 코드)은 종목명으로 표시 */}
+                    <span className="ticker">
+                      {/^\d+$/.test(trade.ticker) ? trade.name : trade.ticker}
+                    </span>
+                    {!/^\d+$/.test(trade.ticker) && (
+                      <span className="name">{trade.name}</span>
+                    )}
                   </div>
                   <div className="trade-price-group">
                     {trade.pnl ? (
@@ -175,6 +187,52 @@ export const MobileHistoryView: React.FC<MobileHistoryViewProps> = ({ onRecordCl
                   </span>
                   <span className="trade-status ml-auto text-muted text-sm">{trade.is_open ? '보유중' : '매도완료'}</span>
                 </div>
+
+                {/* 선택된 트레이드 상세 패널 (클릭 시 표시) */}
+                {selectedTrade?.id === trade.id && (
+                  <div 
+                    className="trade-memo-panel"
+                    onClick={e => e.stopPropagation()} // 카드 클릭 이벤트 버블링 방지
+                    style={{
+                      marginTop: '10px',
+                      padding: '12px',
+                      borderRadius: '10px',
+                      background: 'rgba(var(--color-primary-rgb, 245, 158, 11), 0.06)',
+                      borderTop: '1px solid rgba(245,158,11,0.2)',
+                    }}
+                  >
+                    {/* 전략 태그 */}
+                    {trade.strategy_tag && (
+                      <div className="flex items-center gap-1.5 mb-2">
+                        <Tag size={11} style={{ color: '#6366f1' }} />
+                        <span style={{ fontSize: '11px', fontWeight: 700, color: '#6366f1' }}>
+                          {trade.strategy_tag}
+                        </span>
+                      </div>
+                    )}
+                    {/* 선택메모 (매수/매도 이유) */}
+                    {trade.memo ? (
+                      <div className="flex items-start gap-2">
+                        <FileText size={12} style={{ color: '#f59e0b', marginTop: '1px', flexShrink: 0 }} />
+                        <p style={{ fontSize: '12px', lineHeight: 1.6, color: 'var(--text-secondary)', margin: 0 }}>
+                          {trade.memo}
+                        </p>
+                      </div>
+                    ) : (
+                      <p style={{ fontSize: '12px', color: 'var(--text-muted)', fontStyle: 'italic', margin: 0 }}>
+                        작성된 메모가 없습니다.
+                      </p>
+                    )}
+                    {/* 감정 태그 */}
+                    {trade.emotion_tag && (
+                      <div className="flex items-center gap-1.5 mt-2">
+                        <span style={{ fontSize: '10px', fontWeight: 600, padding: '2px 8px', background: 'rgba(239,68,68,0.1)', color: '#ef4444', borderRadius: '999px' }}>
+                          {trade.emotion_tag}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>

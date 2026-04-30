@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Download, Lock } from 'lucide-react';
+import { Download, Lock, FileText, Tag } from 'lucide-react';
 import { TagChip } from '../components/TagChip';
 import { HelpTooltip } from '../components/ui/HelpTooltip';
-import { useTradeStore } from '../store/tradeStore';
+import { useTradeStore, type Trade } from '../store/tradeStore';
 import { useTierStore } from '../store/tierStore';
 import { exportTradesToCSV } from '../utils/exportUtils';
 import { format, subMonths, startOfDay, endOfDay } from 'date-fns';
@@ -31,6 +31,9 @@ export const DesktopHistoryView: React.FC<DesktopHistoryViewProps> = ({ onRecord
   const defaultFrom = subMonths(new Date(), 3);
   const [dateFrom, setDateFrom] = useState<string>(format(defaultFrom, 'yyyy-MM-dd'));
   const [dateTo,   setDateTo]   = useState<string>(format(new Date(), 'yyyy-MM-dd'));
+
+  // 선택된 거래 상세 표시 (null이면 닫혀 있음)
+  const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
 
   useEffect(() => {
     fetchTrades();
@@ -177,39 +180,100 @@ export const DesktopHistoryView: React.FC<DesktopHistoryViewProps> = ({ onRecord
         )}
 
         {filteredTrades.map(trade => (
-          <div key={trade.id} className="history-item glass-panel desktop-row-item">
-            <span className={`trade-type ${trade.type}`}>
-              {trade.type === 'buy' ? '매수' : '매도'}
-            </span>
-            <div className="trade-info-inline">
-              <span className="ticker">{trade.ticker}</span>
-              <span className="name">{trade.name}</span>
-            </div>
-            <div className="trade-date">
-              {format(new Date(trade.traded_at), 'yyyy.MM.dd HH:mm')}
-            </div>
-            <div className="detail-inline">
-              <span className="label">체결가</span>
-              <span className="val">₩ {Number(trade.price).toLocaleString()}</span>
-            </div>
-            <div className="detail-inline">
-              <span className="label">수량</span>
-              <span className="val">{Number(trade.quantity).toLocaleString()}</span>
-            </div>
-            <div className="detail-inline">
-              <span className="label">실현손익</span>
-              {trade.pnl ? (
-                <span className={`val ${Number(trade.pnl) > 0 ? 'profit-text' : 'loss-text'}`}>
-                  {Number(trade.pnl) > 0 ? '+' : ''}{Number(trade.pnl).toLocaleString()}
+          <div
+            key={trade.id}
+            className="history-item glass-panel desktop-row-item"
+            style={{ cursor: 'pointer', flexDirection: 'column', alignItems: 'stretch' }}
+            onClick={() => setSelectedTrade(prev => prev?.id === trade.id ? null : trade)}
+          >
+            {/* 거래 기본 정보 행 */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+              <span className={`trade-type ${trade.type}`}>
+                {trade.type === 'buy' ? '매수' : '매도'}
+              </span>
+              <div className="trade-info-inline">
+                {/* KRX 종목(숫자코드)은 종목명으로 표시 */}
+                <span className="ticker">
+                  {/^\d+$/.test(trade.ticker) ? trade.name : trade.ticker}
                 </span>
-              ) : (
-                <span className="val" style={{ color: 'var(--text-muted)' }}>-</span>
-              )}
+                {!/^\d+$/.test(trade.ticker) && (
+                  <span className="name">{trade.name}</span>
+                )}
+              </div>
+              <div className="trade-date">
+                {format(new Date(trade.traded_at), 'yyyy.MM.dd HH:mm')}
+              </div>
+              <div className="detail-inline">
+                <span className="label">체결가</span>
+                <span className="val">₩ {Number(trade.price).toLocaleString()}</span>
+              </div>
+              <div className="detail-inline">
+                <span className="label">수량</span>
+                <span className="val">{Number(trade.quantity).toLocaleString()}</span>
+              </div>
+              <div className="detail-inline">
+                <span className="label">실현손익</span>
+                {trade.pnl ? (
+                  <span className={`val ${Number(trade.pnl) > 0 ? 'profit-text' : 'loss-text'}`}>
+                    {Number(trade.pnl) > 0 ? '+' : ''}{Number(trade.pnl).toLocaleString()}
+                  </span>
+                ) : (
+                  <span className="val" style={{ color: 'var(--text-muted)' }}>-</span>
+                )}
+              </div>
+              <div className="trade-actions-inline">
+                {trade.strategy_tag && <TagChip label={trade.strategy_tag.split('-')[0].trim()} type="strategy" />}
+                {trade.emotion_tag  && <TagChip label={trade.emotion_tag} type="emotion" />}
+              </div>
             </div>
-            <div className="trade-actions-inline">
-              {trade.strategy_tag && <TagChip label={trade.strategy_tag.split('-')[0].trim()} type="strategy" />}
-              {trade.emotion_tag  && <TagChip label={trade.emotion_tag} type="emotion" />}
-            </div>
+
+            {/* 선택된 거래의 메모 패널 */}
+            {selectedTrade?.id === trade.id && (
+              <div
+                onClick={e => e.stopPropagation()}
+                style={{
+                  marginTop: '10px',
+                  padding: '12px 16px',
+                  borderRadius: '10px',
+                  background: 'rgba(245, 158, 11, 0.06)',
+                  borderTop: '1px solid rgba(245,158,11,0.2)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                }}
+              >
+                {/* 전략 태그 */}
+                {trade.strategy_tag && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Tag size={12} style={{ color: '#6366f1', flexShrink: 0 }} />
+                    <span style={{ fontSize: '12px', fontWeight: 700, color: '#6366f1' }}>
+                      {trade.strategy_tag}
+                    </span>
+                  </div>
+                )}
+                {/* 선택메모 (매수/매도 이유) */}
+                {trade.memo ? (
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                    <FileText size={13} style={{ color: '#f59e0b', marginTop: '2px', flexShrink: 0 }} />
+                    <p style={{ fontSize: '13px', lineHeight: 1.6, color: 'var(--text-secondary)', margin: 0 }}>
+                      {trade.memo}
+                    </p>
+                  </div>
+                ) : (
+                  <p style={{ fontSize: '13px', color: 'var(--text-muted)', fontStyle: 'italic', margin: 0 }}>
+                    작성된 메모가 없습니다.
+                  </p>
+                )}
+                {/* 감정 태그 */}
+                {trade.emotion_tag && (
+                  <div>
+                    <span style={{ fontSize: '11px', fontWeight: 600, padding: '2px 10px', background: 'rgba(239,68,68,0.1)', color: '#ef4444', borderRadius: '999px' }}>
+                      {trade.emotion_tag}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         ))}
       </div>
