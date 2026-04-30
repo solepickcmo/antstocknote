@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { LayoutDashboard, History, Plus, BarChart2, User, LogOut, Monitor, Calculator, Sun, Moon, Settings, BookOpen, HelpCircle } from 'lucide-react';
+import { LayoutDashboard, History, Plus, BarChart2, LogOut, Monitor, Calculator, Sun, Moon, Settings, BookOpen, HelpCircle, Users, FileText } from 'lucide-react';
 import { useTradeStore } from '../../store/tradeStore';
 import { useAuthStore } from '../../store/authStore';
 import { useLayoutStore } from '../../store/layoutStore';
@@ -60,7 +60,7 @@ export const BottomNav: React.FC = () => {
       {/* 2. 포트폴리오 (내 포트폴리오) */}
       <NavLink to="/holdings" className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}>
         <BarChart2 size={22} />
-        <span>포트폴리오</span>
+        <span>내 포트폴리오</span>
       </NavLink>
       {/* 3. 기록하기 (FAB 버튼) */}
       <div className="bottom-nav-fab-container">
@@ -95,20 +95,23 @@ export const BottomNav: React.FC = () => {
               <><Sun size={18} /> 라이트 모드 켜기</>
             )}
           </button>
-          <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/profile'); }}>
-            <User size={18} /> 내 프로필 관리
+          <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/holdings'); }}>
+            <BarChart2 size={18} /> 내 포트폴리오
+          </button>
+          <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/analysis'); }}>
+            <Users size={18} /> 매매패턴 분석
           </button>
           <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/calculator'); }}>
             <Calculator size={18} /> 투자 시뮬레이터
           </button>
-          <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/principles'); }}>
-            <BookOpen size={18} /> 투자 원칙
-          </button>
-          <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/stock-analysis'); }}>
-            <BarChart2 size={18} /> 종목 분석
-          </button>
           <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/community'); }}>
             <Plus size={18} /> 커뮤니티 (개미의 집)
+          </button>
+          <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/stock-analysis'); }}>
+            <FileText size={18} /> 종목 분석 기록
+          </button>
+          <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/principles'); }}>
+            <BookOpen size={18} /> 투자 원칙
           </button>
           <button className="sheet-btn" onClick={() => { setIsSettingsOpen(false); navigate('/support'); }}>
             <HelpCircle size={18} /> 고객센터 / 도움말

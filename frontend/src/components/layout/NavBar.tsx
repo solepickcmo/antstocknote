@@ -34,7 +34,6 @@ export const NavBar: React.FC = () => {
       label: 'FREE',
       items: [
         { to: '/dashboard',      label: '대시보드',         icon: LayoutDashboard },
-        { to: '/holdings',       label: '내 포트폴리오',      icon: PieChart },
         { to: '/history',        label: '매매 내역',         icon: History },
         { to: '/calendar',       label: '수익 캘린더',        icon: Calendar },
         { to: '/principles',     label: '투자 원칙',          icon: BookOpen },
@@ -44,10 +43,11 @@ export const NavBar: React.FC = () => {
       id: 'premium',
       label: 'PREMIUM',
       items: [
-        { to: '/stock-analysis', label: '종목 분석', icon: BarChart3 },
-        { to: '/analysis',       label: '매매패턴분석', icon: Users },
-        { to: '/calculator', label: '투자 시뮬레이터', icon: Calculator },
-        { to: '/community',  label: '커뮤니티 (개미의 집)', icon: PlusSquare },
+        { to: '/holdings',       label: '내 포트폴리오',      icon: PieChart },
+        { to: '/analysis',       label: '매매패턴 분석',      icon: Users },
+        { to: '/calculator',     label: '투자 시뮬레이터',    icon: Calculator },
+        { to: '/community',      label: '커뮤니티 (개미의 집)', icon: PlusSquare },
+        { to: '/stock-analysis', label: '종목 분석 기록',     icon: BarChart3 },
         ...(user?.isAdmin ? [{ to: '/admin/subscriptions', label: '구독 승인 관리', icon: Shield }] : []),
       ]
     }

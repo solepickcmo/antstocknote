@@ -23,7 +23,7 @@ export const AnalysisPage: React.FC = () => {
     <div className="analysis-page animate-fade-in pb-20">
       <header className="page-header analysis-header mb-2">
         <h1 className="flex items-center text-3xl font-black tracking-tight">
-          매매패턴분석
+          매매패턴 분석
           <HelpTooltip content="나의 매매 습관과 전략별 수익률을 시각화하여 분석합니다." className="ml-2" iconSize={24} />
         </h1>
       </header>

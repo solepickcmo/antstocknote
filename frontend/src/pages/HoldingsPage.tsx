@@ -230,7 +230,9 @@ export const HoldingsPage: React.FC = () => {
                 displayList.map(h => (
                 <tr key={h.ticker} className="table-row-hover">
                   <td className="col-ticker">
-                    <span className="ticker-badge">{h.ticker}</span>
+                    <span className="ticker-badge">
+                      {/^\d+$/.test(h.ticker) ? h.name : h.ticker}
+                    </span>
                   </td>
                   <td className="col-name">
                     <div className="name-wrapper">

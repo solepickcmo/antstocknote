@@ -74,7 +74,7 @@ export const StockAnalysisPage: React.FC = () => {
       <header className="flex justify-between items-start mb-8">
         <div className="space-y-1">
           <h1 className="flex items-center text-3xl font-black tracking-tight">
-            종목 분석
+            종목 분석 기록
             <HelpTooltip content="종목별 매수 이유와 분석 내용을 기록하고 관리할 수 있습니다." iconSize={24} className="ml-2" />
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
