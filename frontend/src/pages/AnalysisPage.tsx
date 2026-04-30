@@ -82,9 +82,9 @@ export const AnalysisPage: React.FC = () => {
         totalTradesCount={stats.totalTrades}
       />
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-2">
         {/* 통계 섹션 (컴포넌트화) */}
-        <div className="xl:col-span-2 space-y-8">
+        <div className="xl:col-span-2 space-y-2">
           <AnalysisStats 
             strategies={stats.strategyStats}
             mistakes={stats.mistakeStats}

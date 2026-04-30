@@ -14,7 +14,7 @@ export const AnalysisSummary: React.FC<AnalysisSummaryProps> = ({
   totalTradesCount
 }) => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
       <div className="card-fintech flex flex-col items-center justify-center py-6 md:py-8">
         <h3 className="label-fintech">총 거래 건수</h3>
         <p className="text-fintech-3xl font-fintech-black">{totalTradesCount}건</p>

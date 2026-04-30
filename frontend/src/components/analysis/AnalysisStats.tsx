@@ -12,7 +12,7 @@ export const AnalysisStats: React.FC<AnalysisStatsProps> = ({ strategies, mistak
   const maxMistakeCount = mistakes.length > 0 ? Math.max(...mistakes.map(m => m.count)) : 1;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
       {/* 전략별 승률 */}
       <div className="card-fintech">
         <h2 className="text-fintech-lg font-fintech-bold mb-6">전략별 승률</h2>

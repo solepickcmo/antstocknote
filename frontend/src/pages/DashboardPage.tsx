@@ -46,7 +46,7 @@ export const DashboardPage: React.FC = () => {
           </h3>
         </div>
         <div className="overflow-x-auto pb-4 scrollbar-hide">
-          <div className="flex md:grid md:grid-cols-4 gap-4 min-w-max md:min-w-full">
+          <div className="flex md:grid md:grid-cols-4 gap-2 min-w-max md:min-w-full">
             <div className="w-[240px] md:w-auto">
               <MetricCard 
                 title="보유 총 자산 (원금 + 실현손익)" 

@@ -167,7 +167,7 @@ export const StockAnalysisPage: React.FC = () => {
         </div>
       ) : (
         /* 분석 카드 목록 */
-        <div className="space-y-3">
+        <div className="space-y-2">
           {filtered.map((analysis) => (
             <div
               key={analysis.id}
