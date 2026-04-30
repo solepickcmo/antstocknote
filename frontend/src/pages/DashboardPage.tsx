@@ -39,7 +39,6 @@ export const DashboardPage: React.FC = () => {
 
       {/* Tier 1: 성과분석 요약 */}
       <section className="mb-2">
-        <div className="flex justify-between items-center mb-6">
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-lg font-bold flex items-center">
             성과 분석 요약
