@@ -15,8 +15,8 @@ export const AnalysisStats: React.FC<AnalysisStatsProps> = ({ strategies, mistak
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
       {/* 전략별 승률 */}
       <div className="card-fintech">
-        <h2 className="text-fintech-lg font-fintech-bold mb-6">전략별 승률</h2>
-        <div className="space-y-4">
+        <h2 className="text-fintech-lg font-fintech-bold mb-2">전략별 승률</h2>
+        <div className="space-y-2">
           {strategies.map((s, idx) => (
             <div key={s.tag} className="space-y-2">
               <div className="flex justify-between text-fintech-xs font-medium px-0.5">
@@ -46,8 +46,8 @@ export const AnalysisStats: React.FC<AnalysisStatsProps> = ({ strategies, mistak
 
       {/* 실수 유형 분석 */}
       <div className="card-fintech">
-        <h2 className="text-fintech-lg font-fintech-bold mb-6">실수 유형 분석</h2>
-        <div className="space-y-4">
+        <h2 className="text-fintech-lg font-fintech-bold mb-2">실수 유형 분석</h2>
+        <div className="space-y-2">
           {mistakes.map((m, idx) => (
             <div key={m.type} className="space-y-2">
               <div className="flex justify-between text-fintech-xs font-medium px-0.5">

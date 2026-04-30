@@ -42,14 +42,14 @@ export const CommunityPage: React.FC = () => {
 
         {/* Profile Onboarding */}
         {!myProfile && (
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-900 rounded-lg p-2 mb-2 flex flex-col sm:flex-row items-center justify-between shadow-sm">
+          <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-2 flex flex-col sm:flex-row items-center justify-between shadow-sm">
             <div className="mb-2 sm:mb-0">
-              <h3 className="font-semibold text-blue-800 dark:text-blue-300 mb-1">커뮤니티 프로필 설정이 필요합니다</h3>
-              <p className="text-sm text-blue-600 dark:text-blue-400">게시물을 작성하고 소통하려면 닉네임을 설정해주세요.</p>
+              <h3 className="font-bold text-primary mb-1">커뮤니티 프로필 설정이 필요합니다</h3>
+              <p className="text-sm text-secondary">게시물을 작성하고 소통하려면 닉네임을 설정해주세요.</p>
             </div>
             <button 
               onClick={() => setIsModalOpen(true)} 
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition-colors whitespace-nowrap"
+              className="px-4 py-2 bg-primary text-primary-contrast rounded-lg hover:bg-primary-hover text-sm font-bold transition-colors whitespace-nowrap"
             >
               프로필 만들기
             </button>
