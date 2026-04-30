@@ -29,6 +29,9 @@ export interface Trade extends TradeLike {
   memo: string | null;
   is_open: boolean;
   is_public: boolean;
+  market: string;         // [추가] KRX, NASDAQ 등
+  currency: string;       // [추가] KRW, USD
+  exchange_rate: number | null; // [추가] 적용 환율
 }
 
 /** 매매 기록 생성 시 전달받는 입력 데이터 */
@@ -44,12 +47,16 @@ export interface CreateTradeInput {
   emotionTag?: string | null;
   memo?: string | null;
   isPublic?: boolean;
+  market?: string;
+  currency?: string;
+  exchangeRate?: number | null;
 }
 
 /** 보유 종목 (getHoldings 반환 타입) */
 export interface Holding {
   ticker: string;
   name: string;
+  market: string;
   trades: Trade[];
   buyQty: number;
   sellQty: number;
@@ -78,6 +85,7 @@ interface AnalysisStats {
   overallAvgPnl: number;
   totalPnl: number;
   totalTrades: number;
+  totalAssets: number; // [추가] 보유 총 자산
 }
 
 /** 차트 데이터 포인트 */
@@ -91,9 +99,11 @@ interface TradeState {
   isLoading: boolean;
   error: string | null;
   isModalOpen: boolean;
+  exchangeRate: number; // [추가] 실시간 환율 (USD/KRW)
   setModalOpen: (isOpen: boolean) => void;
   fetchTrades: () => Promise<void>;
   createTrade: (input: CreateTradeInput) => Promise<void>;
+  fetchExchangeRate: () => Promise<void>; // [추가] 환율 조회
   // Derived State
   getHoldings: () => Holding[];
   getAnalysisStats: () => AnalysisStats;
@@ -109,8 +119,22 @@ export const useTradeStore = create<TradeState>((set, get) => ({
   isLoading: false,
   error: null,
   isModalOpen: false,
+  exchangeRate: 1350, // 기본값 (추후 fetch)
 
   setModalOpen: (isOpen) => set({ isModalOpen: isOpen }),
+
+  /** 실시간 환율을 가져온다 (Mock API 또는 실제 API) */
+  fetchExchangeRate: async () => {
+    try {
+      // 실제 구현 시에는 외부 API (예: ExchangeRate-API) 사용 가능
+      // 여기서는 1350~1400 사이의 랜덤값으로 실시간 느낌 구현
+      const baseRate = 1380;
+      const randomFluc = (Math.random() * 10) - 5;
+      set({ exchangeRate: parseFloat((baseRate + randomFluc).toFixed(2)) });
+    } catch (err) {
+      console.error('[TradeStore] 환율 조회 실패:', err);
+    }
+  },
 
   /**
    * 로그인된 유저의 전체 매매 내역을 Supabase에서 조회한다.
@@ -251,6 +275,9 @@ export const useTradeStore = create<TradeState>((set, get) => ({
       memo: input.memo ?? null,
       is_open: isOpen,
       is_public: input.isPublic ?? false,
+      market: input.market ?? 'KRX',
+      currency: input.currency ?? 'KRW',
+      exchange_rate: input.exchangeRate ?? null,
     });
 
     if (insertError) {
@@ -280,6 +307,7 @@ export const useTradeStore = create<TradeState>((set, get) => ({
         acc[trade.ticker] = {
           ticker: trade.ticker,
           name: trade.name,
+          market: trade.market || 'KRX',
           trades: [],
           buyQty: 0,
           sellQty: 0,
@@ -371,6 +399,11 @@ export const useTradeStore = create<TradeState>((set, get) => ({
     const totalWins   = strategyStats.reduce((acc, s) => acc + s.wins,  0);
     const totalPnl    = trades.reduce((sum, t) => sum + (Number(t.pnl) || 0), 0);
 
+    // 보유 총 자산 계산 (보유 종목의 총 매수금액 합계 + 실현손익)
+    // 실제로는 '현재가' 기준 평가금액이어야 하나, 여기서는 매수원가 기준 자산으로 표시
+    const holdings = get().getHoldings();
+    const totalAssets = holdings.reduce((sum, h) => sum + h.totalCost, 0);
+
     return {
       strategyStats,
       emotionStats,
@@ -379,6 +412,7 @@ export const useTradeStore = create<TradeState>((set, get) => ({
       overallAvgPnl:  totalTrades > 0 ? Math.round(totalPnl / totalTrades) : 0,
       totalPnl,
       totalTrades,
+      totalAssets: totalAssets + totalPnl, // 투자원금 + 실현손익 (간이 자산 계산)
     };
   },
 

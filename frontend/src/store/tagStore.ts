@@ -16,53 +16,53 @@ export interface Tag {
 // ─────────────────────────────────────────────
 
 export const ALL_TAGS: Tag[] = [
-  // 매수 전략 (Strategy - Buy)
-  { id: 1, name: '#상승올라타기', type: 'strategy', tradeType: 'buy' },  // 돌파매수
-  { id: 2, name: '#떨어질때줍기', type: 'strategy', tradeType: 'buy' },  // 눌림목매수
-  { id: 3, name: '#단타한방', type: 'strategy', tradeType: 'buy' },  // 시가베팅
-  { id: 4, name: '#조금씩담기', type: 'strategy', tradeType: 'buy' },  // 분할매수
-  { id: 5, name: '#추세따라가기', type: 'strategy', tradeType: 'buy' },  // 추세추종
-  { id: 6, name: '#많이빠졌다', type: 'strategy', tradeType: 'buy' },  // 낙주매입
-  { id: 7, name: '#뉴스보고샀다', type: 'strategy', tradeType: 'buy' },  // 재료매매
-  { id: 8, name: '#계획대로샀다', type: 'strategy', tradeType: 'buy' },  // 계획매입
-  { id: 9, name: '#일단맛보기', type: 'strategy', tradeType: 'buy' },  // 정찰병
-  { id: 10, name: '#지인추천(반성)', type: 'strategy', tradeType: 'buy' },  // 뇌동매수
+  // 매수 감정 (Buy - Blue)
+  { id: 1, name: '확신', type: 'emotion', tradeType: 'buy' },
+  { id: 2, name: '설렘', type: 'emotion', tradeType: 'buy' },
+  { id: 3, name: '기대감', type: 'emotion', tradeType: 'buy' },
+  { id: 4, name: 'FOMO', type: 'emotion', tradeType: 'buy' },
+  { id: 5, name: '욕심', type: 'emotion', tradeType: 'buy' },
+  { id: 6, name: '조급함', type: 'emotion', tradeType: 'buy' },
+  { id: 7, name: '용기', type: 'emotion', tradeType: 'buy' },
+  { id: 8, name: '불안반신', type: 'emotion', tradeType: 'buy' },
+  { id: 9, name: '직감', type: 'emotion', tradeType: 'buy' },
+  { id: 10, name: '평정심', type: 'emotion', tradeType: 'buy' },
 
-  // 매도 전략 (Strategy - Sell)
-  { id: 11, name: '#목표달성익절', type: 'strategy', tradeType: 'sell' }, // 목표가익절
-  { id: 12, name: '#계획손절', type: 'strategy', tradeType: 'sell' }, // 손절(계획)
-  { id: 13, name: '#조금씩팔기', type: 'strategy', tradeType: 'sell' }, // 분할매도
-  { id: 14, name: '#올라가며팔기', type: 'strategy', tradeType: 'sell' }, // 트레일링스탑
-  { id: 15, name: '#본전탈출', type: 'strategy', tradeType: 'sell' }, // 본절탈출
-  { id: 16, name: '#흐름깨져서', type: 'strategy', tradeType: 'sell' }, // 추세이탈매도
-  { id: 17, name: '#손실줄이기', type: 'strategy', tradeType: 'sell' }, // 리스크관리
-  { id: 18, name: '#기한이됐다', type: 'strategy', tradeType: 'sell' }, // 기간매도
-  { id: 19, name: '#반등에팔기', type: 'strategy', tradeType: 'sell' }, // 기술적반등
-  { id: 20, name: '#포모매도(반성)', type: 'strategy', tradeType: 'sell' }, // 뇌동매도
+  // 매수 전략 (Buy - Green)
+  { id: 11, name: '분할매수', type: 'strategy', tradeType: 'buy' },
+  { id: 12, name: '저점공략', type: 'strategy', tradeType: 'buy' },
+  { id: 13, name: '추세추종', type: 'strategy', tradeType: 'buy' },
+  { id: 14, name: '역발상', type: 'strategy', tradeType: 'buy' },
+  { id: 15, name: '눌림목', type: 'strategy', tradeType: 'buy' },
+  { id: 16, name: '이평돌파', type: 'strategy', tradeType: 'buy' },
+  { id: 17, name: '뉴스매수', type: 'strategy', tradeType: 'buy' },
+  { id: 18, name: '물타기', type: 'strategy', tradeType: 'buy' },
+  { id: 19, name: '장기보유', type: 'strategy', tradeType: 'buy' },
+  { id: 20, name: '스캘핑', type: 'strategy', tradeType: 'buy' },
 
-  // 매수 감정 (Emotion - Buy)
-  { id: 21, name: '#이건된다', type: 'emotion', tradeType: 'buy' },  // 자신감
-  { id: 22, name: '#두근두근', type: 'emotion', tradeType: 'buy' },  // 설렘
-  { id: 23, name: '#차분하게', type: 'emotion', tradeType: 'buy' },  // 차분함
-  { id: 24, name: '#확신한다', type: 'emotion', tradeType: 'buy' },  // 확신
-  { id: 25, name: '#포모왔다', type: 'emotion', tradeType: 'buy' },  // 조급함
-  { id: 26, name: '#더먹고싶다', type: 'emotion', tradeType: 'buy' },  // 욕심
-  { id: 27, name: '#불안하지만', type: 'emotion', tradeType: 'buy' },  // 불안함
-  { id: 28, name: '#평정심', type: 'emotion', tradeType: 'buy' },  // 냉정함
-  { id: 29, name: '#오를것같다', type: 'emotion', tradeType: 'buy' },  // 낙관
-  { id: 30, name: '#다들사니까', type: 'emotion', tradeType: 'buy' },  // 공포매수
+  // 매도 감정 (Sell - Red)
+  { id: 21, name: '공포', type: 'emotion', tradeType: 'sell' },
+  { id: 22, name: '후회', type: 'emotion', tradeType: 'sell' },
+  { id: 23, name: '안도감', type: 'emotion', tradeType: 'sell' },
+  { id: 24, name: '미련', type: 'emotion', tradeType: 'sell' },
+  { id: 25, name: '패닉', type: 'emotion', tradeType: 'sell' },
+  { id: 26, name: '자책', type: 'emotion', tradeType: 'sell' },
+  { id: 27, name: '냉정함', type: 'emotion', tradeType: 'sell' },
+  { id: 28, name: '손절각오', type: 'emotion', tradeType: 'sell' },
+  { id: 29, name: '탐욕유지', type: 'emotion', tradeType: 'sell' },
+  { id: 30, name: '홀가분', type: 'emotion', tradeType: 'sell' },
 
-  // 매도 감정 (Emotion - Sell)
-  { id: 31, name: '#팔고나니홀가분', type: 'emotion', tradeType: 'sell' }, // 안도감
-  { id: 32, name: '#대박났다', type: 'emotion', tradeType: 'sell' }, // 환희
-  { id: 33, name: '#계획대로됐다', type: 'emotion', tradeType: 'sell' }, // 평온
-  { id: 34, name: '#기다린보람', type: 'emotion', tradeType: 'sell' }, // 인내성공
-  { id: 35, name: '#조금더기다릴걸', type: 'emotion', tradeType: 'sell' }, // 아쉬움
-  { id: 36, name: '#왜팔았지', type: 'emotion', tradeType: 'sell' }, // 후회
-  { id: 37, name: '#멘탈나갔다', type: 'emotion', tradeType: 'sell' }, // 좌절
-  { id: 38, name: '#겁나서팔았다', type: 'emotion', tradeType: 'sell' }, // 공포매도
-  { id: 39, name: '#흔들리지않았다', type: 'emotion', tradeType: 'sell' }, // 침착함
-  { id: 40, name: '#열받아서팔았다', type: 'emotion', tradeType: 'sell' }, // 분노매도
+  // 매도 전략 (Sell - Orange)
+  { id: 31, name: '분할매도', type: 'strategy', tradeType: 'sell' },
+  { id: 32, name: '손절매', type: 'strategy', tradeType: 'sell' },
+  { id: 33, name: '목표익절', type: 'strategy', tradeType: 'sell' },
+  { id: 34, name: '고점탈출', type: 'strategy', tradeType: 'sell' },
+  { id: 35, name: '트레일링', type: 'strategy', tradeType: 'sell' },
+  { id: 36, name: '뉴스매도', type: 'strategy', tradeType: 'sell' },
+  { id: 37, name: '리밸런싱', type: 'strategy', tradeType: 'sell' },
+  { id: 38, name: '반전매도', type: 'strategy', tradeType: 'sell' },
+  { id: 39, name: '전량청산', type: 'strategy', tradeType: 'sell' },
+  { id: 40, name: '존버포기', type: 'strategy', tradeType: 'sell' },
 ];
 
 // ─────────────────────────────────────────────

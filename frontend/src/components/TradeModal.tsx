@@ -36,6 +36,9 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
     emotionTag: string;
     memo: string;
     isPublic: boolean;
+    exchangeRate: string;
+    currency: 'KRW' | 'USD';
+    market: string;
   }>({
     ticker: '',
     name: '',
@@ -47,7 +50,10 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
     strategyTag: '',
     emotionTag: '',
     memo: '',
-    isPublic: false
+    isPublic: false,
+    exchangeRate: '1350',
+    currency: 'KRW',
+    market: 'KRX'
   });
 
   const { strategyTags, emotionTags } = useTagStore(formData.type);
@@ -55,17 +61,25 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
   const { fetchPrinciples } = usePrincipleStore();
   const [isPrincipleCheckOpen, setIsPrincipleCheckOpen] = useState(false);
 
+  const fetchExchangeRate = useTradeStore(state => state.fetchExchangeRate);
+  const currentExchangeRate = useTradeStore(state => state.exchangeRate);
+
   // 모달이 열릴 때 최신 원칙을 로드해서 PrincipleCheckModal에서 바로 사용할 수 있게 함
   useEffect(() => {
     if (isOpen) {
       fetchPrinciples();
-      setFormData((prev: any) => ({ ...prev, tradedAt: getKSTNow() }));
+      fetchExchangeRate();
+      setFormData((prev: any) => ({ 
+        ...prev, 
+        tradedAt: getKSTNow(),
+        exchangeRate: currentExchangeRate.toString()
+      }));
     } else {
       // 모달이 닫힐 때 내부 상태들을 초기화하여 다음 번 열릴 때 깨끗한 상태 유지
       setIsPrincipleCheckOpen(false);
       setError('');
     }
-  }, [isOpen, fetchPrinciples]);
+  }, [isOpen, fetchPrinciples, fetchExchangeRate, currentExchangeRate]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -147,10 +161,13 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
   };
 
   const handleStockSelect = (stock: StockData) => {
+    const isOverseas = stock.marketCode !== 'KRX';
     setFormData((prevData: any) => ({
       ...prevData,
       ticker: stock.symbol,
-      name: getStockDisplayName(stock)
+      name: getStockDisplayName(stock),
+      market: stock.marketCode,
+      currency: isOverseas ? 'USD' : 'KRW'
     }));
     setShowStockDropdown(false);
   };
@@ -160,11 +177,16 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
     setIsSubmitting(true);
     setError('');
     try {
+      // 해외 종목인 경우 원화로 환산하여 저장
+      const price = formData.currency === 'USD' 
+        ? Number(formData.price) * Number(formData.exchangeRate)
+        : Number(formData.price);
+
       await createTrade({
         ticker: formData.ticker,
         name: formData.name,
         type: formData.type,
-        price: Number(formData.price),
+        price: price,
         quantity: Number(formData.quantity),
         fee: Number(formData.fee),
         tradedAt: new Date(formData.tradedAt).toISOString(),
@@ -205,8 +227,6 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
     setError('');
     setIsPrincipleCheckOpen(true);
   };
-
-  const totalAmount = Number(formData.price || 0) * Number(formData.quantity || 0);
 
   // ✅ [수정] 모든 Hook 호출 이후, 렌더링 직전에 조기 리턴을 배치합니다.
   if (!isOpen) return null;
@@ -315,20 +335,46 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
 
             <div className="form-group">
               <label htmlFor="trade-price-id" className="flex items-center">
-                단가 (Price)
-                <HelpTooltip content="1주당 체결된 가격을 입력합니다." />
+                단가 ({formData.currency})
+                <HelpTooltip content={formData.currency === 'USD' ? "달러(USD) 기준 1주당 체결 가격을 입력하세요." : "원화(KRW) 기준 1주당 체결 가격을 입력하세요."} />
               </label>
-              <input 
-                id="trade-price-id"
-                type="number" 
-                name="price"
-                value={formData.price} 
-                onChange={handleChange} 
-                placeholder="70000" 
-                step="any"
-                aria-label="단가 입력"
-              />
+              <div className="relative">
+                <input 
+                  id="trade-price-id"
+                  type="number" 
+                  name="price"
+                  value={formData.price} 
+                  onChange={handleChange} 
+                  placeholder={formData.currency === 'USD' ? "150.5" : "70000"} 
+                  step="any"
+                  className="pr-10"
+                  aria-label="단가 입력"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-muted">
+                  {formData.currency}
+                </span>
+              </div>
             </div>
+
+            {formData.currency === 'USD' && (
+              <div className="form-group">
+                <label htmlFor="trade-exchange-id" className="flex items-center">
+                  적용 환율
+                  <HelpTooltip content="해외 종목 매매 시 적용할 환율을 입력하세요." />
+                </label>
+                <input 
+                  id="trade-exchange-id"
+                  type="number" 
+                  name="exchangeRate"
+                  value={formData.exchangeRate} 
+                  onChange={handleChange} 
+                  placeholder="1350" 
+                  step="any"
+                  aria-label="환율 입력"
+                />
+              </div>
+            )}
+
             <div className="form-group">
               <label htmlFor="trade-quantity-id">수량 (Quantity)</label>
               <input 
@@ -345,9 +391,16 @@ export const TradeModal: React.FC<TradeModalProps> = ({ isOpen, onClose }) => {
           </div>
 
           <div className="total-amount-section">
-            <span className="total-label">총 체결금액</span>
+            <span className="total-label">
+              총 체결금액 
+              {formData.currency === 'USD' && <span className="ml-2 text-[10px] text-muted">(환율 적용 원화 환산)</span>}
+            </span>
             <div className="total-value">
-              {Math.round(totalAmount).toLocaleString()}<span>원</span>
+              {Math.round(
+                formData.currency === 'USD' 
+                  ? Number(formData.price || 0) * Number(formData.quantity || 0) * Number(formData.exchangeRate || 1)
+                  : Number(formData.price || 0) * Number(formData.quantity || 0)
+              ).toLocaleString()}<span>원</span>
             </div>
           </div>
 

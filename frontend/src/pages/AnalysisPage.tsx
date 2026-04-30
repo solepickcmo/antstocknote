@@ -77,8 +77,8 @@ export const AnalysisPage: React.FC = () => {
       {/* 요약 대시보드 (컴포넌트화) */}
       <AnalysisSummary 
         overallWinRate={stats.overallWinRate}
-        overallAvgPnl={stats.overallAvgPnl}
-        notesCount={notes.length}
+        totalPnl={stats.totalPnl}
+        totalAssets={stats.totalAssets}
         totalTradesCount={stats.totalTrades}
       />
 

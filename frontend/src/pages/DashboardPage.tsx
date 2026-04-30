@@ -1,24 +1,24 @@
 import React, { useEffect, useMemo } from 'react';
 import { MetricCard } from '../components/MetricCard';
 import { useTradeStore } from '../store/tradeStore';
-import { useNotesCount } from '../hooks/useNotesCount';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip as RechartsTooltip, CartesianGrid } from 'recharts';
 import { HelpTooltip } from '../components/ui/HelpTooltip';
 
 export const DashboardPage: React.FC = () => {
   const fetchTrades = useTradeStore(state => state.fetchTrades);
   const trades = useTradeStore(state => state.trades);
+  const exchangeRate = useTradeStore(state => state.exchangeRate);
+  const fetchExchangeRate = useTradeStore(state => state.fetchExchangeRate);
   const getAnalysisStats = useTradeStore(state => state.getAnalysisStats);
   const getChartData = useTradeStore(state => state.getChartData);
 
   useEffect(() => {
     fetchTrades();
-  }, [fetchTrades]);
+    fetchExchangeRate();
+  }, [fetchTrades, fetchExchangeRate]);
 
   const stats = useMemo(() => getAnalysisStats(), [trades, getAnalysisStats]);
   const chartData = useMemo(() => getChartData(7), [trades, getChartData]);
-
-  const notesCount = useNotesCount();
 
   return (
     <div className="dashboard-page animate-fade-in pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -44,6 +44,14 @@ export const DashboardPage: React.FC = () => {
           <div className="flex md:grid md:grid-cols-5 gap-4 min-w-max md:min-w-full">
             <div className="w-[240px] md:w-auto">
               <MetricCard 
+                title="보유 총 자산" 
+                value={`₩ ${Math.round(stats.totalAssets).toLocaleString()}`} 
+                trend="neutral"
+                subtitle="투자원금 + 실현손익"
+              />
+            </div>
+            <div className="w-[240px] md:w-auto">
+              <MetricCard 
                 title="누적 실현손익" 
                 value={`₩ ${stats.totalPnl > 0 ? '+' : ''}${Math.round(stats.totalPnl).toLocaleString()}`} 
                 trend={stats.totalPnl > 0 ? 'up' : stats.totalPnl < 0 ? 'down' : 'neutral'}
@@ -58,13 +66,6 @@ export const DashboardPage: React.FC = () => {
             </div>
             <div className="w-[240px] md:w-auto">
               <MetricCard 
-                title="평균 수익금" 
-                value={`₩ ${stats.overallAvgPnl > 0 ? '+' : ''}${Math.round(stats.overallAvgPnl).toLocaleString()}`}
-                trend={stats.overallAvgPnl > 0 ? 'up' : stats.overallAvgPnl < 0 ? 'down' : 'neutral'}
-              />
-            </div>
-            <div className="w-[240px] md:w-auto">
-              <MetricCard 
                 title="총 거래 건수" 
                 value={`${stats.totalTrades}건`}
                 trend="neutral"
@@ -72,9 +73,10 @@ export const DashboardPage: React.FC = () => {
             </div>
             <div className="w-[240px] md:w-auto">
               <MetricCard 
-                title="오답 노트" 
-                value={`${notesCount}건`}
+                title="실시간 환율" 
+                value={`$1 = ₩ ${exchangeRate.toLocaleString()}`}
                 trend="neutral"
+                subtitle="USD/KRW 기준"
               />
             </div>
           </div>

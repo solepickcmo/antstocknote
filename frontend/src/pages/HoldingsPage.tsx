@@ -3,7 +3,7 @@ import { useTradeStore } from '../store/tradeStore';
 import './HoldingsPage.css';
 import { Plus, FileText } from 'lucide-react';
 import { format } from 'date-fns';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { StockAnalysisModal } from '../components/StockAnalysisModal';
 import { HelpTooltip } from '../components/ui/HelpTooltip';
 
@@ -110,11 +110,14 @@ export const HoldingsPage: React.FC = () => {
   const displayList = filter === '보유중' ? holdings : []; // Simple mock filter, actually '보유중' implies active holdings
 
   const chartData = useMemo(() => {
-    return holdings.map((h) => ({
-      name: h.name,
-      value: h.currentValue,
-      weight: h.weight,
-    }));
+    // 단일 누적 막대를 위한 형식으로 변환
+    const data: any = { name: 'Portfolio' };
+    holdings.forEach((h) => {
+      const isOverseas = h.market !== 'KRX';
+      const label = isOverseas ? h.ticker : h.name;
+      data[label] = h.currentValue;
+    });
+    return [data];
   }, [holdings]);
 
   return (
@@ -150,37 +153,58 @@ export const HoldingsPage: React.FC = () => {
          </div>
       </div>
 
-      <div className="mb-6 glass-panel p-4 pb-2">
+      <div className="mb-6 glass-panel p-6 pb-4">
         {holdings.length === 0 ? (
           <div className="flex items-center justify-center h-[180px] text-gray-400 text-sm">
             보유 종목이 없습니다
           </div>
         ) : (
           <>
-            <div className="h-[180px] md:h-[220px]">
+            <div className="h-[120px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={chartData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={55}
-                    outerRadius={85}
-                    dataKey="value"
-                    label={(props: any) => `${props.name} ${props.payload.weight.toFixed(1)}%`}
-                    labelLine={true}
-                  >
-                    {chartData.map((_, index) => (
-                      <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(value: any) => [Math.round(value).toLocaleString('ko-KR') + '원', '평가금액']}
+                <BarChart
+                  data={chartData}
+                  layout="vertical"
+                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
+                  <XAxis type="number" hide />
+                  <YAxis type="category" dataKey="name" hide />
+                  <Tooltip 
+                    formatter={(value: any, name: any) => [Math.round(value).toLocaleString('ko-KR') + '원', name]}
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                   />
-                </PieChart>
+                  {holdings.map((h, index) => {
+                    const isOverseas = h.market !== 'KRX';
+                    const label = isOverseas ? h.ticker : h.name;
+                    return (
+                      <Bar 
+                        key={label} 
+                        dataKey={label} 
+                        stackId="a" 
+                        fill={COLORS[index % COLORS.length]} 
+                        radius={index === 0 ? [6, 0, 0, 6] : index === holdings.length - 1 ? [0, 6, 6, 0] : [0, 0, 0, 0]}
+                      />
+                    );
+                  })}
+                </BarChart>
               </ResponsiveContainer>
             </div>
-            <div className="text-xs text-gray-400 text-center mt-2">
+            {/* 종목명 병기 (우측 하단) */}
+            <div className="flex flex-wrap justify-end gap-x-4 gap-y-2 mt-4 px-2">
+              {holdings.map((h, index) => {
+                const isOverseas = h.market !== 'KRX';
+                const label = isOverseas ? h.ticker : h.name;
+                return (
+                  <div key={label} className="flex items-center gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
+                    <span className="text-[11px] font-bold text-secondary">
+                      {label} <span className="text-muted ml-0.5">{h.weight.toFixed(1)}%</span>
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="text-xs text-gray-400 text-center mt-6">
               평균매수가 기준 투자금액 비중
             </div>
           </>

@@ -2,15 +2,15 @@ import React from 'react';
 
 interface AnalysisSummaryProps {
   overallWinRate: string;
-  overallAvgPnl: number;
-  notesCount: number;
+  totalPnl: number;
+  totalAssets: number;
   totalTradesCount: number;
 }
 
 export const AnalysisSummary: React.FC<AnalysisSummaryProps> = ({ 
   overallWinRate, 
-  overallAvgPnl, 
-  notesCount,
+  totalPnl, 
+  totalAssets,
   totalTradesCount
 }) => {
   return (
@@ -24,14 +24,14 @@ export const AnalysisSummary: React.FC<AnalysisSummaryProps> = ({
         <p className="text-fintech-3xl font-fintech-black primary-text">{overallWinRate}%</p>
       </div>
       <div className="card-fintech flex flex-col items-center justify-center py-8">
-        <h3 className="label-fintech">평균 수익금</h3>
-        <p className={`text-fintech-3xl font-fintech-black ${overallAvgPnl > 0 ? 'profit-text' : overallAvgPnl < 0 ? 'loss-text' : ''}`}>
-          {overallAvgPnl > 0 ? '+' : ''}{Math.round(overallAvgPnl).toLocaleString()}
+        <h3 className="label-fintech">누적 실현손익</h3>
+        <p className={`text-fintech-3xl font-fintech-black ${totalPnl > 0 ? 'profit-text' : totalPnl < 0 ? 'loss-text' : ''}`}>
+          {totalPnl > 0 ? '+' : ''}{Math.round(totalPnl).toLocaleString()}
         </p>
       </div>
       <div className="card-fintech flex flex-col items-center justify-center py-8">
-        <h3 className="label-fintech">오답 노트</h3>
-        <p className="text-fintech-3xl font-fintech-black">{notesCount}건</p>
+        <h3 className="label-fintech">보유 총 자산</h3>
+        <p className="text-fintech-3xl font-fintech-black">{Math.round(totalAssets).toLocaleString()}</p>
       </div>
     </div>
   );

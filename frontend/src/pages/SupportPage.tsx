@@ -41,18 +41,18 @@ export const SupportPage: React.FC = () => {
           {FAQS.map((faq, index) => (
             <div key={index} className="border border-border rounded-lg overflow-hidden">
               <button
-                className="w-full flex items-center justify-between p-4 bg-background/50 hover:bg-background transition-colors text-left"
+                className="w-full flex items-center justify-between p-4 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/10 transition-colors text-left"
                 onClick={() => toggleAccordion(index)}
               >
-                <span className="font-semibold text-[15px] text-gray-100">{faq.question}</span>
+                <span className="font-bold text-[15px] text-gray-900 dark:text-gray-100">{faq.question}</span>
                 {openIndex === index ? (
-                  <ChevronUp size={18} className="text-gray-400 flex-shrink-0 ml-2" />
+                  <ChevronUp size={18} className="text-primary flex-shrink-0 ml-2" />
                 ) : (
                   <ChevronDown size={18} className="text-gray-400 flex-shrink-0 ml-2" />
                 )}
               </button>
               {openIndex === index && (
-                <div className="p-4 bg-background border-t border-border text-gray-300 text-sm leading-relaxed">
+                <div className="p-5 bg-white dark:bg-black/20 border-t border-border/50 text-gray-600 dark:text-gray-300 text-[13px] leading-relaxed">
                   {faq.answer}
                 </div>
               )}
