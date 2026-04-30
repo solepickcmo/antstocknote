@@ -153,13 +153,17 @@ const App: React.FC = () => {
               <Route path="/calendar" element={<CalendarPage />} />
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/holdings" element={<HoldingsPage />} />
-              <Route path="/analysis" element={<AnalysisPage />} />
+              <Route path="/analysis" element={
+                <TierGate feature="analysis"><AnalysisPage /></TierGate>
+              } />
               <Route path="/calculator" element={
                 <TierGate feature="calculators"><CalculatorPage /></TierGate>
               } />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/principles" element={<PrinciplesPage />} />
-              <Route path="/stock-analysis" element={<StockAnalysisPage />} />
+              <Route path="/stock-analysis" element={
+                <TierGate feature="ai_analysis"><StockAnalysisPage /></TierGate>
+              } />
               <Route path="/community" element={<CommunityPage />} />
               <Route path="/support" element={<SupportPage />} />
               <Route path="/admin/subscriptions" element={<AdminSubscriptionPage />} />
