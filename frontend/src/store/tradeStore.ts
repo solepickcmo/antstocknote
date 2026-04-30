@@ -123,16 +123,78 @@ export const useTradeStore = create<TradeState>((set, get) => ({
 
   setModalOpen: (isOpen) => set({ isModalOpen: isOpen }),
 
-  /** 실시간 환율을 가져온다 (Mock API 또는 실제 API) */
+  /** 
+   * 실시간 환율을 가져온다.
+   * 1. Supabase의 system_configs 테이블에서 최신 환율과 업데이트 날짜를 확인.
+   * 2. 오늘 날짜와 다를 경우에만 외부 API(ExchangeRate-API)를 호출하여 갱신.
+   * 3. 일반 유저의 무분별한 호출을 방지하기 위해 DB 캐시를 우선 활용.
+   */
   fetchExchangeRate: async () => {
     try {
-      // 실제 구현 시에는 외부 API (예: ExchangeRate-API) 사용 가능
-      // 여기서는 1350~1400 사이의 랜덤값으로 실시간 느낌 구현
-      const baseRate = 1380;
-      const randomFluc = (Math.random() * 10) - 5;
-      set({ exchangeRate: parseFloat((baseRate + randomFluc).toFixed(2)) });
+      const today = new Date().toISOString().split('T')[0];
+      
+      // 1. DB에서 캐시된 환율 정보 조회
+      const { data: config } = await supabase
+        .from('system_configs')
+        .select('value, updated_at')
+        .eq('key', 'usd_krw_rate')
+        .single();
+
+      if (config) {
+        const { rate, date } = config.value as { rate: number; date: string };
+        
+        // 날짜가 오늘이라면 API 호출 없이 캐시된 값 사용
+        if (date === today) {
+          set({ exchangeRate: rate });
+          return;
+        }
+      }
+
+      // 2. 날짜가 다르거나 데이터가 없는 경우 외부 API 호출
+      // 일반 유저의 호출을 방지하기 위해 프리미엄 유저(또는 관리자)만 갱신 권한 부여
+      const { useTierStore } = await import('./tierStore');
+      const userTier = useTierStore.getState().tier;
+      
+      if (userTier !== 'premium') {
+        console.log('[TradeStore] 일반 유저는 환율 갱신 권한이 없습니다. 캐시된 데이터를 사용합니다.');
+        if (config) {
+          set({ exchangeRate: (config.value as any).rate });
+        }
+        return;
+      }
+
+      const API_KEY = import.meta.env.VITE_EXCHANGERATE_API_KEY;
+      if (!API_KEY || API_KEY === 'YOUR-API-KEY') {
+        console.warn('[TradeStore] API 키가 설정되지 않았습니다. 기본 환율을 사용합니다.');
+        return;
+      }
+
+      const response = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/pair/USD/KRW`);
+      const data = await response.json();
+      
+      if (data.result === 'success') {
+        const newRate = parseFloat(data.conversion_rate.toFixed(2));
+        
+        // 3. DB에 새로운 환율 정보 저장 (캐시 업데이트)
+        // RLS에 의해 인증된 사용자만 업데이트 가능하도록 설정됨
+        const { error: updateError } = await supabase
+          .from('system_configs')
+          .upsert({
+            key: 'usd_krw_rate',
+            value: { rate: newRate, date: today },
+            updated_at: new Date().toISOString()
+          });
+
+        if (updateError) {
+          console.error('[TradeStore] 환율 캐시 업데이트 실패:', updateError.message);
+        }
+
+        set({ exchangeRate: newRate });
+      } else {
+        console.error('[TradeStore] 환율 API 응답 오류:', data['error-type']);
+      }
     } catch (err) {
-      console.error('[TradeStore] 환율 조회 실패:', err);
+      console.error('[TradeStore] 환율 조회 및 동기화 실패:', err);
     }
   },
 
