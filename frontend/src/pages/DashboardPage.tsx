@@ -49,10 +49,9 @@ export const DashboardPage: React.FC = () => {
           <div className="flex md:grid md:grid-cols-4 gap-4 min-w-max md:min-w-full">
             <div className="w-[240px] md:w-auto">
               <MetricCard 
-                title="보유 총 자산" 
+                title="보유 총 자산 (원금 + 실현손익)" 
                 value={`₩ ${Math.round(stats.totalAssets).toLocaleString()}`} 
                 trend="neutral"
-                subtitle="투자원금 + 실현손익"
               />
             </div>
             <div className="w-[240px] md:w-auto">
