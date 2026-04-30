@@ -22,13 +22,18 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="dashboard-page animate-fade-in pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <header className="page-header py-8">
+      <header className="page-header py-8 flex flex-col md:flex-row justify-between items-start md:items-center">
         <div>
           <h1 className="text-3xl font-black text-main flex items-center">
             대시보드
             <HelpTooltip content="투자 성과와 자산 현황을 한눈에 확인할 수 있는 요약 화면입니다." iconSize={24} className="ml-2" />
           </h1>
           <p className="text-muted text-sm mt-1">내 매매 내역의 요약 정보를 확인하세요.</p>
+        </div>
+        <div className="mt-4 md:mt-0 px-4 py-2 bg-primary/5 border border-primary/10 rounded-2xl flex items-center gap-3">
+          <span className="text-[10px] font-black text-primary px-1.5 py-0.5 bg-primary/10 rounded-md uppercase tracking-wider">Exchange</span>
+          <span className="text-sm font-bold text-main">USD/KRW</span>
+          <span className="text-lg font-black text-primary">₩ {exchangeRate.toLocaleString()}</span>
         </div>
       </header>
 
@@ -41,7 +46,7 @@ export const DashboardPage: React.FC = () => {
           </h3>
         </div>
         <div className="overflow-x-auto pb-4 scrollbar-hide">
-          <div className="flex md:grid md:grid-cols-5 gap-4 min-w-max md:min-w-full">
+          <div className="flex md:grid md:grid-cols-4 gap-4 min-w-max md:min-w-full">
             <div className="w-[240px] md:w-auto">
               <MetricCard 
                 title="보유 총 자산" 
@@ -69,14 +74,6 @@ export const DashboardPage: React.FC = () => {
                 title="총 거래 건수" 
                 value={`${stats.totalTrades}건`}
                 trend="neutral"
-              />
-            </div>
-            <div className="w-[240px] md:w-auto">
-              <MetricCard 
-                title="실시간 환율" 
-                value={`$1 = ₩ ${exchangeRate.toLocaleString()}`}
-                trend="neutral"
-                subtitle="USD/KRW 기준"
               />
             </div>
           </div>
