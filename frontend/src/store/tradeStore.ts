@@ -156,7 +156,7 @@ export const useTradeStore = create<TradeState>((set, get) => ({
       const userTier = useTierStore.getState().tier;
       
       if (userTier !== 'premium') {
-        console.log('[TradeStore] 일반 유저는 환율 갱신 권한이 없습니다. 캐시된 데이터를 사용합니다.');
+        // 일반 유저는 환율 갱신 권한이 없습니다. 캐시된 데이터를 사용합니다.
         if (config) {
           set({ exchangeRate: (config.value as any).rate });
         }

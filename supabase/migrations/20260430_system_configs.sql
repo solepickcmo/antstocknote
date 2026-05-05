@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS public.system_configs (
 
 -- 초기 환율 데이터 삽입 (기본값)
 INSERT INTO public.system_configs (key, value, updated_at)
-VALUES ('usd_krw_rate', '{"rate": 1380.0, "date": "2026-04-30"}', NOW())
+VALUES ('usd_krw_rate', '{"rate": 1486.4, "date": "2026-04-30"}', NOW())
 ON CONFLICT (key) DO NOTHING;
 
 -- RLS 설정: 누구나 읽을 수 있지만, 인증된 사용자만 (또는 특정 관리자만) 수정 가능하도록 설정 가능
